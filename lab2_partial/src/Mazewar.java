@@ -32,8 +32,13 @@ import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.net.Socket;
 import java.util.Hashtable;
+import java.util.PriorityQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.PriorityBlockingQueue;
+import java.util.Comparator;
+
+
 
 /**
  * The entry point and glue code for the game.  It also contains some helpful
@@ -88,7 +93,13 @@ public class Mazewar extends JFrame {
         /**
          * A queue of events.
          */
+        //I think is this queue for sending events
         private BlockingQueue eventQueue = null;
+        
+        
+        /*My priority queue of strings to accept events from server
+         * */
+        private PriorityBlockingQueue myPriorityQueue = null;
         
         /**
          * The panel that displays the {@link Maze}.
@@ -158,6 +169,7 @@ public class Mazewar extends JFrame {
                 // out how to adjust scores.
                 ScoreTableModel scoreModel = new ScoreTableModel();
                 assert(scoreModel != null);
+                
                 maze.addMazeListener(scoreModel);
                 
                 // Throw up a dialog to get the GUIClient name.
@@ -182,7 +194,11 @@ public class Mazewar extends JFrame {
                 //Initialize queue of events
                 eventQueue = new LinkedBlockingQueue<MPacket>();
                 //Initialize hash table of clients to client name 
-                clientTable = new Hashtable<String, Client>(); 
+                clientTable = new Hashtable<String, Client>();
+                
+                //Initialize my Priority Queue
+                //Comparator<MPacket> comparator = new MPacketComparator();
+                myPriorityQueue = new PriorityBlockingQueue<MPacket>();
                 
                 // Create the GUIClient and connect it to the KeyListener queue
                 //RemoteClient remoteClient = null;
@@ -271,6 +287,29 @@ public class Mazewar extends JFrame {
                 overheadPanel.repaint();
                 this.requestFocusInWindow();
         }
+        
+        /*
+        //My Comparator
+        public class MPacketComparator implements Comparator<MPacket>
+        {
+            @Override
+            public int compare(String x, String y)
+            {
+                // Assume neither string is null. Real code should
+                // probably be more robust
+                // You could also just return x.length() - y.length(),
+                // which would be more efficient.
+                if (x.length() < y.length())
+                {
+                    return -1;
+                }
+                if (x.length() > y.length())
+                {
+                    return 1;
+                }
+                return 0;
+            }
+        }*/
 
         /*
         *Starts the ClientSenderThread, which is 
@@ -281,8 +320,11 @@ public class Mazewar extends JFrame {
         private void startThreads(){
                 //Start a new sender thread 
                 new Thread(new ClientSenderThread(mSocket, eventQueue)).start();
-                //Start a new listener thread 
-                new Thread(new ClientListenerThread(mSocket, clientTable)).start();    
+                //Start a new listener thread, which would also add to queue
+                new Thread(new ClientListenerThread(mSocket, clientTable, myPriorityQueue)).start();
+                
+                //I think make a new thread for removing from queue
+                
         }
 
         
