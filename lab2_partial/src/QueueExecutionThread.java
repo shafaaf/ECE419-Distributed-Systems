@@ -9,7 +9,6 @@ public class QueueExecutionThread implements Runnable {
     private MSocket mSocket  =  null;
     private Hashtable<String, Client> clientTable = null;
     
-    
     //my priority queue
     private PriorityBlockingQueue<MPacket> myPriorityQueue = null;
     
@@ -26,7 +25,7 @@ public class QueueExecutionThread implements Runnable {
         
         this.clientEventNumber = 0;
         
-        if(Debug.debug) System.out.println("Instatiating ClientListenerThread");
+        if(Debug.debug) System.out.println("Instatiating ");
     }
 
     public void run() {
@@ -41,15 +40,13 @@ public class QueueExecutionThread implements Runnable {
                 //System.out.println("ClientListener: Received " + received);
                
                 //myPriorityQueue.put(received);
-        	if(!myPriorityQueue.isEmpty()){
-        		
+        	if(!myPriorityQueue.isEmpty())
                 if(myPriorityQueue.peek().sequenceNumber == clientEventNumber)
                 {
-                	System.out.println("YES! clientEventNumber: " + clientEventNumber + "\n");
+                	System.out.println("YES! FOUND clientEventNumber: " + clientEventNumber + "\n");
                 	System.out.println("QueueExecutionThread : myProrityQueue's event dequed is " + myPriorityQueue.poll() + "\n");
                 	clientEventNumber++;
                 }
-        	}  
                 /*
                 	
                 client = clientTable.get(received.name);

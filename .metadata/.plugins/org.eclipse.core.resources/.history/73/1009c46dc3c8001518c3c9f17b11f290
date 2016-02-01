@@ -319,7 +319,7 @@ public class Mazewar extends JFrame {
          listening for events
         */
         private void startThreads(){
-                //Start a new sender thread
+                //Start a new sender thread 
                 new Thread(new ClientSenderThread(mSocket, eventQueue)).start();
                 //Start a new listener thread, which would only add to queue
                 new Thread(new ClientListenerThread(mSocket, clientTable, myPriorityQueue)).start();
