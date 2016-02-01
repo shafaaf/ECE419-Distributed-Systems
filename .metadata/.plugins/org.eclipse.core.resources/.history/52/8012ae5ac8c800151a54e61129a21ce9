@@ -33,6 +33,7 @@ public class ClientListenerThread implements Runnable {
         Client client = null;
         if(Debug.debug) System.out.println("Starting ClientListenerThread");
         
+        int i;
         while(true){
             try{
                 received = (MPacket) mSocket.readObject();
@@ -42,7 +43,6 @@ public class ClientListenerThread implements Runnable {
                 myPriorityQueue.put(received);
                 
                 //eventQueue.put(received);
-                //client = clientTable.get(received.name);
  
                 
             }catch(IOException e){

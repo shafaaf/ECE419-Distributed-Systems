@@ -33,6 +33,7 @@ public class ClientListenerThread implements Runnable {
         Client client = null;
         if(Debug.debug) System.out.println("Starting ClientListenerThread");
         
+        int i;
         while(true){
             try{
                 received = (MPacket) mSocket.readObject();

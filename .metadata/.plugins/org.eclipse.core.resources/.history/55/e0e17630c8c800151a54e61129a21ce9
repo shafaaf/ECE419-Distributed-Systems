@@ -33,18 +33,29 @@ public class ClientListenerThread implements Runnable {
         Client client = null;
         if(Debug.debug) System.out.println("Starting ClientListenerThread");
         
+        int i;
         while(true){
             try{
                 received = (MPacket) mSocket.readObject();
                 System.out.println("ClientListener: Received " + received);
-                
                 //put on my queue
                 myPriorityQueue.put(received);
                 
                 //eventQueue.put(received);
-                //client = clientTable.get(received.name);
- 
-                
+                client = clientTable.get(received.name);
+                if(received.event == MPacket.UP){
+                    client.forward();
+                }else if(received.event == MPacket.DOWN){
+                    client.backup();
+                }else if(received.event == MPacket.LEFT){
+                    client.turnLeft();
+                }else if(received.event == MPacket.RIGHT){
+                    client.turnRight();
+                }else if(received.event == MPacket.FIRE){
+                    client.fire();
+                }else{
+                    throw new UnsupportedOperationException();
+                }    
             }catch(IOException e){
                 e.printStackTrace();
             }catch(ClassNotFoundException e){
