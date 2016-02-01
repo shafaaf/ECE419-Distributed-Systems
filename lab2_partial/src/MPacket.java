@@ -1,7 +1,7 @@
 //this is Mpacket.javazzzzz
 import java.io.Serializable;
 
-public class MPacket implements Serializable {
+public class MPacket implements Serializable, Comparable<MPacket> {
 	
     /*The following are the type of events*/
     public static final int HELLO = 100;
@@ -93,6 +93,10 @@ public class MPacket implements Serializable {
         String retString = String.format("MPACKET(NAME: %s, <%s: %s>, SEQNUM: %s)", name, 
             typeStr, eventStr, sequenceNumber);
         return retString;
+    }
+    
+    public int compareTo(MPacket o){
+    	return (this.sequenceNumber - o.sequenceNumber);
     }
 
 }

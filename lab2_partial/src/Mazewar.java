@@ -101,6 +101,7 @@ public class Mazewar extends JFrame {
          * */
         private PriorityBlockingQueue myPriorityQueue = null;
         
+        
         /**
          * The panel that displays the {@link Maze}.
          */
@@ -320,10 +321,11 @@ public class Mazewar extends JFrame {
         private void startThreads(){
                 //Start a new sender thread 
                 new Thread(new ClientSenderThread(mSocket, eventQueue)).start();
-                //Start a new listener thread, which would also add to queue
+                //Start a new listener thread, which would only add to queue
                 new Thread(new ClientListenerThread(mSocket, clientTable, myPriorityQueue)).start();
                 
-                //I think make a new thread for removing from queue
+                //Make new thread for removing from queue and executing . Put in here
+                new Thread(new QueueExecutionThread(mSocket, clientTable, myPriorityQueue)).start();
                 
         }
 

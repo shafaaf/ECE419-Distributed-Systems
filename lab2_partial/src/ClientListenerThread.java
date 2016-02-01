@@ -14,6 +14,7 @@ public class ClientListenerThread implements Runnable {
     
 
     
+    
     //Shafaaf = send in priority queue here
     public ClientListenerThread( MSocket mSocket,
         Hashtable<String, Client> clientTable,PriorityBlockingQueue myPriorityQueue)
@@ -24,6 +25,8 @@ public class ClientListenerThread implements Runnable {
         //my queue here initialized
         this.myPriorityQueue = myPriorityQueue;
         
+        
+        
         if(Debug.debug) System.out.println("Instatiating ClientListenerThread");
     }
 
@@ -31,10 +34,18 @@ public class ClientListenerThread implements Runnable {
         MPacket received = null;
         Client client = null;
         if(Debug.debug) System.out.println("Starting ClientListenerThread");
+        
+        int i;
         while(true){
             try{
                 received = (MPacket) mSocket.readObject();
-                System.out.println("Client: Received " + received);
+                System.out.println("ClientListener: Received " + received);
+               
+                myPriorityQueue.put(received);
+                while(!myPriorityQueue.isEmpty()){
+                	System.out.println("Client Listener: myProrityQueue dequed is " + myPriorityQueue.poll() + "\n");
+                }
+                
                 //eventQueue.put(received);
                 client = clientTable.get(received.name);
                 if(received.event == MPacket.UP){
