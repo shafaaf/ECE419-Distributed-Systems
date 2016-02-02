@@ -67,7 +67,8 @@ public class MazeImpl extends Maze implements Serializable, ClientListener, Runn
                         
                         mazeVector.insertElementAt(colVector, i);
                 }
-
+                
+                //whats this thread making?? is it mazewar??
                 thread = new Thread(this);
 
                 // Initialized the random number generator
@@ -304,6 +305,10 @@ public class MazeImpl extends Maze implements Serializable, ClientListener, Runn
                         }
                 }
                 
+                /*
+                  Clientfiref is the set of clients that have Projectiles in 
+                  play.
+                 */
                 clientFired.add(client);
                 Projectile prj = new Projectile(client);
                 
@@ -364,9 +369,11 @@ public class MazeImpl extends Maze implements Serializable, ClientListener, Runn
          * Control loop for {@link Projectile}s.
          */
         public void run() {
-                Collection deadPrj = new HashSet();
-                while(true) {
-                        if(!projectileMap.isEmpty()) {
+        	
+        	
+                Collection deadPrj = new HashSet();	//making deadPrj here
+                while(true) { //Keeps running
+                        if(!projectileMap.isEmpty()) {	//if projectile to direction mapping empty
                                 Iterator it = projectileMap.keySet().iterator();
                                 synchronized(projectileMap) {
                                         while(it.hasNext()) {   
@@ -386,7 +393,7 @@ public class MazeImpl extends Maze implements Serializable, ClientListener, Runn
                                 }
                         }
                         try {
-                                thread.sleep(200);
+                                thread.sleep(200);	//bullet speed
                         } catch(Exception e) {
                                 // shouldn't happen
                         }
@@ -442,7 +449,9 @@ public class MazeImpl extends Maze implements Serializable, ClientListener, Runn
 
                 /* Clear the old cell */
                 cell.setContents(null);
+                
                 /* Write the new cell */
+                /*My comment: projectileMap is Mapping from Projectiles to DirectedPoints*/
                 projectileMap.put(prj, newPoint);
                 newCell.setContents(prj);
                 update();

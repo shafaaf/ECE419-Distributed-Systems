@@ -21,6 +21,10 @@ public class MPacket implements Serializable, Comparable<MPacket> {
     public static final int RIGHT = 204;
     public static final int FIRE = 205;
     
+    //my code to include projectile movement
+    public static final int PROJECTILE_MOVEMENT = 207;
+    
+    
     //These fields characterize the event  
     public int type;
     public int event; 
@@ -34,7 +38,7 @@ public class MPacket implements Serializable, Comparable<MPacket> {
     //These are used to initialize the board
     public int mazeSeed;
     public int mazeHeight;
-    public int mazeWidth; 
+    public int mazeWidth;
     public Player[] players;
 
     public MPacket(int type, int event){

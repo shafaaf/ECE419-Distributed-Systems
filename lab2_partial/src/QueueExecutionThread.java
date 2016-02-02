@@ -39,9 +39,10 @@ public class QueueExecutionThread implements Runnable {
                 if(myPriorityQueue.peek().sequenceNumber == clientEventNumber)
                 {
                 	System.out.println("YES! clientEventNumber: " + clientEventNumber);
-                	System.out.println("QueueExecutionThread : myProrityQueue's event dequing is " + myPriorityQueue.peek() + "\n");
+                	System.out.println("QueueExecutionThread  myProrityQueue's event dequing is " + myPriorityQueue.peek() + "\n");
                 	received = myPriorityQueue.poll();
                 	client = clientTable.get(received.name);
+                	//System.out.println("client is: " + received.name);
                 	
                    	//execute client actions
                     if(received.event == MPacket.UP){
