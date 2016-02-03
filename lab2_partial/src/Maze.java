@@ -27,6 +27,7 @@ import java.util.Iterator;
  */
 
 public abstract class Maze {
+	public String clientName;
 
     /* Maze Information ****************************************************/
 
@@ -71,6 +72,7 @@ public abstract class Maze {
      * @return <code>false</code> on failure, <code>true</code> on success. */
     public abstract boolean clientFire(Client client);
     
+    public abstract void clientmyMoveProjectile(String clientName);
     /** 
      * Remove the specified {@link Client} from the {@link Maze} 
      * @param client {@link Client} to be removed.

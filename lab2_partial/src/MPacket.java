@@ -52,6 +52,9 @@ public class MPacket implements Serializable, Comparable<MPacket> {
         this.event = event;
     }
     
+    
+    
+    
     public String toString(){
         String typeStr;
         String eventStr;
@@ -89,6 +92,9 @@ public class MPacket implements Serializable, Comparable<MPacket> {
             case 205:
                 eventStr = "FIRE";
                 break;
+            case 207:
+            	eventStr = "PROJECTILE_MOVEMENT";
+            	break;
             default:
                 eventStr = "ERROR";
                 break;        

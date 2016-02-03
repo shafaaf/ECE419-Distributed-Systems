@@ -181,6 +181,9 @@ public abstract class Client {
                 }
         }
         
+        public void myMoveProjectile(){
+        	maze.clientmyMoveProjectile(this.name);
+        }
         
         /** 
          * Notify listeners that the client moved forward.

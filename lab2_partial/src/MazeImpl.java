@@ -27,7 +27,8 @@ import java.io.ObjectOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Random;
-import java.util.Vector;  
+import java.util.Vector;
+import java.util.concurrent.BlockingQueue;
 import java.util.Map;
 import java.util.Set;
 import java.util.HashSet;
@@ -50,13 +51,19 @@ public class MazeImpl extends Maze implements Serializable, ClientListener, Runn
          * size of the maze.
          * @param seed Initial seed for the random number generator.
          */
-        public MazeImpl(Point point, long seed) {
+	
+		//I put in here
+		private BlockingQueue eventQueue;
+	
+        public MazeImpl(Point point, long seed, BlockingQueue eventQueue) {
+        	
+        		this.eventQueue = eventQueue;
                 maxX = point.getX();
                 assert(maxX > 0);
                 maxY = point.getY();
                 assert(maxY > 0);
                 
-                // Initialize the maze matrix of cells
+                //Initialize the maze matrix of cells
                 mazeVector = new Vector(maxX);
                 for(int i = 0; i < maxX; i++) {
                         Vector colVector = new Vector(maxY);
@@ -370,7 +377,7 @@ public class MazeImpl extends Maze implements Serializable, ClientListener, Runn
          */
         public void run() {
         	
-        	
+        	/*
                 Collection deadPrj = new HashSet();	//making deadPrj here
                 while(true) { //Keeps running
                         if(!projectileMap.isEmpty()) {	//if projectile to direction mapping empty
@@ -398,9 +405,82 @@ public class MazeImpl extends Maze implements Serializable, ClientListener, Runn
                                 // shouldn't happen
                         }
                 }
+                */
+        	
+        while(true){
+
+        	if(!projectileMap.isEmpty())
+        	{
+        		Iterator it = projectileMap.keySet().iterator();
+        		while(it.hasNext())
+        		{
+        			Object o = it.next();
+        			assert(o instanceof Projectile);
+        			Projectile prj = (Projectile)o;
+        			if (prj.getOwner().getName().equals(clientName))
+                    {
+        				try {
+							MPacket send = (new MPacket(clientName, MPacket.ACTION, MPacket.PROJECTILE_MOVEMENT));
+							eventQueue.put(send);
+
+			                if(Debug.debug) System.out.println("----->CLIENT: : " + send);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+                    }
+        			
+        			
+        		}
+        	}
+            try {
+                thread.sleep(200);	//bullet speed
+            } catch(Exception e) {
+                // shouldn't happen
+            }
+        	
+        }	
+       }
+        
+        
+        public void clientmyMoveProjectile(String clientName)
+        {
+        	
+        	Collection deadPrj = new HashSet();	//making deadPrj here
+             
+                    if(!projectileMap.isEmpty()) {	//if projectile to direction mapping empty
+                            Iterator it = projectileMap.keySet().iterator();
+                            synchronized(projectileMap) {
+                                    while(it.hasNext()) {   
+                                           Object o = it.next();
+                                           assert(o instanceof Projectile);
+                                           Projectile prj = (Projectile)o;
+                                           if (prj.getOwner().getName().equals(clientName))
+                                           {
+                                        	   deadPrj.addAll(moveProjectile((Projectile)o));
+                                           }
+                                            
+                                    }               
+                                    it = deadPrj.iterator();
+                                    while(it.hasNext()) {
+                                            Object o = it.next();
+                                            assert(o instanceof Projectile);
+                                            Projectile prj = (Projectile)o;
+                                            projectileMap.remove(prj);
+                                            clientFired.remove(prj.getOwner());
+                                    }
+                                    deadPrj.clear();
+                            }
+                    }/*
+*/
+            
+        	
         }
         
         /* Internals */
+        
+        
+        
         
         private synchronized Collection moveProjectile(Projectile prj) {
                 Collection deadPrj = new LinkedList();
@@ -501,10 +581,15 @@ public class MazeImpl extends Maze implements Serializable, ClientListener, Runn
                         point = new Point(randomGen.nextInt(maxX),randomGen.nextInt(maxY));
                         cell = getCellImpl(point);
                 }
-                Direction d = Direction.random();
-                while(cell.isWall(d)) {
-                        d = Direction.random();
-                }
+                Direction d = Direction.North;
+                
+                if(cell.isWall(d)) 
+                	d = Direction.East;
+                if(cell.isWall(d))
+                	d = Direction.South;
+                if(cell.isWall(d))
+                	d = Direction.West;
+                
                 cell.setContents(target);
                 clientMap.put(target, new DirectedPoint(point, d));
                 update();

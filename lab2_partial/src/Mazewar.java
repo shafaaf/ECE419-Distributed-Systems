@@ -95,7 +95,7 @@ public class Mazewar extends JFrame {
          */
         //I think is this queue for sending events
         private BlockingQueue eventQueue = null;
-        
+        private  String clientName;
         
         /*My priority queue of MPackets to accept events from server
          * */
@@ -162,8 +162,15 @@ public class Mazewar extends JFrame {
                 super("ECE419 Mazewar");
                 consolePrintLn("ECE419 Mazewar started!");
                 
+                //moved this here
+                //Initialize queue of events
+                eventQueue = new LinkedBlockingQueue<MPacket>();
+                //Initialize hash table of clients to client name 
+                clientTable = new Hashtable<String, Client>();
+                
+               
                 // Create the maze
-                maze = new MazeImpl(new Point(mazeWidth, mazeHeight), mazeSeed);
+                maze = new MazeImpl(new Point(mazeWidth, mazeHeight), mazeSeed, eventQueue);
                 assert(maze != null);
                 
                 // Have the ScoreTableModel listen to the maze to find
@@ -178,7 +185,7 @@ public class Mazewar extends JFrame {
                 if((name == null) || (name.length() == 0)) {
                   Mazewar.quit();
                 }
-                
+                maze.clientName = name;
                 mSocket = new MSocket(serverHost, serverPort);
                 //Send hello packet to server
                 MPacket hello = new MPacket(name, MPacket.HELLO, MPacket.HELLO_INIT);
@@ -192,10 +199,7 @@ public class Mazewar extends JFrame {
                 MPacket resp = (MPacket)mSocket.readObject();
                 if(Debug.debug) System.out.println("Received response from server");
 
-                //Initialize queue of events
-                eventQueue = new LinkedBlockingQueue<MPacket>();
-                //Initialize hash table of clients to client name 
-                clientTable = new Hashtable<String, Client>();
+                //moved initialization
                 
                 //Initialize my Priority Queue
                 //Comparator<MPacket> comparator = new MPacketComparator();
