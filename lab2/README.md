@@ -1,3 +1,5 @@
+The completed lab code is in src and bin. The other folders are for references and not needed.
+
 Introduction
 ============
 This implements a client-server Mazewar game. 

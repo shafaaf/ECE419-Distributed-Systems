@@ -1,1 +1,1 @@
-ECE419 Distributed Systems
+ECE419 Distributed Systems Labs
