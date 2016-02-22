@@ -165,17 +165,15 @@ public class Mazewar extends JFrame {
                 //moved this here
                 //Initialize queue of events
                 eventQueue = new LinkedBlockingQueue<MPacket>();
-                
-                //Initialize hash table of clients to client name
-                //done when setting up GUI and remote client
+                //Initialize hash table of clients to client name 
                 clientTable = new Hashtable<String, Client>();
                 
                
                 // Create the maze
                 // My comment - Mazewar has own maze variable with type Maze. 
                 	//This constructor MazeImpl builds maze, initialize the maze matrix of cells, 
-                	//creates new  thread with "this" (MazeImpl) and runs the run() function 
-                	//which for now moves the bullet, and finally initialize the random number generator
+                	//creates new  thread with this (MazeImpl) and runs the run() function 
+                	//which for now moves the bullet, initialize the random number generator
                 maze = new MazeImpl(new Point(mazeWidth, mazeHeight), mazeSeed, eventQueue);
                 assert(maze != null);
                 
@@ -197,7 +195,7 @@ public class Mazewar extends JFrame {
                 mSocket = new MSocket(serverHost, serverPort);
                 
                 //Send hello packet to server
-                //Shafaaf - types are either hello, or type, and events depending on type
+                //Shafaaf - types are either hello, or type, and eventss depending on type
                 MPacket hello = new MPacket(name, MPacket.HELLO, MPacket.HELLO_INIT);
                 hello.mazeWidth = mazeWidth;
                 hello.mazeHeight = mazeHeight;
@@ -316,7 +314,7 @@ public class Mazewar extends JFrame {
         private void startThreads(){
                 //Start a new sender thread
                 new Thread(new ClientSenderThread(mSocket, eventQueue)).start();
-                //Start a new listener thread, which would only add to myPriorityQueue
+                //Start a new listener thread, which would only add to queue
                 new Thread(new ClientListenerThread(mSocket, clientTable, myPriorityQueue)).start();
                 
                 //Make new thread for removing from queue and executing. I put this here

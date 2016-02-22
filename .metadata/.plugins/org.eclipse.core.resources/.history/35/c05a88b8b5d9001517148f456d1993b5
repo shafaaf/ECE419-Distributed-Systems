@@ -407,40 +407,39 @@ public class MazeImpl extends Maze implements Serializable, ClientListener, Runn
                 }
                 */
         	
-	        while(true){
-	
-	        	if(!projectileMap.isEmpty())
-	        	{
-	        		Iterator it = projectileMap.keySet().iterator();
-	        		while(it.hasNext())
-	        		{
-	        			Object o = it.next();
-	        			assert(o instanceof Projectile);
-	        			Projectile prj = (Projectile)o;
-	        			if (prj.getOwner().getName().equals(clientName))
-	                    {
-	        				try {
-								MPacket send = (new MPacket(clientName, MPacket.ACTION, MPacket.PROJECTILE_MOVEMENT));
-								eventQueue.put(send);
-	
-				                if(Debug.debug) System.out.println("----->CLIENT: : " + send);
-							} catch (InterruptedException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-	                    }
-	        			
-	        			
-	        		}
-	        	}
-	        	
-	            try {
-	                thread.sleep(200);	//bullet speed
-	            } catch(Exception e) {
-	                // shouldn't happen
-	            }
-	        	
-	        }	
+        while(true){
+
+        	if(!projectileMap.isEmpty())
+        	{
+        		Iterator it = projectileMap.keySet().iterator();
+        		while(it.hasNext())
+        		{
+        			Object o = it.next();
+        			assert(o instanceof Projectile);
+        			Projectile prj = (Projectile)o;
+        			if (prj.getOwner().getName().equals(clientName))
+                    {
+        				try {
+							MPacket send = (new MPacket(clientName, MPacket.ACTION, MPacket.PROJECTILE_MOVEMENT));
+							eventQueue.put(send);
+
+			                if(Debug.debug) System.out.println("----->CLIENT: : " + send);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+                    }
+        			
+        			
+        		}
+        	}
+            try {
+                thread.sleep(200);	//bullet speed
+            } catch(Exception e) {
+                // shouldn't happen
+            }
+        	
+        }	
        }
         
         

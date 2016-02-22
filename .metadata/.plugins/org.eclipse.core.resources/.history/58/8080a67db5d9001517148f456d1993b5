@@ -174,8 +174,8 @@ public class Mazewar extends JFrame {
                 // Create the maze
                 // My comment - Mazewar has own maze variable with type Maze. 
                 	//This constructor MazeImpl builds maze, initialize the maze matrix of cells, 
-                	//creates new  thread with "this" (MazeImpl) and runs the run() function 
-                	//which for now moves the bullet, and finally initialize the random number generator
+                	//creates new  thread with this (MazeImpl) and runs the run() function 
+                	//which for now moves the bullet, initialize the random number generator
                 maze = new MazeImpl(new Point(mazeWidth, mazeHeight), mazeSeed, eventQueue);
                 assert(maze != null);
                 

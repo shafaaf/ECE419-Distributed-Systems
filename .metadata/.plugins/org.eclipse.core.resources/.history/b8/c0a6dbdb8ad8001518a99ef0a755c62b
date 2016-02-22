@@ -167,15 +167,15 @@ public class Mazewar extends JFrame {
                 eventQueue = new LinkedBlockingQueue<MPacket>();
                 
                 //Initialize hash table of clients to client name
-                //done when setting up GUI and remote client
+                //done when setting up GUI and remote client 
                 clientTable = new Hashtable<String, Client>();
                 
                
                 // Create the maze
                 // My comment - Mazewar has own maze variable with type Maze. 
                 	//This constructor MazeImpl builds maze, initialize the maze matrix of cells, 
-                	//creates new  thread with "this" (MazeImpl) and runs the run() function 
-                	//which for now moves the bullet, and finally initialize the random number generator
+                	//creates new  thread with this (MazeImpl) and runs the run() function 
+                	//which for now moves the bullet, initialize the random number generator
                 maze = new MazeImpl(new Point(mazeWidth, mazeHeight), mazeSeed, eventQueue);
                 assert(maze != null);
                 
@@ -316,7 +316,7 @@ public class Mazewar extends JFrame {
         private void startThreads(){
                 //Start a new sender thread
                 new Thread(new ClientSenderThread(mSocket, eventQueue)).start();
-                //Start a new listener thread, which would only add to myPriorityQueue
+                //Start a new listener thread, which would only add to queue
                 new Thread(new ClientListenerThread(mSocket, clientTable, myPriorityQueue)).start();
                 
                 //Make new thread for removing from queue and executing. I put this here

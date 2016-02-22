@@ -42,11 +42,10 @@ public class QueueExecutionThread implements Runnable {
                 	System.out.println("QueueExecutionThread  myProrityQueue's event dequing is " + myPriorityQueue.peek() + "\n");
                 	received = myPriorityQueue.poll();
                 	client = clientTable.get(received.name);
+                	//Debugging to see who is client in this context
+                	//System.out.println("client is: " + received.name);
                 	
-                	//Debugging
-                	//System.out.println("QueueExecutionThread: client is: " + received.name);
-                	
-                   	//execute client actions. Here the client class refers to the client who actually caused the movement, fire or projectile movement
+                   	//execute client actions
                     if(received.event == MPacket.UP){
                         client.forward();
                     }else if(received.event == MPacket.DOWN){
