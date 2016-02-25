@@ -407,7 +407,7 @@ public class MazeImpl extends Maze implements Serializable, ClientListener, Runn
                 }
                 */
         	
-        while(true){	//if only local client has a projectile in projectileMap, then send to server to broadcast to everyone
+        while(true){
 
         	if(!projectileMap.isEmpty())
         	{

@@ -407,46 +407,46 @@ public class MazeImpl extends Maze implements Serializable, ClientListener, Runn
                 }
                 */
         	
-        while(true){	//if only local client has a projectile in projectileMap, then send to server to broadcast to everyone
-
-        	if(!projectileMap.isEmpty())
-        	{
-        		Iterator it = projectileMap.keySet().iterator();
-        		while(it.hasNext())
-        		{
-        			Object o = it.next();
-        			assert(o instanceof Projectile);
-        			Projectile prj = (Projectile)o;
-        			if (prj.getOwner().getName().equals(clientName))
-                    {
-        				try {
-							MPacket send = (new MPacket(clientName, MPacket.ACTION, MPacket.PROJECTILE_MOVEMENT));
-							eventQueue.put(send);
-
-			                if(Debug.debug) System.out.println("----->CLIENT: : " + send);
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-                    }
-        			
-        			
-        		}
-        	}
-            try {
-                thread.sleep(200);	//bullet speed
-            } catch(Exception e) {
-                // shouldn't happen
-            }
-        	
-        }	
+	        while(true){	//if only local client has a projectile in projectileMap, then send to server to broadcast to everyone
+	
+	        	if(!projectileMap.isEmpty())
+	        	{
+	        		Iterator it = projectileMap.keySet().iterator();
+	        		while(it.hasNext())
+	        		{
+	        			Object o = it.next();
+	        			assert(o instanceof Projectile);
+	        			Projectile prj = (Projectile)o;
+	        			if (prj.getOwner().getName().equals(localclientName))
+	                    {
+	        				try {
+								MPacket send = (new MPacket(localclientName, MPacket.ACTION, MPacket.PROJECTILE_MOVEMENT));
+								eventQueue.put(send);
+	
+				                if(Debug.debug) System.out.println("----->CLIENT: : " + send);
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+	                    }
+	        			
+	        			
+	        		}
+	        	}
+	        	
+	            try {
+	                thread.sleep(200);	//bullet speed
+	            } catch(Exception e) {
+	                // shouldn't happen
+	            }
+	        	
+	        }	
        }
         
         /*	Send the name of the client whos bullet I want to move. Then check projectile map for him and find his projectile.
         Then move the projectile by 1 unit.*/
         public void clientmyMoveProjectile(String clientName)
         {
-        	
         	Collection deadPrj = new HashSet();	//making deadPrj here
              
                     if(!projectileMap.isEmpty()) {	//if projectile to direction mapping empty

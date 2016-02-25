@@ -191,9 +191,7 @@ public class Mazewar extends JFrame {
                 if((name == null) || (name.length() == 0)) {
                   Mazewar.quit();
                 }
-                
-                //This makes sure I know my name at all times
-                maze.localClientName = name;
+                maze.clientName = name;
                 
                 //My comment - Important as this proves each client has its own socket
                 mSocket = new MSocket(serverHost, serverPort);

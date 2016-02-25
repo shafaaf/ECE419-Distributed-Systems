@@ -38,7 +38,7 @@ public class ClientListenerThread implements Runnable {
                 received = (MPacket) mSocket.readObject();
                 System.out.println("ClientListener: Received " + received);
                 
-                //Just put it on my queue. The ServerSenderProjectileThread will dequeue and perform actions
+                //put on my queue
                 myPriorityQueue.put(received);
  
             }catch(IOException e){

@@ -407,7 +407,7 @@ public class MazeImpl extends Maze implements Serializable, ClientListener, Runn
                 }
                 */
         	
-	        while(true){
+	        while(true){	//if only local client has a projectile in projectileMap, then send to server to broadcast to everyone
 	
 	        	if(!projectileMap.isEmpty())
 	        	{
@@ -417,10 +417,10 @@ public class MazeImpl extends Maze implements Serializable, ClientListener, Runn
 	        			Object o = it.next();
 	        			assert(o instanceof Projectile);
 	        			Projectile prj = (Projectile)o;
-	        			if (prj.getOwner().getName().equals(clientName))
+	        			if (prj.getOwner().getName().equals(localClientName))
 	                    {
 	        				try {
-								MPacket send = (new MPacket(clientName, MPacket.ACTION, MPacket.PROJECTILE_MOVEMENT));
+								MPacket send = (new MPacket(localClientName, MPacket.ACTION, MPacket.PROJECTILE_MOVEMENT));
 								eventQueue.put(send);
 	
 				                if(Debug.debug) System.out.println("----->CLIENT: : " + send);
@@ -443,10 +443,10 @@ public class MazeImpl extends Maze implements Serializable, ClientListener, Runn
 	        }	
        }
         
-        
+        /*	Send the name of the client whos bullet I want to move. Then check projectile map for him and find his projectile.
+        Then move the projectile by 1 unit.*/
         public void clientmyMoveProjectile(String clientName)
         {
-        	
         	Collection deadPrj = new HashSet();	//making deadPrj here
              
                     if(!projectileMap.isEmpty()) {	//if projectile to direction mapping empty

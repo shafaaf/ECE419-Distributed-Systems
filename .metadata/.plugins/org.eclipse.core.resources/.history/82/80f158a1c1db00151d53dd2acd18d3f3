@@ -27,7 +27,7 @@ import java.util.Iterator;
  */
 
 public abstract class Maze {
-	public String localClientName;
+	public String localclientName;
 
     /* Maze Information ****************************************************/
 
