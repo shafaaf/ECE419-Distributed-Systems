@@ -48,8 +48,9 @@ To run the clients:
 
 What we did in this lab
 =======================
-- The server was sending packets with a sequence number. Made sure packets are popped from the queue on the client side in the correct order using a global counter. Therefore all clients would be see the same screen.
-- Previously, projectile movement was done on client side and therefore not consistent with other clients due to delays in local machine.
+The server was sending packets with a sequence number. Made sure packets are popped from the queue on the client side in the correct order using a global counter. Therefore all clients would be see the same screen.
+Previously, projectile movement was done on client side and therefore not consistent with other clients due to delays in local machine.
+
 Now, each client tells the server to broadcast to everyone to move its projectile by 1 unit if it exists. Keep doing this until projectile dies.
 
 
