@@ -22,15 +22,14 @@ public class MPacket implements Serializable, Comparable<MPacket> {
     public static final int LEFT = 203;
     public static final int RIGHT = 204;
     public static final int FIRE = 205;
-    //my code to include projectile movement
-    public static final int PROJECTILE_MOVEMENT = 207;
     
     /*Register*/
     public static final int REGISTERHOSTPORT = 301;
     
     
     
-
+    //my code to include projectile movement
+    public static final int PROJECTILE_MOVEMENT = 207;
     
     
     //These fields characterize the event  

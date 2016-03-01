@@ -229,7 +229,7 @@ public class Mazewar extends JFrame {
                 if(Debug.debug) System.out.println("hello sent");
                 //Receive response from server
                 MPacket resp = (MPacket)mSocket.readObject();
-                if(Debug.debug) System.out.println("Received response for hello from server");
+                if(Debug.debug) System.out.println("Received response from server");
                 System.out.println("Debugging: Received hello from server");
                 
                 //Send your host and port number
@@ -237,8 +237,7 @@ public class Mazewar extends JFrame {
                if(Debug.debug) System.out.println("Sending host and port number");
                mSocket.writeObject(register);
                //Receive response from server
-               MPacket register_resp = (MPacket)mSocket.readObject();
-               if(Debug.debug) System.out.println("Received response for register from server");
+               MPacket resp_register = (MPacket)mSocket.readObject();
 
                 
                 //moved initialization

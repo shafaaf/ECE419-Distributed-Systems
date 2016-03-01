@@ -237,7 +237,7 @@ public class Mazewar extends JFrame {
                if(Debug.debug) System.out.println("Sending host and port number");
                mSocket.writeObject(register);
                //Receive response from server
-               MPacket register_resp = (MPacket)mSocket.readObject();
+               MPacket resp_register = (MPacket)mSocket.readObject();
                if(Debug.debug) System.out.println("Received response for register from server");
 
                 

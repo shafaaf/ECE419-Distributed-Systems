@@ -70,6 +70,7 @@ public class ServerSenderThread implements Runnable {
         MPacket register_resp = null;
         
         register_resp.event = MPacket.REGISTER;
+        hello.players = players;
         //Now broadcast the HELLO
         if(Debug.debug) System.out.println("Sending " + hello);
         for(MSocket mSocket: mSocketList){

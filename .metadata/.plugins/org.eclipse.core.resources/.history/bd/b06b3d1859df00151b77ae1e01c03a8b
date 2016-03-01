@@ -10,7 +10,6 @@ public class MPacket implements Serializable, Comparable<MPacket> {
 
     /*The following are the specific action 
     for each type*/
-    
     /*Initial Hello*/
     public static final int HELLO_INIT = 101;
     /*Response to Hello*/
@@ -22,15 +21,9 @@ public class MPacket implements Serializable, Comparable<MPacket> {
     public static final int LEFT = 203;
     public static final int RIGHT = 204;
     public static final int FIRE = 205;
+    
     //my code to include projectile movement
     public static final int PROJECTILE_MOVEMENT = 207;
-    
-    /*Register*/
-    public static final int REGISTERHOSTPORT = 301;
-    
-    
-    
-
     
     
     //These fields characterize the event  
@@ -74,9 +67,6 @@ public class MPacket implements Serializable, Comparable<MPacket> {
             case 200:
                 typeStr = "ACTION";
                 break;
-            case 300:
-                typeStr = "REGISTER";
-                break;
             default:
                 typeStr = "ERROR";
                 break;        
@@ -102,9 +92,6 @@ public class MPacket implements Serializable, Comparable<MPacket> {
                 break;
             case 205:
                 eventStr = "FIRE";
-                break;
-            case 301:
-                eventStr = "REGISTERHOSTPORT";
                 break;
             case 207:
             	eventStr = "PROJECTILE_MOVEMENT";

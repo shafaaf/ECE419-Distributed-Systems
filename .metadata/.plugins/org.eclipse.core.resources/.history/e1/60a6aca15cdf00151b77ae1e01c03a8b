@@ -65,28 +65,11 @@ public class ServerSenderThread implements Runnable {
         }
     }
     
-    public void handleRegister(){
-    	if(Debug.debug) System.out.println("In handleRegister function");
-        MPacket register_resp = null;
-        
-        register_resp.event = MPacket.REGISTER;
-        //Now broadcast the HELLO
-        if(Debug.debug) System.out.println("Sending " + hello);
-        for(MSocket mSocket: mSocketList){
-            mSocket.writeObject(hello);   
-        }
-        
-        
-    }
-    
-    
-    
-    
     public void run() {
         MPacket toBroadcast = null;
         
         handleHello();
-        handleRegister();	//handle registration of clients
+        
         
         while(true){
             try{	//dequeue packet, add global sequence number, and broadcast
