@@ -37,6 +37,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.Comparator;
+import java.net.InetAddress;
 
 
 
@@ -78,6 +79,12 @@ public class Mazewar extends JFrame {
         private MSocket mSocket = null;
         private ObjectOutputStream out = null;
         private ObjectInputStream in = null;
+        
+        //to make each client a server
+        private InetAddress ip = null;
+        private String hostName = null;
+        private int portNumber;
+        private MServerSocket mServerSocket = null;
 
         /**
          * The {@link GUIClient} for the game.
@@ -162,6 +169,13 @@ public class Mazewar extends JFrame {
                 super("ECE419 Mazewar");
                 consolePrintLn("ECE419 Mazewar started!");
                 
+                //setup host and portnumber of this client
+                ip = InetAddress.getLocalHost();
+                hostName = ip.getHostName();
+                System.out.println("Your current IP address : " + ip);
+                System.out.println("Your current Hostname : " + hostName);
+                
+                
                 //moved this here
                 //Initialize queue of events
                 eventQueue = new LinkedBlockingQueue<MPacket>();
@@ -198,6 +212,12 @@ public class Mazewar extends JFrame {
                 //My comment - Important as this proves each client has its own socket
                 mSocket = new MSocket(serverHost, serverPort);
                 
+                //serverSocket for client
+                //mServerSocket = new MServerSocket(8000);
+                //MSocket mSocket = mServerSocket.accept();
+                
+                
+                
                 //Send hello packet to server
                 //Shafaaf - types are either hello, or type, and events depending on type
                 MPacket hello = new MPacket(name, MPacket.HELLO, MPacket.HELLO_INIT);
@@ -211,6 +231,10 @@ public class Mazewar extends JFrame {
                 MPacket resp = (MPacket)mSocket.readObject();
                 if(Debug.debug) System.out.println("Received response from server");
                 System.out.println("Debugging: Received hello from server");
+                
+                //send your host and port number
+                mSocket.writeObject("");
+
                 
                 //moved initialization
                 

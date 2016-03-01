@@ -1,6 +1,8 @@
 import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.*;
+
 
 public class Server {	//listen and enqueue, dequeue and broadcast.
 						//Attachment of global sequence no. in server sender thread
@@ -12,6 +14,12 @@ public class Server {	//listen and enqueue, dequeue and broadcast.
     private int clientCount; //The number of clients before game starts
     private MSocket[] mSocketList = null; //A list of MSockets
     private BlockingQueue eventQueue = null; //A list of events
+    
+    //private Map <List<String>, Integer> clientConnected = null;
+    
+    //my array having info about each client
+    private ArrayList clientInfo = null;    
+
     
     /*
     * Constructor
@@ -30,6 +38,8 @@ public class Server {	//listen and enqueue, dequeue and broadcast.
         if(Debug.debug) System.out.println("Listening on port: " + port);
         mSocketList = new MSocket[MAX_CLIENTS];
         eventQueue = new LinkedBlockingQueue<MPacket>();
+        
+        
     }
     
     /*
