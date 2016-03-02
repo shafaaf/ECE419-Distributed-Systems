@@ -6,7 +6,7 @@ public class MPacket implements Serializable, Comparable<MPacket> {
     /*The following are the type of events*/
     public static final int HELLO = 100;
     public static final int ACTION = 200;
-    //public static final int REGISTER = 300;
+    public static final int REGISTER = 300;
 
     /*The following are the specific action 
     for each type*/
@@ -26,7 +26,7 @@ public class MPacket implements Serializable, Comparable<MPacket> {
     public static final int PROJECTILE_MOVEMENT = 207;
     
     /*Register*/
-    //public static final int REGISTERHOSTPORT = 301;
+    public static final int REGISTERHOSTPORT = 301;
     
     
     
@@ -48,10 +48,6 @@ public class MPacket implements Serializable, Comparable<MPacket> {
     public int mazeHeight;
     public int mazeWidth;
     public Player[] players;
-    
-    //Host and port Number for registration with hello packet
-    public String hostName;
-    public int portNumber;
 
     public MPacket(int type, int event){
         this.type = type;
@@ -78,9 +74,9 @@ public class MPacket implements Serializable, Comparable<MPacket> {
             case 200:
                 typeStr = "ACTION";
                 break;
-            /*case 300:
+            case 300:
                 typeStr = "REGISTER";
-                break;*/
+                break;
             default:
                 typeStr = "ERROR";
                 break;        
@@ -107,9 +103,9 @@ public class MPacket implements Serializable, Comparable<MPacket> {
             case 205:
                 eventStr = "FIRE";
                 break;
-            /*case 301:
+            case 301:
                 eventStr = "REGISTERHOSTPORT";
-                break;*/
+                break;
             case 207:
             	eventStr = "PROJECTILE_MOVEMENT";
             	break;

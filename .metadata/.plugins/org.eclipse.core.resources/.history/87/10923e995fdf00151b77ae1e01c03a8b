@@ -65,7 +65,6 @@ public class ServerSenderThread implements Runnable {
         }
     }
     
-    /*
     public void handleRegister(){
     	if(Debug.debug) System.out.println("In handleRegister function");
         MPacket register_resp = null;
@@ -78,7 +77,7 @@ public class ServerSenderThread implements Runnable {
         }
         
         
-    }*/
+    }
     
     
     
@@ -87,9 +86,7 @@ public class ServerSenderThread implements Runnable {
         MPacket toBroadcast = null;
         
         handleHello();
-        
-        //change tomorrow
-        //handleRegister();	//handle registration of clients
+        handleRegister();	//handle registration of clients
         
         while(true){
             try{	//dequeue packet, add global sequence number, and broadcast

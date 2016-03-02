@@ -224,6 +224,8 @@ public class Mazewar extends JFrame {
                 MPacket hello = new MPacket(name, MPacket.HELLO, MPacket.HELLO_INIT);
                 hello.mazeWidth = mazeWidth;
                 hello.mazeHeight = mazeHeight;
+                hello.hostName = hostName;
+                hello.portNumber = portNumber;
                 if(Debug.debug) System.out.println("Sending hello");
                 mSocket.writeObject(hello);
                 if(Debug.debug) System.out.println("hello sent");
@@ -233,13 +235,14 @@ public class Mazewar extends JFrame {
                 System.out.println("Debugging: Received hello from server");
                 
                 //Send your host and port number
+                /*
                 MPacket register = new MPacket(name, MPacket.REGISTER, MPacket.REGISTERHOSTPORT);
                if(Debug.debug) System.out.println("Sending host and port number");
                mSocket.writeObject(register);
                //Receive response from server
                MPacket register_resp = (MPacket)mSocket.readObject();
                if(Debug.debug) System.out.println("Received response for register from server");
-
+				*/
                 
                 //moved initialization
                 

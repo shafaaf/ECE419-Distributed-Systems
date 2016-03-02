@@ -49,9 +49,9 @@ public class MPacket implements Serializable, Comparable<MPacket> {
     public int mazeWidth;
     public Player[] players;
     
-    //Host and port Number for registration with hello packet
-    public String hostName;
-    public int portNumber;
+    //Host and port Number
+    private String hostName;
+    private int portNumber;
 
     public MPacket(int type, int event){
         this.type = type;

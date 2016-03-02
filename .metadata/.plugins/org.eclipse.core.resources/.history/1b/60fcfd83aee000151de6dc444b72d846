@@ -37,6 +37,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.Comparator;
+import java.net.InetAddress;
 
 
 
@@ -78,6 +79,12 @@ public class Mazewar extends JFrame {
         private MSocket mSocket = null;
         private ObjectOutputStream out = null;
         private ObjectInputStream in = null;
+        
+        //to make each client a server
+        private InetAddress ip = null;
+        private String hostName = null;
+        private int portNumber;
+        private MServerSocket mServerSocket = null;
 
         /**
          * The {@link GUIClient} for the game.
@@ -162,18 +169,28 @@ public class Mazewar extends JFrame {
                 super("ECE419 Mazewar");
                 consolePrintLn("ECE419 Mazewar started!");
                 
+                //setup host and portnumber of this client
+                ip = InetAddress.getLocalHost();
+                hostName = ip.getHostName();
+                //System.out.println("Your current IP address : " + ip);
+                System.out.println("Your current Hostname : " + hostName);
+                portNumber = 0; //0 will automatically a free port
+                
+                
                 //moved this here
                 //Initialize queue of events
                 eventQueue = new LinkedBlockingQueue<MPacket>();
-                //Initialize hash table of clients to client name 
+                
+                //Initialize hash table of clients to client name
+                //done when setting up GUI and remote client
                 clientTable = new Hashtable<String, Client>();
                 
                
                 // Create the maze
                 // My comment - Mazewar has own maze variable with type Maze. 
                 	//This constructor MazeImpl builds maze, initialize the maze matrix of cells, 
-                	//creates new  thread with this (MazeImpl) and runs the run() function 
-                	//which for now moves the bullet, initialize the random number generator
+                	//creates new  thread with "this" (MazeImpl) and runs the run() function 
+                	//which for now moves the bullet, and finally initialize the random number generator
                 maze = new MazeImpl(new Point(mazeWidth, mazeHeight), mazeSeed, eventQueue);
                 assert(maze != null);
                 
@@ -189,24 +206,43 @@ public class Mazewar extends JFrame {
                 if((name == null) || (name.length() == 0)) {
                   Mazewar.quit();
                 }
-                maze.clientName = name;
+                
+                //This makes sure I know my name at all times
+                maze.localClientName = name;
                 
                 //My comment - Important as this proves each client has its own socket
                 mSocket = new MSocket(serverHost, serverPort);
                 
-                //Send hello packet to server
-                //Shafaaf - types are either hello, or type, and events depending on type
+                //serverSocket for client
+                //mServerSocket = new MServerSocket(8000);
+                //MSocket mSocket = mServerSocket.accept();
+                
+                
+                
+                //Send hello packet to server.Types are either hello, 
+                //or type, and events depending on type
                 MPacket hello = new MPacket(name, MPacket.HELLO, MPacket.HELLO_INIT);
                 hello.mazeWidth = mazeWidth;
                 hello.mazeHeight = mazeHeight;
-                
+                hello.hostName = hostName;
+                private int portNumber;
                 if(Debug.debug) System.out.println("Sending hello");
                 mSocket.writeObject(hello);
                 if(Debug.debug) System.out.println("hello sent");
                 //Receive response from server
                 MPacket resp = (MPacket)mSocket.readObject();
-                if(Debug.debug) System.out.println("Received response from server");
+                if(Debug.debug) System.out.println("Received response for hello from server");
                 System.out.println("Debugging: Received hello from server");
+                
+                //Send your host and port number
+                /*
+                MPacket register = new MPacket(name, MPacket.REGISTER, MPacket.REGISTERHOSTPORT);
+               if(Debug.debug) System.out.println("Sending host and port number");
+               mSocket.writeObject(register);
+               //Receive response from server
+               MPacket register_resp = (MPacket)mSocket.readObject();
+               if(Debug.debug) System.out.println("Received response for register from server");
+				*/
                 
                 //moved initialization
                 
@@ -314,7 +350,7 @@ public class Mazewar extends JFrame {
         private void startThreads(){
                 //Start a new sender thread
                 new Thread(new ClientSenderThread(mSocket, eventQueue)).start();
-                //Start a new listener thread, which would only add to queue
+                //Start a new listener thread, which would only add to myPriorityQueue
                 new Thread(new ClientListenerThread(mSocket, clientTable, myPriorityQueue)).start();
                 
                 //Make new thread for removing from queue and executing. I put this here

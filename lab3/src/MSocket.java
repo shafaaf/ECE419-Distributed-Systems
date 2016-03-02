@@ -127,14 +127,14 @@ public class MSocket{
                         rcvdEvent.put(pk, Boolean.TRUE);
                     }
 
-                    if(Debug.debug) System.out.println("\nNumber of packets received: " + ++rcvdCount);
+                    if(Debug.debug) System.out.println("\nMSocket: Number of packets received: " + ++rcvdCount);
                     int size = Sizeof.sizeof(incoming);
                     rcvdBytes += size;
-                    if(Debug.debug) System.out.println("Received Packet size is " + size + ". Total bytes receieved is " + rcvdBytes);
-                    if(Debug.debug) System.out.println("Received packet: " + incoming);
-                    if(Debug.debug) System.out.println("Received Event size is " + rcvdEvent.size());
-                    if(Debug.debug) System.out.println("Average packets per event is " + (double)rcvdCount / (double)rcvdEvent.size());
-                    if(Debug.debug) System.out.println("Average traffic size per event:" + (double)rcvdBytes / (double)rcvdEvent.size() + "\n");
+                    if(Debug.debug) System.out.println("MSocket: Received Packet size is " + size + ". Total bytes receieved is " + rcvdBytes);
+                    if(Debug.debug) System.out.println("MSocket: Received packet: " + incoming);
+                    if(Debug.debug) System.out.println("MSocket: Received Event size is " + rcvdEvent.size());
+                    if(Debug.debug) System.out.println("MSocket: Average packets per event is " + (double)rcvdCount / (double)rcvdEvent.size());
+                    if(Debug.debug) System.out.println("MSocket: Average traffic size per event:" + (double)rcvdBytes / (double)rcvdEvent.size() + "\n");
                     ingressQueue.put(incoming);
 
                     incoming = in.readObject();
@@ -148,7 +148,7 @@ public class MSocket{
             }catch(EOFException e){
                 e.printStackTrace();
                 close();
-                System.out.println("Exiting");
+                System.out.println("MSocket: Exiting");
                 System.exit(0);
             }catch(IOException e){
                 e.printStackTrace();
@@ -203,13 +203,13 @@ public class MSocket{
                 while(events.size() > 0){
                     //Packet is "sent", drops happen at the network
                     //i.e. count it regardless of whether it will actually be sent
-                    if(Debug.debug) System.out.println("Number of packets sent: " + ++sentCount);
+                    if(Debug.debug) System.out.println("MSocket: Number of packets sent: " + ++sentCount);
                     //Need to synchronize on the ObjectOutputStream instance; otherwise
                     //multiple writes may corrupt stream and/or packets
                     Object outgoing = events.remove(0);
                     int size = Sizeof.sizeof(outgoing);
                     sentBytes += size;
-                    if(Debug.debug) System.out.println("Sent packet size is " + size + ". Total bytes sent is " + sentBytes);
+                    if(Debug.debug) System.out.println("MSocket: Sent packet size is " + size + ". Total bytes sent is " + sentBytes);
                     if(!dropPacket()){
                         synchronized(out) {
                             out.writeObject(outgoing);
@@ -217,7 +217,7 @@ public class MSocket{
                             out.reset();
                         }
                     }else{
-                        if(Debug.debug) System.out.println("Dropping Packet");
+                        if(Debug.debug) System.out.println("MSocket: Dropping Packet");
                     }
 
                 }

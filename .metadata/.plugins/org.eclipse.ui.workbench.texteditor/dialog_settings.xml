@@ -2,12 +2,13 @@
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="false" key="isRegEx"/>
-		<item value="localclientName" key="selection"/>
+		<item value="mSocket" key="selection"/>
 		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="true" key="wrap"/>
 		<item value="false" key="wholeword"/>
 		<list key="findhistory">
+			<item value="mSocket"/>
 			<item value="localclientName"/>
 			<item value="compar"/>
 			<item value="PriorityBlockingQueue"/>
@@ -15,7 +16,6 @@
 			<item value="name"/>
 			<item value="clientFire"/>
 			<item value="clientN"/>
-			<item value="clientAn"/>
 		</list>
 		<list key="replacehistory">
 		</list>

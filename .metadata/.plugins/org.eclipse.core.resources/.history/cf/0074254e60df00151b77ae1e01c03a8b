@@ -65,6 +65,8 @@ public class ServerSenderThread implements Runnable {
         }
     }
     
+    
+    //fix tomorrow, put in server listener
     /*
     public void handleRegister(){
     	if(Debug.debug) System.out.println("In handleRegister function");
