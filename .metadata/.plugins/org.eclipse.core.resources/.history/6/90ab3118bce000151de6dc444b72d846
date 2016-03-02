@@ -67,24 +67,20 @@ public class ServerSenderThread implements Runnable {
                 
             }
             
-            //printing all host and port Numbers on server side and putting in MPacket which will be sent back
-            List<Integer> intValues = new ArrayList<Integer>();
-        	System.out.println("Printing all client info: ");
+            //printing all host and port Numbers on server side
+            System.out.println("Printing all client info: ");
             for(Clientinfo info: clientInfo){
             	System.out.println("ServerSenderThread: Client with pid " + info.pid + " has hostname " + info.hostName + " and port number " + info.port);
-            	intValues.add(info.pid);
-            	intValues.add(info.port);
-            	hello.clientInfoMap.put(info.hostName, intValues);
             }
             
             //hello response which will have hello stuff and client list
             hello.event = MPacket.HELLO_RESP;
             hello.players = players;
-            
-            //Now broadcast the HELLO and client info
+            hello.clientInfo = clientInfo;
+            //Now broadcast the HELLO
             if(Debug.debug) System.out.println("Sending " + hello);
             for(MSocket mSocket: mSocketList){
-                mSocket.writeObject(hello);
+                mSocket.writeObject(hello);   
             }
             
         }catch(InterruptedException e){

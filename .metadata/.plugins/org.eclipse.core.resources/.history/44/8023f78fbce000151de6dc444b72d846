@@ -36,7 +36,6 @@ import java.util.PriorityQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.net.InetAddress;
 
@@ -86,9 +85,7 @@ public class Mazewar extends JFrame {
         private String hostName = null;
         private int portNumber;
         private MServerSocket mServerSocket = null;
-        public ArrayList<Clientinfo> clientInfo = null;
 
-        
         /**
          * The {@link GUIClient} for the game.
          */
@@ -237,9 +234,6 @@ public class Mazewar extends JFrame {
                 MPacket resp = (MPacket)mSocket.readObject();
                 if(Debug.debug) System.out.println("Received response for hello from server");
                 System.out.println("Debugging: Received hello from server");
-                
-                System.out.println("Debugging: Received hello from server");
-                
                 
                 
              

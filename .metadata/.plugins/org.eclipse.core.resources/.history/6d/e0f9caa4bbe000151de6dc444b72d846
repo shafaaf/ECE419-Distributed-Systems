@@ -17,7 +17,7 @@ public class Server {	//listen and enqueue, dequeue and broadcast.
     
     //private Map <List<String>, Integer> clientConnected = null;
     
-    //my arraylist having Clientinfo objects which give host, port and pid
+    //my arraylist having Clientinfo objects
     private ArrayList<Clientinfo> clientInfo = null;
     
     /*

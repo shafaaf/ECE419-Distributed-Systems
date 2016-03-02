@@ -1,9 +1,6 @@
 //this is Mpacket.javazzzzz
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 
 public class MPacket implements Serializable, Comparable<MPacket> {
 	
@@ -56,31 +53,18 @@ public class MPacket implements Serializable, Comparable<MPacket> {
     //Host and port Number for registration with hello packet
     public String hostName;
     public int portNumber;
-    //public ArrayList<Clientinfo> clientInfo;
-    public HashMap<String, List<Integer>> clientInfoMap;
-    
+    public ArrayList<Clientinfo> clientInfo;
     
     public MPacket(int type, int event){
         this.type = type;
         this.event = event;
-        this.clientInfoMap =  new HashMap<String, List<Integer>>();
     }
     
     public MPacket(String name, int type, int event){
         this.name = name;
         this.type = type;
         this.event = event;
-        this.clientInfoMap =  new HashMap<String, List<Integer>>();
     }
-    
-    public MPacket(String name, int type, int event, HashMap clientInfoMap){
-        this.name = name;
-        this.type = type;
-        this.event = event;
-        this.clientInfoMap =  new HashMap<String, List<Integer>>(clientInfoMap);
-    }
-    
-    
     
     
     

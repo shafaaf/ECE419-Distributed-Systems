@@ -63,14 +63,14 @@ public class MPacket implements Serializable, Comparable<MPacket> {
     public MPacket(int type, int event){
         this.type = type;
         this.event = event;
-        this.clientInfoMap =  new HashMap<String, List<Integer>>();
+        this.clientInfoMap =  new HashMap();
     }
     
     public MPacket(String name, int type, int event){
         this.name = name;
         this.type = type;
         this.event = event;
-        this.clientInfoMap =  new HashMap<String, List<Integer>>();
+        this.clientInfoMap =  new HashMap();
     }
     
     public MPacket(String name, int type, int event, HashMap clientInfoMap){
