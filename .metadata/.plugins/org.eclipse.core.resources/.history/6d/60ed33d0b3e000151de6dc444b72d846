@@ -1,0 +1,6 @@
+
+public class clientinfo {
+	public int port;
+	public String host;
+	public int pid;
+}

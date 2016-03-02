@@ -1,6 +1,8 @@
 import java.io.InvalidObjectException;
 import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class ServerSenderThread implements Runnable {
@@ -8,13 +10,16 @@ public class ServerSenderThread implements Runnable {
     //private ObjectOutputStream[] outputStreamList = null;
     private MSocket[] mSocketList = null;
     private BlockingQueue eventQueue = null;
-    private int globalSequenceNumber; 
+    private ArrayList<Clientinfo> clientInfo = null;
+    private int globalSequenceNumber;
+    
     
     public ServerSenderThread(MSocket[] mSocketList,
-                              BlockingQueue eventQueue){
+                              BlockingQueue eventQueue, ArrayList<Clientinfo> clientInfo){
         this.mSocketList = mSocketList;
         this.eventQueue = eventQueue;
         this.globalSequenceNumber = 0;
+        this.clientInfo = clientInfo;
     }
 
     /*
@@ -47,6 +52,25 @@ public class ServerSenderThread implements Runnable {
                 //Start them all facing North
                 Player player = new Player(hello.name, point, Player.North);
                 players[i] = player;
+                
+                //now say you have host name and port
+                System.out.println("Hostname for player " + i + " is " + hello.hostName + " and port number is " + hello.portNumber);
+                Clientinfo c = new Clientinfo(hello.hostName, hello.portNumber);
+                
+                if (clientInfo == null) { 
+                	System.out.println("clientInfo is null");
+                }
+                else{
+                	System.out.println("clientInfo is not null");
+                }
+                clientInfo.add(c);
+                
+            }
+            
+            //printing all host and port Numbers
+            System.out.println("Printing all client info: ");
+            for(Clientinfo info: clientInfo){
+            	System.out.println("Client with pid " + info.pid + " has hostname " + info.hostName + " and port number " + info.port);
             }
             
             hello.event = MPacket.HELLO_RESP;
@@ -56,6 +80,7 @@ public class ServerSenderThread implements Runnable {
             for(MSocket mSocket: mSocketList){
                 mSocket.writeObject(hello);   
             }
+            
         }catch(InterruptedException e){
             e.printStackTrace();
             Thread.currentThread().interrupt();    

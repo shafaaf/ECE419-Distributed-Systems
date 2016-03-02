@@ -174,7 +174,7 @@ public class Mazewar extends JFrame {
                 hostName = ip.getHostName();
                 //System.out.println("Your current IP address : " + ip);
                 System.out.println("Your current Hostname : " + hostName);
-                portNumber = 0; //0 will automatically a free port
+                portNumber = 8005; //will put in later. now default 8005
                 
                 
                 //moved this here
@@ -219,7 +219,7 @@ public class Mazewar extends JFrame {
                 
                 
                 
-                //Send hello packet to server.Types are either hello, 
+                //Send hello and host and port Number packet to server.Types are either hello, 
                 //or type, and events depending on type
                 MPacket hello = new MPacket(name, MPacket.HELLO, MPacket.HELLO_INIT);
                 hello.mazeWidth = mazeWidth;
@@ -234,15 +234,6 @@ public class Mazewar extends JFrame {
                 if(Debug.debug) System.out.println("Received response for hello from server");
                 System.out.println("Debugging: Received hello from server");
                 
-                //Send your host and port number
-                /*
-                MPacket register = new MPacket(name, MPacket.REGISTER, MPacket.REGISTERHOSTPORT);
-               if(Debug.debug) System.out.println("Sending host and port number");
-               mSocket.writeObject(register);
-               //Receive response from server
-               MPacket register_resp = (MPacket)mSocket.readObject();
-               if(Debug.debug) System.out.println("Received response for register from server");
-				*/
                 
                 //moved initialization
                 
@@ -252,7 +243,7 @@ public class Mazewar extends JFrame {
                 
                 // Create the GUIClient and connect it to the KeyListener queue
                 //RemoteClient remoteClient = null;
-                	//Shafaaf - local player is guiClient, other players are RemoteClients
+                //Shafaaf - local player is guiClient, other players are RemoteClients
                 for(Player player: resp.players){  
                         if(player.name.equals(name)){
                         	if(Debug.debug)System.out.println("Adding guiClient: " + player);

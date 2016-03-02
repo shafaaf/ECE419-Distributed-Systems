@@ -18,8 +18,7 @@ public class Server {	//listen and enqueue, dequeue and broadcast.
     //private Map <List<String>, Integer> clientConnected = null;
     
     //my array having info about each client
-    private ArrayList clientInfo = null;    
-
+    private ArrayList<Clientinfo> clientInfo = null;
     
     /*
     * Constructor
@@ -38,7 +37,7 @@ public class Server {	//listen and enqueue, dequeue and broadcast.
         if(Debug.debug) System.out.println("Listening on port: " + port);
         mSocketList = new MSocket[MAX_CLIENTS];
         eventQueue = new LinkedBlockingQueue<MPacket>();
-        
+        clientInfo = new ArrayList<Clientinfo>();        
         
     }
     
@@ -60,7 +59,7 @@ public class Server {	//listen and enqueue, dequeue and broadcast.
         
         //Start a new sender thread. Just 1 for all clients
         //Sender thread dequeues events, attaches a global sequence number and broadcasts events
-        new Thread(new ServerSenderThread(mSocketList, eventQueue)).start(); 
+        new Thread(new ServerSenderThread(mSocketList, eventQueue, clientInfo)).start();
     }
 
         
