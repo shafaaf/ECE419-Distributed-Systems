@@ -2,20 +2,20 @@
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="false" key="isRegEx"/>
-		<item value="mSocket" key="selection"/>
+		<item value="new MP" key="selection"/>
 		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="true" key="wrap"/>
 		<item value="false" key="wholeword"/>
 		<list key="findhistory">
+			<item value="new MP"/>
+			<item value="new"/>
+			<item value="portNumber"/>
+			<item value="rcvd"/>
+			<item value="hash"/>
+			<item value="hello"/>
 			<item value="mSocket"/>
 			<item value="localclientName"/>
-			<item value="compar"/>
-			<item value="PriorityBlockingQueue"/>
-			<item value="clientmyMoveProjectile"/>
-			<item value="name"/>
-			<item value="clientFire"/>
-			<item value="clientN"/>
 		</list>
 		<list key="replacehistory">
 		</list>

@@ -5,7 +5,6 @@ INDEX VERSION 1.127+/Users/shafaafhossain/Desktop/ECE419_synched/.metadata/.plug
 3494619248.index
 3856011051.index
 3156421207.index
-1431162455.index
 3925981911.index
 1462576478.index
 3310743309.index
