@@ -176,7 +176,7 @@ public class Mazewar extends JFrame {
                 //setup host and port number of this client
                 ip = InetAddress.getLocalHost();
                 hostName = ip.getHostName();
-                //hostName = "Ty";	//testing hardcoding
+                //hostName = "Ty";	//testing
                 //System.out.println("Your current IP address : " + ip);
                 System.out.println("Your current Hostname : " + hostName);
                 portNumber = 8005; //will put in later. now default 8005

@@ -87,7 +87,6 @@ public class Mazewar extends JFrame {
         private int portNumber;
         private MServerSocket mServerSocket = null;
         public ArrayList<Clientinfo> clientInfo = null;
-        public int pid;
 
         
         /**
@@ -173,10 +172,9 @@ public class Mazewar extends JFrame {
                 super("ECE419 Mazewar");
                 consolePrintLn("ECE419 Mazewar started!");
                 
-                //setup host and port number of this client
+                //setup host and portnumber of this client
                 ip = InetAddress.getLocalHost();
                 hostName = ip.getHostName();
-                //hostName = "Ty";	//testing hardcoding
                 //System.out.println("Your current IP address : " + ip);
                 System.out.println("Your current Hostname : " + hostName);
                 portNumber = 8005; //will put in later. now default 8005
@@ -240,16 +238,11 @@ public class Mazewar extends JFrame {
                 if(Debug.debug) System.out.println("Received response for hello from server");
                 System.out.println("Debugging: Received hello from server");
                 
-                //print host and port number for all clients
                 clientInfo = new ArrayList<Clientinfo>(resp.clientInfo);
                 for(Clientinfo info: clientInfo){
                 	System.out.println("Mazewar: Client with pid " + info.pid + " has hostname " + info.hostName + " and port number " + info.port);
-                	if((info.hostName.equals(hostName)) && (info.port == portNumber)){
-                		pid = info.pid;
-                	}
                 }
                 
-                System.out.println("Mazewar: My PID is " + pid);
                 
                 //Initialize my Priority Queue
                 //Comparator<MPacket> comparator = new MPacketComparator();
