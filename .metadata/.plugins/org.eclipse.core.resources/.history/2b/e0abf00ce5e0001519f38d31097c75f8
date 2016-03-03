@@ -72,6 +72,9 @@ public class ServerSenderThread implements Runnable {
         	System.out.println("Printing all client info: ");
             for(Clientinfo info: clientInfo){
             	System.out.println("ServerSenderThread: Client with pid " + info.pid + " has hostname " + info.hostName + " and port number " + info.port);
+            	//intValues.add(info.pid);
+            	//intValues.add(info.port);
+            	
             	hello.clientInfo.add(info);
             }
             

@@ -1,6 +1,5 @@
-import java.io.Serializable;
 
-public class Clientinfo implements Serializable {
+public class Clientinfo {
 	public String hostName;
 	public int port;
 	public int pid;

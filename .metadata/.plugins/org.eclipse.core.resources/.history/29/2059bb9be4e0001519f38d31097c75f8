@@ -244,6 +244,8 @@ public class Mazewar extends JFrame {
                 }
                 
                 
+             
+                
                 //Initialize my Priority Queue
                 //Comparator<MPacket> comparator = new MPacketComparator();
                 myPriorityQueue = new PriorityBlockingQueue<MPacket>();

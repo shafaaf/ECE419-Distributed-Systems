@@ -241,8 +241,14 @@ public class Mazewar extends JFrame {
                 clientInfo = new ArrayList<Clientinfo>(resp.clientInfo);
                 for(Clientinfo info: clientInfo){
                 	System.out.println("Mazewar: Client with pid " + info.pid + " has hostname " + info.hostName + " and port number " + info.port);
+                	//intValues.add(info.pid);
+                	//intValues.add(info.port);
+                	
+                	hello.clientInfo.add(info);
                 }
                 
+                
+             
                 
                 //Initialize my Priority Queue
                 //Comparator<MPacket> comparator = new MPacketComparator();
