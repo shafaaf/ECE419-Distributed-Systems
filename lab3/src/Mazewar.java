@@ -39,7 +39,7 @@ import java.util.concurrent.PriorityBlockingQueue;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.net.InetAddress;
-//checking here 2
+
 
 
 /**
@@ -85,9 +85,14 @@ public class Mazewar extends JFrame {
         private InetAddress ip = null;
         private String hostName = null;
         private int portNumber;
-        private MServerSocket mServerSocket = null;
         public ArrayList<Clientinfo> clientInfo = null;
         public int pid;
+        
+        //socket stuff for P2P
+        private MServerSocket mServerSocket = null;	//for others to connect to me
+        private int clientCount = 0;
+        private MSocket[] mSocketList = null;	//list of MSockets
+        private static final int MAX_CLIENTS = 3;
 
         
         /**
@@ -176,11 +181,11 @@ public class Mazewar extends JFrame {
                 //setup host and port number of this client
                 ip = InetAddress.getLocalHost();
                 hostName = ip.getHostName();
-                //hostName = "Ty";	//testing hardcoding
+                hostName = "Yu";	//testing hardcoding
                 //System.out.println("Your current IP address : " + ip);
                 System.out.println("Your current Hostname : " + hostName);
-                portNumber = 8005; //will put in later. now default 8005
-                
+                portNumber = 8006; //will put in later
+                portNumber = 8007; //will put in later
                 
                 //moved this here
                 //Initialize queue of events
@@ -215,17 +220,14 @@ public class Mazewar extends JFrame {
                 //This makes sure I know my name at all times
                 maze.localClientName = name;
                 
-                //My comment - Important as this proves each client has its own socket
+                //Connecting to name server
                 mSocket = new MSocket(serverHost, serverPort);
                 
-                //serverSocket for client
-                //mServerSocket = new MServerSocket(8000);
-                //MSocket mSocket = mServerSocket.accept();
+                //making this client act like a server
+                mServerSocket = new MServerSocket(portNumber);
+                mSocketList = new MSocket[MAX_CLIENTS];
                 
-                
-                
-                //Send hello and host and port Number packet to server.Types are either hello, 
-                //or type, and events depending on type
+                //Send hello and host and port Number packet to server.Types are either hello, or type, and events depending on type
                 MPacket hello = new MPacket(name, MPacket.HELLO, MPacket.HELLO_INIT);
                 hello.mazeWidth = mazeWidth;
                 hello.mazeHeight = mazeHeight;
@@ -235,7 +237,7 @@ public class Mazewar extends JFrame {
                 mSocket.writeObject(hello);
                 if(Debug.debug) System.out.println("hello sent");
                 
-                //Receive response from server which has for hello and clientinfo
+                //Receive response from server which has info for hello and clientinfo
                 MPacket resp = (MPacket)mSocket.readObject();
                 if(Debug.debug) System.out.println("Received response for hello from server");
                 System.out.println("Debugging: Received hello from server");
@@ -249,7 +251,10 @@ public class Mazewar extends JFrame {
                 	}
                 }
                 
-                System.out.println("Mazewar: My PID is " + pid);
+                if(Debug.debug) System.out.println("Mazewar: My pid is " + pid + " and im listening on port: " + portNumber);
+                
+                
+                
                 
                 //Initialize my Priority Queue
                 //Comparator<MPacket> comparator = new MPacketComparator();
