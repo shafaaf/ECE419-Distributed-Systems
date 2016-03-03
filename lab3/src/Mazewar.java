@@ -181,11 +181,9 @@ public class Mazewar extends JFrame {
                 //setup host and port number of this client
                 ip = InetAddress.getLocalHost();
                 hostName = ip.getHostName();
-                hostName = "Yu";	//testing hardcoding
-                //System.out.println("Your current IP address : " + ip);
                 System.out.println("Your current Hostname : " + hostName);
-                portNumber = 8006; //will put in later
-                portNumber = 8007; //will put in later
+                portNumber = 8005; //will put in later
+                
                 
                 //moved this here
                 //Initialize queue of events
@@ -224,8 +222,9 @@ public class Mazewar extends JFrame {
                 mSocket = new MSocket(serverHost, serverPort);
                 
                 //making this client act like a server
-                mServerSocket = new MServerSocket(portNumber);
                 mSocketList = new MSocket[MAX_CLIENTS];
+                mServerSocket = new MServerSocket(portNumber);
+                
                 
                 //Send hello and host and port Number packet to server.Types are either hello, or type, and events depending on type
                 MPacket hello = new MPacket(name, MPacket.HELLO, MPacket.HELLO_INIT);
@@ -244,11 +243,21 @@ public class Mazewar extends JFrame {
                 
                 //print host and port number for all clients
                 clientInfo = new ArrayList<Clientinfo>(resp.clientInfo);
-                for(Clientinfo info: clientInfo){
+                int i = 0;
+                for(Clientinfo info: clientInfo)
+                {
                 	System.out.println("Mazewar: Client with pid " + info.pid + " has hostname " + info.hostName + " and port number " + info.port);
-                	if((info.hostName.equals(hostName)) && (info.port == portNumber)){
+                	
+                	if((info.hostName.equals(hostName)) && (info.port == portNumber))
+                	{
                 		pid = info.pid;
                 	}
+                	else{
+                		MSocket mSocketClient = new MSocket(info.hostName, info.port);
+                    	mSocketList[i] = mSocketClient;
+                	}
+                	System.out.println("Its here");
+                	i++;
                 }
                 
                 if(Debug.debug) System.out.println("Mazewar: My pid is " + pid + " and im listening on port: " + portNumber);
