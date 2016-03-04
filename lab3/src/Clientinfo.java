@@ -4,7 +4,7 @@ public class Clientinfo implements Serializable {
 	public String hostName;
 	public int port;
 	public int pid;
-	public static int pid_i = 1;
+	public static int pid_i = 0;
 	
 	public Clientinfo(String hostName, int port){
 		this.hostName = hostName;

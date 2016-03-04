@@ -184,10 +184,10 @@ public class Mazewar extends JFrame {
                 mServerSocket = new MServerSocket(0);
                 
                 //list of sockets who will connect to me
-                mSocketList = new MSocket[MAX_CLIENTS + 1];
+                mSocketList = new MSocket[MAX_CLIENTS];
                 
                 //list of client who I will connect to
-                client_mSocket = new MSocket[MAX_CLIENTS + 1];	//because i starts from 1
+                client_mSocket = new MSocket[MAX_CLIENTS];	//because i starts from 1
                 
                 
                 //Setup host and port number of this client
@@ -251,7 +251,7 @@ public class Mazewar extends JFrame {
                 
                 //Print host and port number for all clients
                 clientInfo = new ArrayList<Clientinfo>(resp.clientInfo);
-                int i = 1;
+                int i = 0;
                 for(Clientinfo info: clientInfo)
                 {
                 	System.out.println("Mazewar: Client with pid " + info.pid + " has hostname " + info.hostName + " and port number " + info.port);
