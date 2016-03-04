@@ -84,15 +84,15 @@ public class Mazewar extends JFrame {
         
         //P2P Stuff
         private MServerSocket mServerSocket = null;	//for others to connect to me
-        private MSocket[] client_mSocket = null; //array of sockets I will connect to
-        private MSocket[] mSocketList = null; //arary of sockets passed to thread, who I will connect to
+        private MSocket[] client_mSocket = null; //array of sockets I will connect to other clients
+        private MSocket[] mSocketList = null; //array of sockets passed to MyServerThread, which says who I will connect to
         private InetAddress ip = null;
         private String hostName = null;
         private int portNumber;
-        public ArrayList<Clientinfo> clientInfo = null;	//array of Clientinfo with info about other clients
+        public ArrayList<Clientinfo> clientInfo = null;	//array of Clientinfo objects with info about other clients
         public int pid;	//my pid
         private int clientCount = 0;
-        private static final int MAX_CLIENTS = 3;
+        private static final int MAX_CLIENTS = 3;//also change in naming server
 
         
         /**
@@ -273,7 +273,7 @@ public class Mazewar extends JFrame {
                 //Comparator<MPacket> comparator = new MPacketComparator();
                 myPriorityQueue = new PriorityBlockingQueue<MPacket>();
                 
-                // Create the GUIClient and connect it to the KeyListener queue
+                //Create the GUIClient and connect it to the KeyListener queue
                 //RemoteClient remoteClient = null;
                 //Shafaaf - local player is guiClient, other players are RemoteClients
                 for(Player player: resp.players){  
@@ -376,8 +376,7 @@ public class Mazewar extends JFrame {
                 new Thread(new ClientSenderThread(mSocket, eventQueue)).start();
                 //Start a new listener thread, which would only add to myPriorityQueue
                 new Thread(new ClientListenerThread(mSocket, clientTable, myPriorityQueue)).start();
-                
-                //Make new thread for removing from queue and executing. I put this here
+                //Start a new thread for removing from queue and executing
                 new Thread(new QueueExecutionThread(mSocket, clientTable, myPriorityQueue)).start();
                 
         }

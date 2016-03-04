@@ -22,7 +22,7 @@ public class MyServerThread implements Runnable{
             //Start a new handler thread for each new client connection
             try {
             	System.out.println("MyServerThread: Waiting for connection.");
-            	System.out.println("MyServerThread: clientCount is " + clientCount);
+            	System.out.println("MyServerThread: clientCount before connection is " + clientCount);
 				MSocket mSocket = myServerSocket.accept();
 				//thread
 				System.out.println("MyServerThread: Got a connection here");
