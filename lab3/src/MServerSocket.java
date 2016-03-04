@@ -22,5 +22,9 @@ public class MServerSocket{
         MSocket mSocket = new MSocket(socket);
         return mSocket;
     }
+    
+    public int getLocalPort(){
+    	return serverSocket.getLocalPort();
+    }
 
 }
