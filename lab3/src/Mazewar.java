@@ -88,7 +88,7 @@ public class Mazewar extends JFrame {
         public ArrayList<Clientinfo> clientInfo = null;
         public int pid;
         
-        //socket stuff for P2P
+        //Socket stuff for P2P
         private MServerSocket mServerSocket = null;	//for others to connect to me
         private int clientCount = 0;
         private MSocket[] mSocketList = null;	//list of MSockets
@@ -185,9 +185,12 @@ public class Mazewar extends JFrame {
                 mServerSocket = new MServerSocket(0);//my serversocket to accept
                 portNumber = mServerSocket.getLocalPort();
                 
+                
+                
+                new Thread(new MyServerThread(mServerSocket, portNumber, MAX_CLIENTS, mSocketList)).start();
+                
                 System.out.println("Your current Hostname : " + hostName + " and port number is " + portNumber);
                 
-                //moved this here
                 //Initialize queue of events
                 eventQueue = new LinkedBlockingQueue<MPacket>();
                 
@@ -223,8 +226,7 @@ public class Mazewar extends JFrame {
                 //Connecting to name server
                 mSocket = new MSocket(serverHost, serverPort);
                 
-                //making this client act like a server
-                mSocketList = new MSocket[MAX_CLIENTS];	//clients' socket list
+               
                 
                 //Send hello and host and port Number packet to server.Types are either hello, or type, and events depending on type
                 MPacket hello = new MPacket(name, MPacket.HELLO, MPacket.HELLO_INIT);
@@ -257,25 +259,6 @@ public class Mazewar extends JFrame {
                 	i++;
                 }
                 if(Debug.debug) System.out.println("Mazewar: My pid is " + pid + " and im listening on port: " + portNumber);
-                
-                /*
-                new Thread(new ClientThread(, )).start();
-                
-                MSocket mySocket = mServerSocket.accept();
-                
-                
-                
-                for(Clientinfo info: clientInfo)
-                {
-                	
-                }
-                */
-                
-                
-                
-                
-                
-                
                 
                 
                 //Initialize my Priority Queue
