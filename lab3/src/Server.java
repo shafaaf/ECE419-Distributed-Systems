@@ -41,6 +41,8 @@ public class Server {	//listen and enqueue, dequeue and broadcast.
         
     }
     
+    
+//---------------------------------------------------------------------------------------------------------------------------------------------    
     /*
     *Starts the listener and sender threads 
     */
@@ -62,7 +64,9 @@ public class Server {	//listen and enqueue, dequeue and broadcast.
         new Thread(new ServerSenderThread(mSocketList, eventQueue, clientInfo)).start();
     }
 
-        
+    
+//---------------------------------------------------------------------------------------------------------------------------------------------
+
     /*
     * Entry point for server
     */

@@ -21,9 +21,10 @@ public class MyServerThread implements Runnable{
 		while(clientCount < maxClients){
             //Start a new handler thread for each new client connection
             try {
+            	System.out.println("MyServerThread: Waiting for connection.");
 				MSocket mSocket = myServerSocket.accept();
 				//thread
-				
+				System.out.println("MyServerThread: Got a connection here");
 				mSocketList[clientCount] = mSocket;
 				clientCount++;
 				

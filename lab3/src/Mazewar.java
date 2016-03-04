@@ -76,22 +76,22 @@ public class Mazewar extends JFrame {
         /**
          * The Mazewar instance itself. 
          */
+        
         private Mazewar mazewar = null;
-        private MSocket mSocket = null;
+        private MSocket mSocket = null;	//socket to connect to naming server
         private ObjectOutputStream out = null;
         private ObjectInputStream in = null;
         
-        //to make each client a server
+        //P2P Stuff
+        private MSocket[] client_mSocket = null; //array of sockets to connect to other clients
+        private MServerSocket mServerSocket = null;	//for others to connect to me
+        //private MSocket[] mSocketList = null; //list of MSockets passed to thread, to see who Im connected to
         private InetAddress ip = null;
         private String hostName = null;
         private int portNumber;
-        public ArrayList<Clientinfo> clientInfo = null;
-        public int pid;
-        
-        //Socket stuff for P2P
-        private MServerSocket mServerSocket = null;	//for others to connect to me
+        public ArrayList<Clientinfo> clientInfo = null;	//array of Clientinfo with info about other clients
+        public int pid;	//my pid
         private int clientCount = 0;
-        private MSocket[] mSocketList = null;	//list of MSockets
         private static final int MAX_CLIENTS = 3;
 
         
@@ -109,11 +109,11 @@ public class Mazewar extends JFrame {
         /**
          * A queue of events.
          */
-        //I think is this queue for sending events
+        //Queue for sending events
         private BlockingQueue eventQueue = null;
         private  String clientName;
         
-        /*My priority queue of MPackets to accept events from server
+        /*Priority queue of MPackets to accept events from server
          * */
         private PriorityBlockingQueue myPriorityQueue = null;
         
@@ -169,26 +169,28 @@ public class Mazewar extends JFrame {
 
                 System.exit(0);
         }
+        
        
+//---------------------------------------------------------------------------------------------------------------------------------------------
         /** 
-         * The place where all the pieces are put together. - IMP by Shafaaf
+         * The place where all the pieces are put together.
          */
         public Mazewar(String serverHost, int serverPort) throws IOException,
                                                 ClassNotFoundException {
                 super("ECE419 Mazewar");
                 consolePrintLn("ECE419 Mazewar started!");
                 
-                //setup host and port number of this client
+                //my serverSocket to accept incoming requests. Now just get a free port
+                mServerSocket = new MServerSocket(0);
+                
+                client_mSocket = new MSocket[MAX_CLIENTS];
+                
+                //Setup host and port number of this client
                 ip = InetAddress.getLocalHost();
                 hostName = ip.getHostName();
-                
-                mServerSocket = new MServerSocket(0);//my serversocket to accept
                 portNumber = mServerSocket.getLocalPort();
                 
-                
-                
-                new Thread(new MyServerThread(mServerSocket, portNumber, MAX_CLIENTS, mSocketList)).start();
-                
+                new Thread(new MyServerThread(mServerSocket, portNumber, MAX_CLIENTS, client_mSocket)).start();
                 System.out.println("Your current Hostname : " + hostName + " and port number is " + portNumber);
                 
                 //Initialize queue of events
@@ -226,9 +228,7 @@ public class Mazewar extends JFrame {
                 //Connecting to name server
                 mSocket = new MSocket(serverHost, serverPort);
                 
-               
-                
-                //Send hello and host and port Number packet to server.Types are either hello, or type, and events depending on type
+                //Send hello and host, port number in a Mpacket to server
                 MPacket hello = new MPacket(name, MPacket.HELLO, MPacket.HELLO_INIT);
                 hello.mazeWidth = mazeWidth;
                 hello.mazeHeight = mazeHeight;
@@ -245,7 +245,7 @@ public class Mazewar extends JFrame {
                 
                 //print host and port number for all clients
                 clientInfo = new ArrayList<Clientinfo>(resp.clientInfo);
-                int i = 1;
+                int i = 0;
                 for(Clientinfo info: clientInfo)
                 {
                 	System.out.println("Mazewar: Client with pid " + info.pid + " has hostname " + info.hostName + " and port number " + info.port);
@@ -256,6 +256,8 @@ public class Mazewar extends JFrame {
                 		pid = info.pid;
                 	}
                 	System.out.println("Its here 1");
+                	client_mSocket[i] = new MSocket(info.hostName, info.port);
+                	System.out.println("Its here 2");
                 	i++;
                 }
                 if(Debug.debug) System.out.println("Mazewar: My pid is " + pid + " and im listening on port: " + portNumber);
@@ -355,6 +357,7 @@ public class Mazewar extends JFrame {
         }
         
         
+//---------------------------------------------------------------------------------------------------------------------------------------------
 
         /*
         *Starts the ClientSenderThread, which is 
@@ -372,8 +375,9 @@ public class Mazewar extends JFrame {
                 new Thread(new QueueExecutionThread(mSocket, clientTable, myPriorityQueue)).start();
                 
         }
-
         
+//---------------------------------------------------------------------------------------------------------------------------------------------
+
         /**
          * Entry point for the game.  
          * @param args Command-line arguments.
@@ -388,3 +392,4 @@ public class Mazewar extends JFrame {
              mazewar.startThreads();
         }
 }
+
