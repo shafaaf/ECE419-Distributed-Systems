@@ -4,7 +4,7 @@ import java.util.Hashtable;
 import java.util.PriorityQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 
-public class QueueExecutionThread implements Runnable {
+public class ClientQueueExecutionThread implements Runnable {
 
     private MSocket mSocket  =  null;
     private Hashtable<String, Client> clientTable = null;
@@ -14,7 +14,7 @@ public class QueueExecutionThread implements Runnable {
     
     private int clientEventNumber;
     
-    public QueueExecutionThread( MSocket mSocket,
+    public ClientQueueExecutionThread( MSocket mSocket,
         Hashtable<String, Client> clientTable,PriorityBlockingQueue myPriorityQueue)
     {
         this.mSocket = mSocket;

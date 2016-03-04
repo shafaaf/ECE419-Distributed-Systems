@@ -195,7 +195,7 @@ public class Mazewar extends JFrame {
                 hostName = ip.getHostName();
                 portNumber = mServerSocket.getLocalPort();
                 
-                new Thread(new MyServerThread(mServerSocket, portNumber, MAX_CLIENTS, 0, mSocketList)).start();
+                
                 System.out.println("Your current Hostname : " + hostName + " and port number is " + portNumber);
                 
                 //Initialize queue of events
@@ -205,7 +205,9 @@ public class Mazewar extends JFrame {
                 	//Done when setting up GUI and remote client
                 clientTable = new Hashtable<String, Client>();
                 
-               
+                //Thread to accept clients connections
+                new Thread(new MyServerThread(mServerSocket, portNumber, MAX_CLIENTS, 0, mSocketList, eventQueue)).start();
+                
                 // Create the maze
                 // My comment - Mazewar has own maze variable with type Maze. 
                 	//This constructor MazeImpl builds maze, initialize the maze matrix of cells, 
@@ -377,7 +379,7 @@ public class Mazewar extends JFrame {
                 //Start a new listener thread, which would only add to myPriorityQueue
                 new Thread(new ClientListenerThread(mSocket, clientTable, myPriorityQueue)).start();
                 //Start a new thread for removing from queue and executing
-                new Thread(new QueueExecutionThread(mSocket, clientTable, myPriorityQueue)).start();
+                new Thread(new ClientQueueExecutionThread(mSocket, clientTable, myPriorityQueue)).start();
                 
         }
         
