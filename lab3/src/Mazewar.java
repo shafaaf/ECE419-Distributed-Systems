@@ -84,7 +84,7 @@ public class Mazewar extends JFrame {
         
         //P2P Stuff
         private MServerSocket mServerSocket = null;	//for others to connect to me
-        private MSocket[] client_mSocket = null; //array of sockets I will connect to other clients
+        private MSocket[] client_mSocket = null; //array of sockets I will use to connect to other clients
         private MSocket[] mSocketList = null; //array of sockets passed to MyServerThread, which says who I will connect to
         private InetAddress ip = null;
         private String hostName = null;
@@ -187,14 +187,13 @@ public class Mazewar extends JFrame {
                 mSocketList = new MSocket[MAX_CLIENTS];
                 
                 //list of client who I will connect to
-                client_mSocket = new MSocket[MAX_CLIENTS];	//because i starts from 1
+                client_mSocket = new MSocket[MAX_CLIENTS];	//because i starts from 0
                 
                 
                 //Setup host and port number of this client
                 ip = InetAddress.getLocalHost();
                 hostName = ip.getHostName();
                 portNumber = mServerSocket.getLocalPort();
-                
                 
                 System.out.println("Your current Hostname : " + hostName + " and port number is " + portNumber);
                 
