@@ -8,11 +8,11 @@ public class MyServerThread implements Runnable{
 	private int clientCount;
 	private MSocket[] mSocketList;
 	
-	MyServerThread(MServerSocket mServerSocket, int portNumber, int maxClients, MSocket[] mSocketList) {
+	MyServerThread(MServerSocket mServerSocket, int portNumber, int maxClients, int clientCount, MSocket[] mSocketList) {
 		this.myServerSocket = mServerSocket;
 		this.portNumber = portNumber;
 		this.maxClients = maxClients;
-		this.clientCount = 0;
+		this.clientCount = clientCount;
 		this.mSocketList = mSocketList;
 		
 	}

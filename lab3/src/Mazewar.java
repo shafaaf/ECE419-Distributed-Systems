@@ -83,9 +83,9 @@ public class Mazewar extends JFrame {
         private ObjectInputStream in = null;
         
         //P2P Stuff
-        private MSocket[] client_mSocket = null; //array of sockets to connect to other clients
         private MServerSocket mServerSocket = null;	//for others to connect to me
-        //private MSocket[] mSocketList = null; //list of MSockets passed to thread, to see who Im connected to
+        private MSocket[] client_mSocket = null; //array of sockets I will connect to
+        private MSocket[] mSocketList = null; //arary of sockets passed to thread, who I will connect to
         private InetAddress ip = null;
         private String hostName = null;
         private int portNumber;
@@ -183,21 +183,26 @@ public class Mazewar extends JFrame {
                 //my serverSocket to accept incoming requests. Now just get a free port
                 mServerSocket = new MServerSocket(0);
                 
-                client_mSocket = new MSocket[MAX_CLIENTS];
+                //list of sockets who will connect to me
+                mSocketList = new MSocket[MAX_CLIENTS + 1];
+                
+                //list of client who I will connect to
+                client_mSocket = new MSocket[MAX_CLIENTS + 1];	//because i starts from 1
+                
                 
                 //Setup host and port number of this client
                 ip = InetAddress.getLocalHost();
                 hostName = ip.getHostName();
                 portNumber = mServerSocket.getLocalPort();
                 
-                new Thread(new MyServerThread(mServerSocket, portNumber, MAX_CLIENTS, client_mSocket)).start();
+                new Thread(new MyServerThread(mServerSocket, portNumber, MAX_CLIENTS, 0, mSocketList)).start();
                 System.out.println("Your current Hostname : " + hostName + " and port number is " + portNumber);
                 
                 //Initialize queue of events
                 eventQueue = new LinkedBlockingQueue<MPacket>();
                 
                 //Initialize hash table of clients to client name
-                //done when setting up GUI and remote client
+                	//Done when setting up GUI and remote client
                 clientTable = new Hashtable<String, Client>();
                 
                
@@ -224,6 +229,7 @@ public class Mazewar extends JFrame {
                 
                 //This makes sure I know my name at all times
                 maze.localClientName = name;
+                System.out.println("Mazewar: My name is " + name);
                 
                 //Connecting to name server
                 mSocket = new MSocket(serverHost, serverPort);
@@ -236,31 +242,31 @@ public class Mazewar extends JFrame {
                 hello.portNumber = portNumber;
                 if(Debug.debug) System.out.println("Sending hello");
                 mSocket.writeObject(hello);
-                if(Debug.debug) System.out.println("hello sent");
+                if(Debug.debug) System.out.println("Hello sent");
                 
-                //Receive response from server which has info for hello and clientinfo
+                //Receive response from server which has info for hello and client info in clientinfo
                 MPacket resp = (MPacket)mSocket.readObject();
                 if(Debug.debug) System.out.println("Received response for hello from server");
                 System.out.println("Debugging: Received hello from server");
                 
-                //print host and port number for all clients
+                //Print host and port number for all clients
                 clientInfo = new ArrayList<Clientinfo>(resp.clientInfo);
-                int i = 0;
+                int i = 1;
                 for(Clientinfo info: clientInfo)
                 {
                 	System.out.println("Mazewar: Client with pid " + info.pid + " has hostname " + info.hostName + " and port number " + info.port);
                 	
                 	if((info.hostName.equals(hostName)) && (info.port == portNumber))
                 	{
-                		//this is me
+                		//Setting my pid
                 		pid = info.pid;
                 	}
-                	System.out.println("Its here 1");
+                	System.out.println("Mazewar: Trying to make a socket to to connect with client " + info.pid);
                 	client_mSocket[i] = new MSocket(info.hostName, info.port);
-                	System.out.println("Its here 2");
+                	System.out.println("Mazewar: Made a socket conenction to client " + info.pid);
                 	i++;
                 }
-                if(Debug.debug) System.out.println("Mazewar: My pid is " + pid + " and im listening on port: " + portNumber);
+                if(Debug.debug) System.out.println("Mazewar: My name is " + name + ", pid is " + pid + " and im listening on port: " + portNumber);
                 
                 
                 //Initialize my Priority Queue
