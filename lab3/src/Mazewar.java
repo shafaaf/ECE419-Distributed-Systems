@@ -110,7 +110,7 @@ public class Mazewar extends JFrame {
          * A queue of events.
          */
         //Queue for sending events
-        private BlockingQueue eventQueue = null;
+        public BlockingQueue eventQueue = null;
         private  String clientName;
         
         /*Priority queue of MPackets to accept events from server

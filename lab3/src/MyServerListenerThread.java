@@ -21,10 +21,11 @@ public class MyServerListenerThread implements Runnable{
         if(Debug.debug) System.out.println("MyServerListenerThread: Starting a listener");
         while(true){
             try{
+            	System.out.println("MyServerListenerThread: Going to read from socket");
                 received = (MPacket) mSocket.readObject();
                 if(Debug.debug) System.out.println("MyServerListenerThread: Received: " + received);
                 //have vector clock stuff here
-                if(Debug.debug) System.out.println("MyServerListenerThread: Putting stuff in myPriorityQueue");
+                System.out.println("MyServerListenerThread: Putting stuff in myPriorityQueue");
                 myPriorityQueue.put(received);
             }
             

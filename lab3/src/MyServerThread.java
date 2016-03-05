@@ -28,7 +28,6 @@ public class MyServerThread implements Runnable{
 		while(clientCount < maxClients){
            
             try {
-            	System.out.println("MyServerThread: clientCount before connection is " + clientCount);
             	System.out.println("MyServerThread: Waiting for connection.");
 				MSocket mSocket = mServerSocket.accept();
 				
