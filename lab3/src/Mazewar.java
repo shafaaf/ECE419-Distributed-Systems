@@ -84,8 +84,8 @@ public class Mazewar extends JFrame {
         
         //P2P Stuff
         private MServerSocket mServerSocket = null;	//for others to connect to me
-        private MSocket[] client_mSocket = null; //array of sockets I will use to connect to other clients
-        private MSocket[] mSocketList = null; //array of sockets passed to MyServerThread, which says who I will connect to
+        private MSocket[] client_mSocket = null; //array of sockets I will use to connect to other clients for WRITE
+        private MSocket[] mSocketList = null; //array of sockets passed to MyServerThread, which says who I will connect to for READ
         private InetAddress ip = null;
         private String hostName = null;
         private int portNumber;
