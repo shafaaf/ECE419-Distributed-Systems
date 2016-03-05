@@ -33,7 +33,7 @@ public class GUIClient extends LocalClient implements KeyListener {
         /**
          * Create a GUI controlled {@link LocalClient}.  
          */
-        private BlockingQueue eventQueue = null;
+        private BlockingQueue eventQueue;
         
         public GUIClient(String name, BlockingQueue eventQueue) {
                 super(name);
@@ -52,7 +52,18 @@ public class GUIClient extends LocalClient implements KeyListener {
                         // Up-arrow moves forward.
                         } else if(e.getKeyCode() == KeyEvent.VK_UP) {
                                 //forward();
-                                eventQueue.put(new MPacket(getName(), MPacket.ACTION, MPacket.UP));
+                        		System.out.println("getName() is " + getName());
+                        		System.out.println("GUIClient: You pressed up! So putting in event queue");
+                        		eventQueue.put(new MPacket(getName(), MPacket.ACTION, MPacket.UP));
+                                System.out.println("GUIClient: Finished putting in event queue!");
+                                
+                                if(eventQueue.isEmpty()){
+                                	System.out.println("GUIClient: event queue is empty! WEIRD");
+                                }
+                                else{
+                                	System.out.println("GUIClient: event queue is not empty! OK");
+                                }
+                                
                         // Down-arrow moves backward.
                         } else if(e.getKeyCode() == KeyEvent.VK_DOWN) {
                                 //backup();

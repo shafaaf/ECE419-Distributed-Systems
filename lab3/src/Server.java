@@ -9,7 +9,7 @@ public class Server {	//listen and enqueue, dequeue and broadcast.
     
 	//The maximum of clients that will join
 	//Server waits until the max number of clients to join
-    private static final int MAX_CLIENTS = 3;	//CHANGE BACK TO 2
+    private static final int MAX_CLIENTS = 2;	//CHANGE BACK TO 2
     private MServerSocket mServerSocket = null;
     private int clientCount; //The number of clients before game starts
     private MSocket[] mSocketList = null; //A list of MSockets
@@ -74,7 +74,8 @@ public class Server {	//listen and enqueue, dequeue and broadcast.
         if(Debug.debug) System.out.println("Starting the server");
         int port = Integer.parseInt(args[0]);
         Server server = new Server(port);	//calls the server constructor
-                
+        
+        //need this for naming server since ServerSenderThread will write hello packet and  ServerListenerThread will take it
         server.startThreads();    
 
     }

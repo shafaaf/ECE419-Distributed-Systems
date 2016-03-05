@@ -92,7 +92,7 @@ public class Mazewar extends JFrame {
         public ArrayList<Clientinfo> clientInfo = null;	//array of Clientinfo objects with info about other clients
         public int pid;	//my pid
         private int clientCount = 0;
-        private static final int MAX_CLIENTS = 3;//also change in naming server
+        private static final int MAX_CLIENTS = 2;//also change in naming server
 
         
         /**
@@ -204,8 +204,11 @@ public class Mazewar extends JFrame {
                 	//Done when setting up GUI and remote client
                 clientTable = new Hashtable<String, Client>();
                 
-                //Thread to accept clients connections
-                new Thread(new MyServerThread(mServerSocket, portNumber, MAX_CLIENTS, 0, mSocketList, eventQueue)).start();
+                //Initialize my Priority Queue
+                //Comparator<MPacket> comparator = new MPacketComparator();
+                myPriorityQueue = new PriorityBlockingQueue<MPacket>();
+                
+                
                 
                 // Create the maze
                 // My comment - Mazewar has own maze variable with type Maze. 
@@ -250,42 +253,18 @@ public class Mazewar extends JFrame {
                 if(Debug.debug) System.out.println("Received response for hello from server");
                 System.out.println("Debugging: Received hello from server");
                 
-                //Print host and port number for all clients
-                clientInfo = new ArrayList<Clientinfo>(resp.clientInfo);
-                int i = 0;
-                for(Clientinfo info: clientInfo)
-                {
-                	System.out.println("Mazewar: Client with pid " + info.pid + " has hostname " + info.hostName + " and port number " + info.port);
-                	
-                	if((info.hostName.equals(hostName)) && (info.port == portNumber))
-                	{
-                		//Setting my pid
-                		pid = info.pid;
-                	}
-                	System.out.println("Mazewar: Trying to make a socket to to connect with client " + info.pid);
-                	client_mSocket[i] = new MSocket(info.hostName, info.port);
-                	System.out.println("Mazewar: Made a socket conenction to client " + info.pid);
-                	i++;
-                }
-                if(Debug.debug) System.out.println("Mazewar: My name is " + name + ", pid is " + pid + " and im listening on port: " + portNumber);
-                
-                
-                //Initialize my Priority Queue
-                //Comparator<MPacket> comparator = new MPacketComparator();
-                myPriorityQueue = new PriorityBlockingQueue<MPacket>();
-                
                 //Create the GUIClient and connect it to the KeyListener queue
                 //RemoteClient remoteClient = null;
                 //Shafaaf - local player is guiClient, other players are RemoteClients
                 for(Player player: resp.players){  
                         if(player.name.equals(name)){
-                        	if(Debug.debug)System.out.println("Adding guiClient: " + player);
+                        	if(Debug.debug)System.out.println("Mazewar: Adding guiClient: " + player);
                                 guiClient = new GUIClient(name, eventQueue);
                                 maze.addClientAt(guiClient, player.point, player.direction);
                                 this.addKeyListener(guiClient);
                                 clientTable.put(player.name, guiClient);
                         }else{
-                        	if(Debug.debug)System.out.println("Adding remoteClient: " + player);
+                        	if(Debug.debug)System.out.println("Mazewar: Adding remoteClient: " + player);
                                 RemoteClient remoteClient = new RemoteClient(player.name);
                                 maze.addClientAt(remoteClient, player.point, player.direction);
                                 clientTable.put(player.name, remoteClient);
@@ -361,6 +340,31 @@ public class Mazewar extends JFrame {
                 setVisible(true);
                 overheadPanel.repaint();
                 this.requestFocusInWindow();
+                
+                //Thread to accept clients connections
+                new Thread(new MyServerThread(mServerSocket, portNumber, MAX_CLIENTS, 0, mSocketList, eventQueue, myPriorityQueue)).start();
+                
+                //Print host and port number for all clients
+                clientInfo = new ArrayList<Clientinfo>(resp.clientInfo);
+                int i = 0;
+                for(Clientinfo info: clientInfo)
+                {
+                	System.out.println("Mazewar: Client with pid " + info.pid + " has hostname " + info.hostName + " and port number " + info.port);
+                	
+                	if((info.hostName.equals(hostName)) && (info.port == portNumber))
+                	{
+                		//Setting my pid
+                		pid = info.pid;
+                	}
+                	System.out.println("Mazewar: Trying to make a socket to to connect with client " + info.pid);
+                	client_mSocket[i] = new MSocket(info.hostName, info.port);
+                	System.out.println("Mazewar: Made a socket conenction to client " + info.pid);
+                	i++;
+                }
+                
+                if(Debug.debug) System.out.println("Mazewar: My name is " + name + ", pid is " + pid + " and im listening on port: " + portNumber);
+       
+                
         }
         
         
@@ -374,9 +378,9 @@ public class Mazewar extends JFrame {
         */
         private void startThreads(){
                 //Start a new sender thread
-                new Thread(new ClientSenderThread(mSocket, eventQueue)).start();
+                //new Thread(new ClientSenderThread(mSocket, eventQueue)).start();
                 //Start a new listener thread, which would only add to myPriorityQueue
-                new Thread(new ClientListenerThread(mSocket, clientTable, myPriorityQueue)).start();
+                //new Thread(new ClientListenerThread(mSocket, clientTable, myPriorityQueue)).start();
                 //Start a new thread for removing from queue and executing
                 new Thread(new ClientQueueExecutionThread(mSocket, clientTable, myPriorityQueue)).start();
                 

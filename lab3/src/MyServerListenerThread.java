@@ -2,14 +2,18 @@
 //Made in MyServerthread.java
 import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.PriorityBlockingQueue;
 
 public class MyServerListenerThread implements Runnable{
-	private MSocket mSocket =  null;
-    private BlockingQueue eventQueue = null;
+	private MSocket mSocket;
+    //private BlockingQueue eventQueue;
+    private PriorityBlockingQueue myPriorityQueue;
 
-    public MyServerListenerThread( MSocket mSocket, BlockingQueue eventQueue){
+    public MyServerListenerThread( MSocket mSocket, PriorityBlockingQueue myPriorityQueue){
         this.mSocket = mSocket;
-        this.eventQueue = eventQueue;
+        //this.eventQueue = eventQueue;
+        this.myPriorityQueue = myPriorityQueue;
+        
     }
     
     public void run() {	//read, process and enqueue packet
@@ -20,10 +24,11 @@ public class MyServerListenerThread implements Runnable{
                 received = (MPacket) mSocket.readObject();
                 if(Debug.debug) System.out.println("MyServerListenerThread: Received: " + received);
                 //have vector clock stuff here
-                eventQueue.put(received);    
-            }catch(InterruptedException e){
-                e.printStackTrace();
-            }catch(IOException e){
+                if(Debug.debug) System.out.println("MyServerListenerThread: Putting stuff in myPriorityQueue");
+                myPriorityQueue.put(received);
+            }
+            
+            catch(IOException e){
                 e.printStackTrace();
             }catch(ClassNotFoundException e){
                 e.printStackTrace();

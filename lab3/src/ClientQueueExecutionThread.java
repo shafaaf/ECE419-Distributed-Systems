@@ -25,18 +25,20 @@ public class ClientQueueExecutionThread implements Runnable {
         
         this.clientEventNumber = 0;
         
-        if(Debug.debug) System.out.println("Instatiating QueueExecutionThread");
+        if(Debug.debug) System.out.println("ClientQueueExecutionThread: Instatiating QueueExecutionThread");
     }
 
     public void run() {
         MPacket received = null;
         Client client = null;
-        if(Debug.debug) System.out.println("Starting Instatiating QueueExecutionThread");
+        if(Debug.debug) System.out.println("ClientQueueExecutionThread: Starting Instatiating QueueExecutionThread");
         
         while(true){
+        	//System.out.println("ClientQueueExecutionThread: Checking if queue is empty or not");
         	if(!myPriorityQueue.isEmpty())
         	{
-                if(myPriorityQueue.peek().sequenceNumber == clientEventNumber)
+        		System.out.println("ClientQueueExecutionThread: Priority queue is NOT empty");
+                //if(myPriorityQueue.peek().sequenceNumber == clientEventNumber)
                 {
                 	System.out.println("YES! clientEventNumber: " + clientEventNumber);
                 	System.out.println("QueueExecutionThread  myProrityQueue's event dequing is " + myPriorityQueue.peek() + "\n");
