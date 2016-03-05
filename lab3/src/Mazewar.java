@@ -342,7 +342,7 @@ public class Mazewar extends JFrame {
                 this.requestFocusInWindow();
                 
                 //Thread to accept clients connections
-                new Thread(new MyServerThread(mServerSocket, portNumber, MAX_CLIENTS, 0, mSocketList, eventQueue, myPriorityQueue)).start();
+                new Thread(new MyServerThread(mServerSocket, portNumber, MAX_CLIENTS, 0, client_mSocket, mSocketList, eventQueue, myPriorityQueue)).start();
                 
                 //Print host and port number for all clients
                 clientInfo = new ArrayList<Clientinfo>(resp.clientInfo);

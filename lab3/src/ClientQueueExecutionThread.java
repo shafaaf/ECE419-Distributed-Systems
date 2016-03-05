@@ -59,8 +59,7 @@ public class ClientQueueExecutionThread implements Runnable {
                         client.turnRight();
                     }else if(received.event == MPacket.FIRE){
                         client.fire();
-                    }
-                    else if(received.event == MPacket.PROJECTILE_MOVEMENT){
+                    }else if(received.event == MPacket.PROJECTILE_MOVEMENT){
                         client.myMoveProjectile();
                     }
                     else{

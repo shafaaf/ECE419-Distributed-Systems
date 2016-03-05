@@ -8,16 +8,18 @@ public class MyServerThread implements Runnable{
 	private int portNumber;
 	private int maxClients;
 	private int clientCount;
+	private MSocket[] client_mSocket;
 	private MSocket[] mSocketList;
 	private BlockingQueue eventQueue;
 	private PriorityBlockingQueue myPriorityQueue;
 	
-	MyServerThread(MServerSocket mServerSocket, int portNumber, int maxClients, int clientCount, MSocket[] mSocketList, 
+	MyServerThread(MServerSocket mServerSocket, int portNumber, int maxClients, int clientCount, MSocket[] client_mSocket, MSocket[] mSocketList, 
 			BlockingQueue eventQueue, PriorityBlockingQueue myPriorityQueue) {
 		this.mServerSocket = mServerSocket;
 		this.portNumber = portNumber;
 		this.maxClients = maxClients;
 		this.clientCount = clientCount;
+		this.client_mSocket = client_mSocket;
 		this.mSocketList = mSocketList;
 		this.eventQueue = eventQueue;
 		this.myPriorityQueue = myPriorityQueue;
@@ -48,7 +50,7 @@ public class MyServerThread implements Runnable{
 		}
             //1 Thread to send to all clients for each Mazewar client
 			System.out.println("MyServerThread: Making MyServerSenderThread since have enough clients");
-            new Thread(new MyServerSenderThread(mSocketList, eventQueue)).start();
+            new Thread(new MyServerSenderThread(client_mSocket, eventQueue)).start();
             
 	}
 

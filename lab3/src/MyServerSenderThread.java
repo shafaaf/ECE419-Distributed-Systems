@@ -7,12 +7,12 @@ import java.util.concurrent.BlockingQueue;
 public class MyServerSenderThread implements Runnable {
 
     //private ObjectOutputStream[] outputStreamList = null;
-    private MSocket[] mSocketList = null;
+    private MSocket[] client_mSocket = null;
     private BlockingQueue eventQueue = null;
     
     
-    public MyServerSenderThread(MSocket[] mSocketList, BlockingQueue eventQueue){
-		this.mSocketList = mSocketList;
+    public MyServerSenderThread(MSocket[] client_mSocket, BlockingQueue eventQueue){
+		this.client_mSocket = client_mSocket;
 		this.eventQueue = eventQueue;
 		
     }
@@ -34,7 +34,7 @@ public class MyServerSenderThread implements Runnable {
                 // Send only head packet of queue, need vector clock mechanism
                 System.out.println("MyServerSenderThread: Taken from eventqueue. Now broadcast by writing to sockets");
                 //Send it to all clients
-                for(MSocket mSocket: mSocketList){
+                for(MSocket mSocket: client_mSocket){
                 	System.out.println("MyServerSenderThread: Writing to sockets");
                     mSocket.writeObject(toBroadcast);
                 }
