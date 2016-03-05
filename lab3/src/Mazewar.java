@@ -183,11 +183,11 @@ public class Mazewar extends JFrame {
                 //my serverSocket to accept incoming requests. Now just get a free port
                 mServerSocket = new MServerSocket(0);
                 
-                //list of sockets who will connect to me
+                //List of sockets who will connect to me
                 mSocketList = new MSocket[MAX_CLIENTS];
                 
-                //list of client who I will connect to
-                client_mSocket = new MSocket[MAX_CLIENTS];	//because i starts from 0
+                //List of clients who I will connect to
+                client_mSocket = new MSocket[MAX_CLIENTS];	// because i starts from 0
                 
                 
                 //Setup host and port number of this client
