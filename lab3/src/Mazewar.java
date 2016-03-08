@@ -344,7 +344,7 @@ public class Mazewar extends JFrame {
                 //Thread to accept clients connections
                 new Thread(new MyServerThread(mServerSocket, portNumber, MAX_CLIENTS, 0, client_mSocket, mSocketList, eventQueue, myPriorityQueue)).start();
                 
-                //Print host and port number for all clients
+                //Print host and port number for all clients, and also connect to all clients
                 clientInfo = new ArrayList<Clientinfo>(resp.clientInfo);
                 int i = 0;
                 for(Clientinfo info: clientInfo)
