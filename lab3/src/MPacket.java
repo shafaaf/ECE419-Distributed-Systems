@@ -32,11 +32,6 @@ public class MPacket implements Serializable, Comparable<MPacket> {
     /*Register*/
     //public static final int REGISTERHOSTPORT = 301;
     
-    
-    
-
-    
-    
     //These fields characterize the event  
     public int type;
     public int event; 

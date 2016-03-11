@@ -63,14 +63,11 @@ public class Server {	//listen and enqueue, dequeue and broadcast.
         //Sender thread dequeues events, attaches a global sequence number and broadcasts events
         new Thread(new ServerSenderThread(mSocketList, eventQueue, clientInfo)).start();
         
-        //dynamic joins
+        //Handle dynamic joins
         while(true){
         	MSocket mSocket_dynamic_join = mServerSocket.accept();
-            
             new Thread(new ServerListenerThread(mSocket_dynamic_join, eventQueue)).start();
-            
             mSocketList[clientCount] = mSocket_dynamic_join;                            
-            
             clientCount++;
         }
     }

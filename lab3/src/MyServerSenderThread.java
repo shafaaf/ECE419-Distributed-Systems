@@ -31,7 +31,7 @@ public class MyServerSenderThread implements Runnable {
             	}*/
             	System.out.println("MyServerSenderThread: Going to take from event queue");
             	toBroadcast = (MPacket)eventQueue.take();
-                // Send only head packet of queue, need vector clock mechanism
+                // Send only head packet of queue, need vector clock mechanism somewhere around here
                 System.out.println("MyServerSenderThread: Taken from eventqueue. Now broadcast by writing to sockets");
                 //Send it to all clients
                 for(MSocket mSocket: client_mSocket){

@@ -52,16 +52,18 @@ public class GUIClient extends LocalClient implements KeyListener {
                         // Up-arrow moves forward.
                         } else if(e.getKeyCode() == KeyEvent.VK_UP) {
                                 //forward();
-                        		System.out.println("GUIClient: You pressed up! So putting in event queue");
+                        		//System.out.println("GUIClient: You pressed up! So putting in event queue");
                         		eventQueue.put(new MPacket(getName(), MPacket.ACTION, MPacket.UP));
-                                System.out.println("GUIClient: Finished putting in event queue!");
+                                //System.out.println("GUIClient: Finished putting in event queue!");
                                 
+                        		/*
                                 if(eventQueue.isEmpty()){
                                 	System.out.println("GUIClient: event queue is empty!");
                                 }
                                 else{
                                 	System.out.println("GUIClient: event queue is not empty!");
                                 }
+                                */
                                 
                         // Down-arrow moves backward.
                         } else if(e.getKeyCode() == KeyEvent.VK_DOWN) {
