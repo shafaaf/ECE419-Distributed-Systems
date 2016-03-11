@@ -41,7 +41,10 @@ public class MPacket implements Serializable, Comparable<MPacket> {
     
     //The sequence number of the event
     public int sequenceNumber;
-
+    
+  //The Lamport clock number of the event
+    public int lamportClock;
+    
     //These are used to initialize the board
     public int mazeSeed;
     public int mazeHeight;

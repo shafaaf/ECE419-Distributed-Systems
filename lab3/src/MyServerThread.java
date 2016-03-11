@@ -12,9 +12,10 @@ public class MyServerThread implements Runnable{
 	private MSocket[] mSocketList;
 	private BlockingQueue eventQueue;
 	private PriorityBlockingQueue myPriorityQueue;
+	public Double localLamportClock;
 	
 	MyServerThread(MServerSocket mServerSocket, int portNumber, int maxClients, int clientCount, MSocket[] client_mSocket, MSocket[] mSocketList, 
-			BlockingQueue eventQueue, PriorityBlockingQueue myPriorityQueue) {
+			BlockingQueue eventQueue, PriorityBlockingQueue myPriorityQueue, Double localLamportClock) {
 		this.mServerSocket = mServerSocket;
 		this.portNumber = portNumber;
 		this.maxClients = maxClients;
@@ -23,6 +24,7 @@ public class MyServerThread implements Runnable{
 		this.mSocketList = mSocketList;
 		this.eventQueue = eventQueue;
 		this.myPriorityQueue = myPriorityQueue;
+		this.localLamportClock = localLamportClock;
 		
 	}
 	
