@@ -40,7 +40,7 @@ public class ClientQueueExecutionThread implements Runnable {
         		//System.out.println("ClientQueueExecutionThread: Priority queue is NOT empty");
                 //if(myPriorityQueue.peek().sequenceNumber == clientEventNumber)
                 {
-                	System.out.println("YES! clientEventNumber: " + clientEventNumber);
+                	//System.out.println("YES! clientEventNumber: " + clientEventNumber);
                 	System.out.println("QueueExecutionThread  myProrityQueue's event dequing is " + myPriorityQueue.peek() + "\n");
                 	received = myPriorityQueue.poll();
                 	client = clientTable.get(received.name);

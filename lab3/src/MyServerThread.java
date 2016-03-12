@@ -39,7 +39,7 @@ public class MyServerThread implements Runnable{
 				System.out.println("MyServerThread: Got a connection here");
 				
 				//Start a new handler thread for each new client connection for each Mazewar client
-				new Thread(new MyServerListenerThread(mSocket, myPriorityQueue)).start();
+				new Thread(new MyServerListenerThread(mSocket, myPriorityQueue, myLamportClock)).start();
 				mSocketList[clientCount] = mSocket;
 				clientCount++;
 				System.out.println("MyServerThread: clientCount after connection is " + clientCount);
@@ -53,7 +53,7 @@ public class MyServerThread implements Runnable{
 		}
             //1 Thread to send to all clients for each Mazewar client
 			System.out.println("MyServerThread: Making MyServerSenderThread since have enough clients");
-            new Thread(new MyServerSenderThread(client_mSocket, eventQueue)).start();
+            new Thread(new MyServerSenderThread(client_mSocket, eventQueue, myLamportClock)).start();
             
 	}
 

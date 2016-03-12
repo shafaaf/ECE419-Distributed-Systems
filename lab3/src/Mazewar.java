@@ -267,11 +267,8 @@ public class Mazewar extends JFrame {
                 		//Set my local lamport clock
                 		//localLamportClock = new Double("0" + "." + pid).doubleValue();
                 		
-                		
                 		Double localLamportClock = new Double("0" + "." + pid).doubleValue();
-                		myLamportClock = new LamportClock(localLamportClock);
-                		
-                		
+                		myLamportClock = new LamportClock(pid, localLamportClock);
                 		
                 	}
                 }

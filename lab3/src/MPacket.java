@@ -134,14 +134,16 @@ public class MPacket implements Serializable, Comparable<MPacket> {
                 eventStr = "ERROR";
                 break;        
         }
+        
         //MPACKET(NAME: name, <typestr: eventStr>, SEQNUM: sequenceNumber)
-        String retString = String.format("MPACKET(NAME: %s, <%s: %s>, SEQNUM: %s)", name, 
-            typeStr, eventStr, sequenceNumber);
+        String retString = String.format("MPACKET(NAME: %s, <%s: %s>, LAMPORTCLOCK: %s)", name, 
+            typeStr, eventStr, lamportClock);	//last parameter was sequence number
+        
         return retString;
     }
     
-    public int compareTo(MPacket o){
-    	return (this.sequenceNumber - o.sequenceNumber);
+    public int compareTo(MPacket o){	//if positive this bigger, else other guy
+    	return (int)(this.lamportClock - o.lamportClock);
     }
 
 }

@@ -9,11 +9,13 @@ public class MyServerSenderThread implements Runnable {
     //private ObjectOutputStream[] outputStreamList = null;
     private MSocket[] client_mSocket = null;
     private BlockingQueue eventQueue = null;
+    public LamportClock myLamportClock = null;
     
     
-    public MyServerSenderThread(MSocket[] client_mSocket, BlockingQueue eventQueue){
+    public MyServerSenderThread(MSocket[] client_mSocket, BlockingQueue eventQueue, LamportClock myLamportClock){
 		this.client_mSocket = client_mSocket;
 		this.eventQueue = eventQueue;
+		this.myLamportClock =  myLamportClock;
 		
     }
 
@@ -33,6 +35,9 @@ public class MyServerSenderThread implements Runnable {
             	toBroadcast = (MPacket)eventQueue.take();
                 // Send only head packet of queue, need vector clock mechanism somewhere around here
                 System.out.println("MyServerSenderThread: Taken from eventqueue. Now broadcast by writing to sockets");
+                System.out.println("MyServerSenderThread: Sending with lamport clock value " + myLamportClock.value);
+                toBroadcast.lamportClock = myLamportClock.value;
+                
                 //Send it to all clients
                 for(MSocket mSocket: client_mSocket){
                 	System.out.println("MyServerSenderThread: Writing to sockets");
