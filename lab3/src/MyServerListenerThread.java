@@ -35,11 +35,12 @@ public class MyServerListenerThread implements Runnable{
                 if(received.lamportClock > myLamportClock.value){
                 	int a = (int) Math.round(received.lamportClock);
                 	Double localLamportClock = new Double(a + "." + myLamportClock.pid).doubleValue();
-            		myLamportClock.setValue(localLamportClock);
+            		myLamportClock.value = (double) localLamportClock;
             		
-            		System.out.println("MyServerListenerThread: New lamport clock value is " + myLamportClock.value);
+            		System.out.println("MyServerListenerThread: Entering if: New lamport clock value is " + myLamportClock.value);
             		
             	}
+                System.out.println("MyServerListenerThread: NOT Entering if: New lamport clock value is " + myLamportClock.value);
             	System.out.println("MyServerListenerThread: Putting stuff in myPriorityQueue");
                 myPriorityQueue.put(received);
             }
