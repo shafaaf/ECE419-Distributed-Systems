@@ -36,8 +36,11 @@ public class MyServerSenderThread implements Runnable {
                 // Send only head packet of queue, need vector clock mechanism somewhere around here
                 System.out.println("MyServerSenderThread: Taken from eventqueue. Now broadcast by writing to sockets");
                 myLamportClock.value = myLamportClock.value + 1;
-                System.out.println("MyServerSenderThread: Sending with lamport clock value " + myLamportClock.value);
+                System.out.println("MyServerSenderThread: Sending EVENT with lamport clock value " + myLamportClock.value);
                 toBroadcast.lamportClock = myLamportClock.value;
+                //0 to show its an event and NOT an ack
+                toBroadcast.category = 0;
+                
                 
                 //Send it to all clients
                 for(MSocket mSocket: client_mSocket){

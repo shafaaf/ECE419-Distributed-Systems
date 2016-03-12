@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 
@@ -13,11 +14,13 @@ public class MyServerThread implements Runnable{
 	private BlockingQueue eventQueue;
 	private PriorityBlockingQueue myPriorityQueue;
 	public LamportClock myLamportClock;
+	public HashMap<Double, Integer> lamportAcks;
+    
 	
 	//Constructor
 	MyServerThread(MServerSocket mServerSocket, int portNumber, int maxClients, int clientCount, MSocket[] client_mSocket, MSocket[] mSocketList, 
-			BlockingQueue eventQueue, PriorityBlockingQueue myPriorityQueue, LamportClock myLamportClock) {
-		
+			BlockingQueue eventQueue, PriorityBlockingQueue myPriorityQueue, LamportClock myLamportClock, HashMap<Double, Integer> lamportAcks) 
+	{
 		this.mServerSocket = mServerSocket;
 		this.portNumber = portNumber;
 		this.maxClients = maxClients;
@@ -27,19 +30,20 @@ public class MyServerThread implements Runnable{
 		this.eventQueue = eventQueue;
 		this.myPriorityQueue = myPriorityQueue;
 		this.myLamportClock = myLamportClock;
+		this.lamportAcks = lamportAcks;
 	}
+	
 	
 	public void run() {
 		while(clientCount < maxClients){
-           
-            try {
+           try {
             	System.out.println("MyServerThread: Waiting for connection.");
 				MSocket mSocket = mServerSocket.accept();
 				
 				System.out.println("MyServerThread: Got a connection here");
 				
 				//Start a new handler thread for each new client connection for each Mazewar client
-				new Thread(new MyServerListenerThread(mSocket, myPriorityQueue, myLamportClock)).start();
+				new Thread(new MyServerListenerThread(mSocket, myPriorityQueue, myLamportClock, lamportAcks)).start();
 				mSocketList[clientCount] = mSocket;
 				clientCount++;
 				System.out.println("MyServerThread: clientCount after connection is " + clientCount);

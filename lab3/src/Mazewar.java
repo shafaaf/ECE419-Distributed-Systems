@@ -32,12 +32,14 @@ import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.net.Socket;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.net.InetAddress;
 
 
@@ -93,9 +95,12 @@ public class Mazewar extends JFrame {
         public int pid;	//my pid
         public LamportClock myLamportClock;
         private int clientCount = 0;
-        private static final int _CLIENTS = 2;//also change in naming server
-
+        private static final int MAX_CLIENTS = 2;//also change in naming server
         
+        //Double is the lamport clock, Integer is the number of acks received
+        private HashMap<Double, Integer> lamportAcks;
+        
+                
         /**
          * The {@link GUIClient} for the game.
          */
@@ -185,10 +190,10 @@ public class Mazewar extends JFrame {
                 mServerSocket = new MServerSocket(0);
                 
                 //List of sockets who will connect to me
-                mSocketList = new MSocket[_CLIENTS];
+                mSocketList = new MSocket[MAX_CLIENTS];
                 
                 //List of clients who I will connect to
-                client_mSocket = new MSocket[_CLIENTS];	// because i starts from 0
+                client_mSocket = new MSocket[MAX_CLIENTS];	// because i starts from 0
                 
                 
                 //Setup host and port number of this client
@@ -209,7 +214,7 @@ public class Mazewar extends JFrame {
                 //Comparator<MPacket> comparator = new MPacketComparator();
                 myPriorityQueue = new PriorityBlockingQueue<MPacket>();
                 
-                
+                lamportAcks = new HashMap<Double, Integer>();
                 
                 // Create the maze
                 // My comment - Mazewar has own maze variable with type Maze. 
@@ -361,9 +366,9 @@ public class Mazewar extends JFrame {
                 setVisible(true);
                 overheadPanel.repaint();
                 this.requestFocusInWindow();
-                                
+                
                 //Thread to accept clients connections
-                new Thread(new MyServerThread(mServerSocket, portNumber, _CLIENTS, 0, client_mSocket, mSocketList, eventQueue, myPriorityQueue, myLamportClock)).start();
+                new Thread(new MyServerThread(mServerSocket, portNumber, MAX_CLIENTS, 0, client_mSocket, mSocketList, eventQueue, myPriorityQueue, myLamportClock, lamportAcks)).start();
                 
                 //Print host and port number for all clients, and also connect to all clients
                 int i = 0;
