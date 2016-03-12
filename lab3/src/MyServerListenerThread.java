@@ -55,7 +55,14 @@ public class MyServerListenerThread implements Runnable{
                 else //its an ACK
                 {
                 	System.out.println("MyServerListenerThread: Got an Ack!");
-                	//check who its for and update hash table
+                	
+                	//If not present, make new entry with acks received as 0
+                	if(lamportAcks.get(received.lamportClock) == null){
+                		lamportAcks.put(new Double(received.lamportClock), new Integer(1));
+                	}
+                	else{	//else increment acks for that entry by 1
+                		lamportAcks.put(received.lamportClock, lamportAcks.get(received.lamportClock) + 1);
+                	}
                 	
                 	
                 }

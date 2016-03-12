@@ -98,7 +98,7 @@ public class Mazewar extends JFrame {
         private static final int MAX_CLIENTS = 2;//also change in naming server
         
         //Double is the lamport clock, Integer is the number of acks received
-        private HashMap<Double, Integer> lamportAcks;
+        private HashMap<Double, Integer> lamportAcks = new HashMap<Double, Integer>();
         
                 
         /**
@@ -214,7 +214,7 @@ public class Mazewar extends JFrame {
                 //Comparator<MPacket> comparator = new MPacketComparator();
                 myPriorityQueue = new PriorityBlockingQueue<MPacket>();
                 
-                lamportAcks = new HashMap<Double, Integer>();
+               
                 
                 // Create the maze
                 // My comment - Mazewar has own maze variable with type Maze. 
@@ -401,7 +401,7 @@ public class Mazewar extends JFrame {
                 //Start a new listener thread, which would only add to myPriorityQueue
                 //new Thread(new ClientListenerThread(mSocket, clientTable, myPriorityQueue)).start();
                 //Start a new thread for removing from queue and executing
-                new Thread(new ClientQueueExecutionThread(mSocket, clientTable, myPriorityQueue, client_mSocket)).start();
+                new Thread(new ClientQueueExecutionThread(mSocket, clientTable, myPriorityQueue, client_mSocket, lamportAcks, 2)).start();
                 
         }
         
