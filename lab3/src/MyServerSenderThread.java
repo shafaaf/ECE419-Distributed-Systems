@@ -40,6 +40,8 @@ public class MyServerSenderThread implements Runnable {
                 toBroadcast.lamportClock = myLamportClock.value;
                 //0 to show its an event and NOT an ack
                 toBroadcast.category = 0;
+                //0 to show that no acks for it have been sent
+                toBroadcast.acks_sent = 0;
                 
                 
                 //Send it to all clients

@@ -30,21 +30,38 @@ public class MyServerListenerThread implements Runnable{
             	System.out.println("MyServerListenerThread: Going to read from socket");
                 received = (MPacket) mSocket.readObject();
                 if(Debug.debug) System.out.println("MyServerListenerThread: Read: " + received);
+                
                 //have Lamport clock stuff here
-                if(received.category == 0){	//event
+                if(received.category == 0)
+                {	//if 0, an event
 	               if(received.lamportClock > myLamportClock.value)  //Updating lamport clock
 	                {
-	            	   System.out.println("MyServerListenerThread: Updating lamport clock value");
+	            	    System.out.println("MyServerListenerThread: Updating lamport clock value as new one is HIGHER");
 	                	int a = (int) Math.round(received.lamportClock);
 	                	Double localLamportClock = new Double(a + "." + myLamportClock.pid).doubleValue();
 	            		myLamportClock.value = (double) localLamportClock;
-	            		System.out.println("MyServerListenerThread: Entering if: New lamport clock value is " + myLamportClock.value);
+	            		System.out.println("MyServerListenerThread: New lamport clock value is " + myLamportClock.value);
 	            	}
+	               else
+	               {
+	            	   System.out.println("MyServerListenerThread: NOT updating lamport clock value -  Lamport clock value is " + myLamportClock.value);
+	               	
+	               }
+	               //only events in priority queue
+	               System.out.println("MyServerListenerThread: Putting EVENT in myPriorityQueue");
+	               myPriorityQueue.put(received);
                 }
                 
-                System.out.println("MyServerListenerThread: NOT Entering if: New lamport clock value is " + myLamportClock.value);
-            	System.out.println("MyServerListenerThread: Putting stuff in myPriorityQueue");
-                myPriorityQueue.put(received);
+                else //its an ACK
+                {
+                	System.out.println("MyServerListenerThread: Got an Ack!");
+                	//check who its for and update hash table
+                	
+                	
+                }
+                
+                
+                
             }
             
             catch(IOException e){

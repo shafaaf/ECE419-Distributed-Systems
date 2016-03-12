@@ -47,6 +47,9 @@ public class MPacket implements Serializable, Comparable<MPacket> {
     
    //Says event or ack, 0 means event, 1 means ack
     public int category;
+   
+   //Flag to know whether acks sent or not
+    public int acks_sent;
     
     //These are used to initialize the board
     public int mazeSeed;
@@ -85,7 +88,12 @@ public class MPacket implements Serializable, Comparable<MPacket> {
         this.category = category;
     }
     
-    
+    //Use this constructor when sending acks
+    public MPacket(int category, double lamportClock){
+    	this.category = category;
+    	this.lamportClock = lamportClock;
+    }
+
     
     
     public String toString(){
