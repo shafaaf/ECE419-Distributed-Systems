@@ -37,7 +37,7 @@ public class ClientQueueExecutionThread implements Runnable {
         	//System.out.println("ClientQueueExecutionThread: Checking if queue is empty or not");
         	if(!myPriorityQueue.isEmpty())
         	{
-        		System.out.println("ClientQueueExecutionThread: Priority queue is NOT empty");
+        		//System.out.println("ClientQueueExecutionThread: Priority queue is NOT empty");
                 //if(myPriorityQueue.peek().sequenceNumber == clientEventNumber)
                 {
                 	System.out.println("YES! clientEventNumber: " + clientEventNumber);

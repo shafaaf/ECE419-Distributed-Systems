@@ -34,10 +34,12 @@ public class GUIClient extends LocalClient implements KeyListener {
          * Create a GUI controlled {@link LocalClient}.  
          */
         private BlockingQueue eventQueue;
+        public LamportClock myLamportClock;;
         
-        public GUIClient(String name, BlockingQueue eventQueue) {
+        public GUIClient(String name, BlockingQueue eventQueue,  LamportClock myLamportClock) {
                 super(name);
                 this.eventQueue = eventQueue;
+                this.myLamportClock = myLamportClock;
         }
         
         /**

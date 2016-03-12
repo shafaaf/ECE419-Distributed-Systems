@@ -43,7 +43,7 @@ public class MPacket implements Serializable, Comparable<MPacket> {
     public int sequenceNumber;
     
   //The Lamport clock number of the event
-    public int lamportClock;
+    public double lamportClock;
     
     //These are used to initialize the board
     public int mazeSeed;
@@ -70,7 +70,18 @@ public class MPacket implements Serializable, Comparable<MPacket> {
         this.type = type;
         this.event = event;
         this.clientInfo =  new ArrayList<Clientinfo>();
-    }        
+    }
+    
+    //Use this constructor when sending lamport clock
+    public MPacket(String name, int type, int event, double lamportClock){
+        this.name = name;
+        this.type = type;
+        this.event = event;
+        this.clientInfo =  new ArrayList<Clientinfo>();
+        this.lamportClock = lamportClock;
+    }
+    
+    
     
     
     public String toString(){

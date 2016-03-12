@@ -91,7 +91,7 @@ public class Mazewar extends JFrame {
         private int portNumber;
         public ArrayList<Clientinfo> clientInfo = null;	//array of Clientinfo objects with info about other clients
         public int pid;	//my pid
-        public Double localLamportClock;
+        public LamportClock myLamportClock;
         private int clientCount = 0;
         private static final int MAX_CLIENTS = 2;//also change in naming server
 
@@ -254,13 +254,36 @@ public class Mazewar extends JFrame {
                 if(Debug.debug) System.out.println("Received response for hello from server");
                 System.out.println("Debugging: Received hello from server");
                 
+                
+                clientInfo = new ArrayList<Clientinfo>(resp.clientInfo);
+                
+                //Get my pid
+                for(Clientinfo info: clientInfo)
+                {
+                	if((info.hostName.equals(hostName)) && (info.port == portNumber))
+                	{
+                		//Setting my pid
+                		pid = info.pid;
+                		//Set my local lamport clock
+                		//localLamportClock = new Double("0" + "." + pid).doubleValue();
+                		
+                		
+                		Double localLamportClock = new Double("0" + "." + pid).doubleValue();
+                		myLamportClock = new LamportClock(localLamportClock);
+                		
+                		
+                		
+                	}
+                }
+                
+                
                 //Create the GUIClient and connect it to the KeyListener queue
                 //RemoteClient remoteClient = null;
                 //Shafaaf - local player is guiClient, other players are RemoteClients
                 for(Player player: resp.players){  
                         if(player.name.equals(name)){
                         	if(Debug.debug)System.out.println("Mazewar: Adding guiClient: " + player);
-                                guiClient = new GUIClient(name, eventQueue);
+                                guiClient = new GUIClient(name, eventQueue, myLamportClock);
                                 maze.addClientAt(guiClient, player.point, player.direction);
                                 this.addKeyListener(guiClient);
                                 clientTable.put(player.name, guiClient);
@@ -341,25 +364,9 @@ public class Mazewar extends JFrame {
                 setVisible(true);
                 overheadPanel.repaint();
                 this.requestFocusInWindow();
-                
-                
-                
-                clientInfo = new ArrayList<Clientinfo>(resp.clientInfo);
-                
-                //Get my pid
-                for(Clientinfo info: clientInfo)
-                {
-                	if((info.hostName.equals(hostName)) && (info.port == portNumber))
-                	{
-                		//Setting my pid
-                		pid = info.pid;
-                		//Set my local lamport clock
-                		localLamportClock = new Double("0" + "." + pid).doubleValue();
-                	}
-                }
-                
+                                
                 //Thread to accept clients connections
-                new Thread(new MyServerThread(mServerSocket, portNumber, MAX_CLIENTS, 0, client_mSocket, mSocketList, eventQueue, myPriorityQueue, localLamportClock)).start();
+                new Thread(new MyServerThread(mServerSocket, portNumber, MAX_CLIENTS, 0, client_mSocket, mSocketList, eventQueue, myPriorityQueue, myLamportClock)).start();
                 
                 //Print host and port number for all clients, and also connect to all clients
                 int i = 0;
@@ -373,7 +380,7 @@ public class Mazewar extends JFrame {
                 }
                 
                 if(Debug.debug) System.out.println("Mazewar: My name is " + name + ", pid is " + pid + 
-                		", local lamport clock is "+ localLamportClock +  " and im listening on port: " + portNumber);
+                		", local lamport clock is "+ myLamportClock.value +  " and im listening on port: " + portNumber);
                 
         }
                 
