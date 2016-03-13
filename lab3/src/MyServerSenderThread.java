@@ -33,20 +33,19 @@ public class MyServerSenderThread implements Runnable {
             	}*/
             	System.out.println("MyServerSenderThread: Going to take from event queue");
             	toBroadcast = (MPacket)eventQueue.take();
-                // Send only head packet of queue, need vector clock mechanism somewhere around here
-                System.out.println("MyServerSenderThread: Taken from eventqueue. Now broadcast by writing to sockets");
-                myLamportClock.value = myLamportClock.value + 1;
-                System.out.println("MyServerSenderThread: Sending EVENT with lamport clock value " + myLamportClock.value);
+            	System.out.println("MyServerSenderThread: Taken from eventqueue. Now broadcast by writing to sockets");
+                
+            	myLamportClock.value = myLamportClock.value + 1;
+                System.out.println("MyServerSenderThread: Sending EVENT with incremented lamport clock value " + myLamportClock.value);
                 toBroadcast.lamportClock = myLamportClock.value;
                 //0 to show its an event and NOT an ack
                 toBroadcast.category = 0;
-                //0 to show that no acks for it have been sent
                 toBroadcast.acks_sent = 0;
                 
                 
                 //Send it to all clients
                 for(MSocket mSocket: client_mSocket){
-                	System.out.println("MyServerSenderThread: Writing to sockets");
+                	System.out.println("MyServerSenderThread: Writing EVENT to sockets");
                     mSocket.writeObject(toBroadcast);
                 }
             }catch(InterruptedException e){

@@ -8,13 +8,7 @@ public class LamportClock {
 		this.pid = pid;
 		this.value = value;
    }
-    
-    public void setPid(int pid) {
-    	this.pid = pid;
-   }
-    
-    
-		 
+        	 
 		
 }
 

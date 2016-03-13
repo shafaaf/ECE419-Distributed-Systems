@@ -18,8 +18,10 @@ public class MyServerThread implements Runnable{
     
 	
 	//Constructor
-	MyServerThread(MServerSocket mServerSocket, int portNumber, int maxClients, int clientCount, MSocket[] client_mSocket, MSocket[] mSocketList, 
-			BlockingQueue eventQueue, PriorityBlockingQueue myPriorityQueue, LamportClock myLamportClock, HashMap<Double, Integer> lamportAcks) 
+	MyServerThread(MServerSocket mServerSocket, int portNumber, int maxClients, int clientCount, 
+			MSocket[] client_mSocket, MSocket[] mSocketList, BlockingQueue eventQueue, 
+				PriorityBlockingQueue myPriorityQueue, LamportClock myLamportClock, 
+					HashMap<Double, Integer> lamportAcks) 
 	{
 		this.mServerSocket = mServerSocket;
 		this.portNumber = portNumber;
