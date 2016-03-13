@@ -25,17 +25,17 @@ public class MyServerSenderThread implements Runnable {
 
     public void run() {
         MPacket toBroadcast = null;
-        int i =0;
+        int z = 0;
         while(true){
             try{	
-                i = 0;
-            	//Take packet from queue to broadcast to all clients
+                //Take packet from queue to broadcast to all clients
             	/*if(eventQueue.isEmpty()){
             		System.out.println("MyServerSenderThread: Event queue is empty");
             	}
             	else{
             		System.out.println("MyServerSenderThread: Event queue is not empty");
             	}*/
+            	
             	//These are only EVENTS!
             	System.out.println("MyServerSenderThread: Going to take from event queue");
             	toBroadcast = (MPacket)eventQueue.take();
@@ -48,23 +48,32 @@ public class MyServerSenderThread implements Runnable {
                 toBroadcast.category = 0;
                 toBroadcast.acks_sent = 0;
                 
-                //Put in my queue to myself only
+                //Put in my queue to myself only IMP
                 System.out.println("MyServerSenderThread: I have pid- " + pid + ". Putting EVENT with incremented lamport clock value " 
                 		+ myLamportClock.value + " in only my queue");
                 
-                //myPriorityQueue.put(toBroadcast);
+                MPacket putInMine = toBroadcast;
+                myPriorityQueue.put(putInMine);
                 
                 
                 //Send it to all clients except yourself
-                for(MSocket mSocket: client_mSocket){
-                	//if(i != pid)
+                z = 0;
+                System.out.println("MyServerSenderThread: Writing EVENT to sockets");
+                for(MSocket mSocket: client_mSocket)
+            	{	
+                	if(z != pid)
                 	{
-	                	System.out.println("MyServerSenderThread: Writing EVENT to sockets");
-	                    mSocket.writeObject(toBroadcast);
-                    }
-                	//i++;
+                		System.out.println("MyServerSenderThread: WRITING event to " + z + " socket in array");
+                		mSocket.writeObject(toBroadcast);
+                	}
+                	System.out.println("MyServerSenderThread: NOT WRITING to " + z + " socket in array");
+                	z++;
                 }
-                //i = 0;
+                z = 0;
+                
+            	
+                	
+                
             }catch(InterruptedException e){
                 System.out.println("Throwing Interrupt");
                 Thread.currentThread().interrupt();    

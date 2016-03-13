@@ -32,12 +32,10 @@ public class ClientQueueExecutionThread implements Runnable {
     	
         MPacket received = null;
         MPacket headOfPriorityQueue = null;
-        MPacket headOfPriorityQueue2 = null;
         MPacket toBroadcast = null;
         Client client = null;
         if(Debug.debug) System.out.println("ClientQueueExecutionThread: Starting Instatiating QueueExecutionThread");
         
-        int x = 0;
         while(true){
         	if(!myPriorityQueue.isEmpty())
         	{
@@ -66,16 +64,18 @@ public class ClientQueueExecutionThread implements Runnable {
 	        			" and actual queue peek has lamport clock value " + myPriorityQueue.peek().lamportClock + 
 	        			"and number of acks peek has is" + lamportAcks.get(myPriorityQueue.peek().lamportClock));
 	        	*/
-	        	if(lamportAcks.get(myPriorityQueue.peek().lamportClock) != null)	//head has some acks at least
+	        	
+	        	if(lamportAcks.get(myPriorityQueue.peek().lamportClock) != null)	//head has some acks at least- need check
 	        	{
 	        		//Makes sure head  has all acks and has sent out all its acks 
 	        		if((lamportAcks.get(myPriorityQueue.peek().lamportClock) == maxClients) 
-	        				&& (myPriorityQueue.peek().lamportClock == headOfPriorityQueue.lamportClock))
+	        				&& (myPriorityQueue.peek().acks_sent == 1))
 	        		{
-	        			System.out.println("QueueExecutionThread: CAN execute! - Head of queue has lamport clock " + 
+	        			System.out.println("QueueExecutionThread: CAN execute! - Real Head of queue has lamport clock " + 
 	        					myPriorityQueue.peek().lamportClock +" and it has " + 
 	        						lamportAcks.get(myPriorityQueue.peek().lamportClock) + " acks!");
 		        		
+	        				//execution
 		        			received = myPriorityQueue.poll();
 				        	client = clientTable.get(received.name);
 				        	
@@ -100,23 +100,19 @@ public class ClientQueueExecutionThread implements Runnable {
 				                throw new UnsupportedOperationException();
 				            }
 				            
-				            //x = 0;
 		        		
 	        		}
 	        		
 	        		else
 		        	{	//when dont have enough acks or the guy for which we sent acks above was someone else
-	        			//if(x<10)
-	        			{
-	        				///*
-	        				System.out.println("QueueExecutionThread: CANT execute for a reason! Real Head of queue has lamport clock " + myPriorityQueue.peek().lamportClock + 
-		        				" and " + "headOfPriorityQueue " + " has lamport clock number " + headOfPriorityQueue.lamportClock);
-		        				//*/
-	        			}
-	        			//x++;
+	        			/*
+	        			System.out.println("QueueExecutionThread: CANT execute for a reason! Real Head "
+	        				+ "of queue has lamport clock " + myPriorityQueue.peek().lamportClock + 
+	        					" and number of acks peek has is " + lamportAcks.get(myPriorityQueue.peek().lamportClock));
+	        					*/
 		        	}
+	        	
 	        	}
-	          
                 
         	} 
         }

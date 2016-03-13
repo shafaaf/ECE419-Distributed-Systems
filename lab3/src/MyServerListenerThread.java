@@ -28,6 +28,7 @@ public class MyServerListenerThread implements Runnable{
     public void run() {	//read, process and enqueue packet
         MPacket received = null;
         if(Debug.debug) System.out.println("MyServerListenerThread: Starting a listener");
+        
         while(true){
             try{
             	System.out.println("MyServerListenerThread: Going to read from socket");
@@ -35,6 +36,7 @@ public class MyServerListenerThread implements Runnable{
                 if(Debug.debug) System.out.println("MyServerListenerThread: Read: " + received);
                 
                 //have Lamport clock stuff here
+                
                 if(received.category == 0)
                 {	//if 0, an event
                 	System.out.println("MyServerListenerThread: Got an EVENT!");
@@ -55,7 +57,8 @@ public class MyServerListenerThread implements Runnable{
 	               }
 	               
 	               System.out.println("MyServerListenerThread: My Lamport clock value is now " + myLamportClock.value);
-	               //only events in priority queue
+	               
+	               //Only events in priority queue
 	               System.out.println("MyServerListenerThread: Putting EVENT in myPriorityQueue");
 	               myPriorityQueue.put(received);
                 }
