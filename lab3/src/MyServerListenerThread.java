@@ -13,22 +13,18 @@ public class MyServerListenerThread implements Runnable{
     private PriorityBlockingQueue myPriorityQueue;
     public LamportClock myLamportClock;
     public HashMap<Double, Integer> lamportAcks;
-    public int pid;
     
-    public MyServerListenerThread( MSocket mSocket, PriorityBlockingQueue myPriorityQueue, 
-    		LamportClock myLamportClock,HashMap<Double, Integer> lamportAcks, int pid)
-    {
+    public MyServerListenerThread( MSocket mSocket, PriorityBlockingQueue myPriorityQueue, LamportClock myLamportClock, 
+    		HashMap<Double, Integer> lamportAcks){
         this.mSocket = mSocket;
         this.myPriorityQueue = myPriorityQueue;
         this.myLamportClock = myLamportClock;
         this.lamportAcks = lamportAcks;
-        this.pid = pid;
     }
     
     public void run() {	//read, process and enqueue packet
         MPacket received = null;
         if(Debug.debug) System.out.println("MyServerListenerThread: Starting a listener");
-        
         while(true){
             try{
             	System.out.println("MyServerListenerThread: Going to read from socket");
@@ -36,64 +32,37 @@ public class MyServerListenerThread implements Runnable{
                 if(Debug.debug) System.out.println("MyServerListenerThread: Read: " + received);
                 
                 //have Lamport clock stuff here
-                
-                if(received.category == 0)
-                {	//if 0, an event
+                if(received.category == 0) //if 0, an event
+                {
                 	System.out.println("MyServerListenerThread: Got an EVENT!");
-	               if(received.lamportClock > myLamportClock.value)  //Updating lamport clock for event
+	               if(received.lamportClock > myLamportClock.value)  //Updating lamport clock
 	                {
-	            	    System.out.println("MyServerListenerThread: Updating lamport clock value as new one FOR EVENT is HIGHER");
+	            	    System.out.println("MyServerListenerThread: Updating lamport clock value as new one is HIGHER");
 	            	    System.out.println("MyServerListenerThread: Old one is " + myLamportClock.value + 
 	            	    		" and new one FROM EVENT received is " + received.lamportClock);
-	            	    
-	            	    int a = (int) Math.round(received.lamportClock);
+
+	                	int a = (int) Math.round(received.lamportClock);
 	                	Double localLamportClock = new Double(a + "." + myLamportClock.pid).doubleValue();
 	            		myLamportClock.value = (double) localLamportClock;
-	            		
-	            		//added in UNSURE
-	            		//myLamportClock.value = myLamportClock.value + 1;
-	            		
-	            		
 	            		
 	            	}
 	               else
 	               {
-	            	   System.out.println("MyServerListenerThread: NOT updating lamport clock value for event-  My Lamport clock value is " + myLamportClock.value);
+	            	   System.out.println("MyServerListenerThread: NOT updating lamport clock value - My Lamport clock value is " + myLamportClock.value);
+	               	
 	               }
 	               
-	               System.out.println("MyServerListenerThread: My Lamport clock value is now " + myLamportClock.value);
-	               
-	               //Only events in priority queue
+	               System.out.println("MyServerListenerThread: My Lamport clock value is right now " + myLamportClock.value);
+
+	               //only events in priority queue
 	               System.out.println("MyServerListenerThread: Putting EVENT in myPriorityQueue");
 	               myPriorityQueue.put(received);
                 }
                 
-                
-                
-                
                 else //its an ACK
                 {
                 	System.out.println("MyServerListenerThread: Got an Ack!");
-                	
-                	/*
-                	if(received.lamportClock > myLamportClock.value)  //Updating lamport clock for ack
-	                {
-	            	    System.out.println("MyServerListenerThread: Updating lamport clock value as new one FOR ACK is HIGHER");
-	            	    System.out.println("MyServerListenerThread: Old one is " + myLamportClock.value + 
-	            	    		" and new one FROM ACK received is " + received.lamportClock);
-	            	    
-	            	    int a = (int) Math.floor(received.lamportClock);
-	                	Double localLamportClock = new Double(a + "." + myLamportClock.pid).doubleValue();
-	            		myLamportClock.value = (double) localLamportClock;
-	            		
-	            	}
-	               else
-	               {
-	            	   System.out.println("MyServerListenerThread: NOT updating lamport clock value FOR ACK-  My Lamport clock value is " + myLamportClock.value);
-	               }
-	               */
-                	
-                	
+                	//check who its for and update hash table
                 	//If not present, make new entry with acks received as 1
                 	if(lamportAcks.get(received.lamportClock) == null)
                 	{
@@ -127,4 +96,5 @@ public class MyServerListenerThread implements Runnable{
     }
     
 }
+
 

@@ -195,8 +195,6 @@ public class Mazewar extends JFrame {
                 //List of clients who I will connect to
                 client_mSocket = new MSocket[MAX_CLIENTS];	// because i starts from 0
                 
-                //Hashmap of lamport clock event to number of acks received
-                lamportAcks = new HashMap<Double, Integer>();
                 
                 //Setup host and port number of this client
                 ip = InetAddress.getLocalHost();
@@ -216,7 +214,7 @@ public class Mazewar extends JFrame {
                 //Comparator<MPacket> comparator = new MPacketComparator();
                 myPriorityQueue = new PriorityBlockingQueue<MPacket>();
                 
-               
+                lamportAcks = new HashMap<Double, Integer>();
                 
                 // Create the maze
                 // My comment - Mazewar has own maze variable with type Maze. 
@@ -370,8 +368,7 @@ public class Mazewar extends JFrame {
                 this.requestFocusInWindow();
                 
                 //Thread to accept clients connections
-                new Thread(new MyServerThread(mServerSocket, portNumber, MAX_CLIENTS, 0, client_mSocket, 
-                		mSocketList, eventQueue, myPriorityQueue, myLamportClock, lamportAcks, pid)).start();
+                new Thread(new MyServerThread(mServerSocket, portNumber, MAX_CLIENTS, 0, client_mSocket, mSocketList, eventQueue, myPriorityQueue, myLamportClock, lamportAcks)).start();
                 
                 //Print host and port number for all clients, and also connect to all clients
                 int i = 0;
@@ -384,9 +381,8 @@ public class Mazewar extends JFrame {
                 	i++;
                 }
                 
-                if(Debug.debug) System.out.println("Mazewar: My name is " + name + ", pid is " + pid +
-                		", local lamport clock is "+ myLamportClock.value +  
-                			" and im listening on port: " + portNumber);
+                if(Debug.debug) System.out.println("Mazewar: My name is " + name + ", pid is " + pid + 
+                		", local lamport clock is "+ myLamportClock.value +  " and im listening on port: " + portNumber);
                 
         }
                 
@@ -405,8 +401,7 @@ public class Mazewar extends JFrame {
                 //Start a new listener thread, which would only add to myPriorityQueue
                 //new Thread(new ClientListenerThread(mSocket, clientTable, myPriorityQueue)).start();
                 //Start a new thread for removing from queue and executing
-                new Thread(new ClientQueueExecutionThread(mSocket, clientTable, myPriorityQueue, 
-                		client_mSocket, lamportAcks, MAX_CLIENTS, pid)).start();
+                new Thread(new ClientQueueExecutionThread(mSocket, clientTable, myPriorityQueue, client_mSocket, lamportAcks, MAX_CLIENTS)).start();
                 
         }
         

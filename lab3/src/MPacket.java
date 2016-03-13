@@ -71,7 +71,6 @@ public class MPacket implements Serializable, Comparable<MPacket> {
         this.clientInfo =  new ArrayList<Clientinfo>();
     }
     
-    //called from gui client
     public MPacket(String name, int type, int event){
         this.name = name;
         this.type = type;
@@ -94,27 +93,8 @@ public class MPacket implements Serializable, Comparable<MPacket> {
     	this.category = category;
     	this.lamportClock = lamportClock;
     }
+
     
-    //Copy Constructor
-    MPacket(MPacket c) 
-    {
-        System.out.println("Copy constructor called");
-        name = c.name;
-        type = c.type;
-        event	= c.event;
-        lamportClock = c.lamportClock;
-        category = c.category;
-        acks_sent = c.acks_sent;
-    }
-    
-    /*
-    eventQueue.put(new MPacket(getName(), MPacket.ACTION, MPacket.DOWN));
-    toBroadcast.lamportClock = myLamportClock.value;
-    //0 to show its an event and NOT an ack
-    toBroadcast.category = 0;
-    toBroadcast.acks_sent = 0;
-    */
-   
     
     public String toString(){
         String typeStr;
