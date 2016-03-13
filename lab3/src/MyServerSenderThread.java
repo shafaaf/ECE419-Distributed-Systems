@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.PriorityBlockingQueue;
 
 //made in MyServerthread.java
 
@@ -10,13 +11,15 @@ public class MyServerSenderThread implements Runnable {
     private MSocket[] client_mSocket = null;
     private BlockingQueue eventQueue = null;
     public LamportClock myLamportClock = null;
+    public PriorityBlockingQueue myPriorityQueue;
     
     
-    public MyServerSenderThread(MSocket[] client_mSocket, BlockingQueue eventQueue, LamportClock myLamportClock){
+    public MyServerSenderThread(MSocket[] client_mSocket, BlockingQueue eventQueue, LamportClock myLamportClock, PriorityBlockingQueue myPriorityQueue)
+    {
 		this.client_mSocket = client_mSocket;
 		this.eventQueue = eventQueue;
 		this.myLamportClock =  myLamportClock;
-		
+		this.myPriorityQueue = myPriorityQueue;		
     }
 
     public void run() {
@@ -44,6 +47,7 @@ public class MyServerSenderThread implements Runnable {
                 //0 to show that no acks for it have been sent
                 toBroadcast.acks_sent = 0;
                 
+                /*NEED EDIT HERE, WHERE I add to my queue first and broadcast to everyone except for me*/
                 
                 //Send it to all clients
                 for(MSocket mSocket: client_mSocket){

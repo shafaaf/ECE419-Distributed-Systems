@@ -58,7 +58,7 @@ public class ClientQueueExecutionThread implements Runnable {
 	        	
 	        	if(lamportAcks.get(myPriorityQueue.peek().lamportClock) != null)
 	        	{
-	        		//Makes sure head  has all acks and has sent out all its acks 
+	        		//Makes sure head  has all acks AND has sent out all its acks 
 	        		if((lamportAcks.get(myPriorityQueue.peek().lamportClock) == maxClients) 
 	        				&& (myPriorityQueue.peek().acks_sent == 1))
 	        		{
@@ -73,7 +73,8 @@ public class ClientQueueExecutionThread implements Runnable {
 			        	//Debugging
 			        	//System.out.println("QueueExecutionThread: client is: " + received.name);
 			        	
-			           	//execute client actions. Here the client class refers to the client who actually caused the movement, fire or projectile movement
+			           	//execute client actions. Here the client class refers to the client who actually caused the movement, 
+			        	//fire or projectile movement
 			            if(received.event == MPacket.UP){
 			                client.forward();
 			            }else if(received.event == MPacket.DOWN){

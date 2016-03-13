@@ -124,6 +124,7 @@ public class Mazewar extends JFrame {
         private PriorityBlockingQueue myPriorityQueue = null;
         
         
+        
         /**
          * The panel that displays the {@link Maze}.
          */

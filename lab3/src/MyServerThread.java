@@ -57,7 +57,7 @@ public class MyServerThread implements Runnable{
 		}
             //1 Thread to send to all clients for each Mazewar client
 			System.out.println("MyServerThread: Making MyServerSenderThread since have enough clients");
-            new Thread(new MyServerSenderThread(client_mSocket, eventQueue, myLamportClock)).start();
+            new Thread(new MyServerSenderThread(client_mSocket, eventQueue, myLamportClock,myPriorityQueue)).start();
             
 	}
 
