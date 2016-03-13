@@ -51,10 +51,10 @@ public class ClientQueueExecutionThread implements Runnable {
 		        	if(headOfPriorityQueue.acks_sent == 0)
 		        	{
 		        		//Send it to all clients
-		        		System.out.println("ClientQueueExecutionThread: Writing ACKS for "
-	                			+ headOfPriorityQueue.lamportClock + " to sockets");
 		        		for(MSocket mSocket: client_mSocket)
 		        		{
+		        			System.out.println("ClientQueueExecutionThread: Writing ACKS for "
+		                			+ headOfPriorityQueue.lamportClock + " to sockets");
 		                	toBroadcast = new MPacket(1, headOfPriorityQueue.lamportClock);
 		                    mSocket.writeObject(toBroadcast);
 		                    headOfPriorityQueue.acks_sent = 1;
@@ -62,9 +62,6 @@ public class ClientQueueExecutionThread implements Runnable {
 		        	}
 	        	}
 	        	
-	        	System.out.println("QueueExecutionThread: myPriorityQueue peek has "
-	        			+ "lamport clock number " + myPriorityQueue.peek().lamportClock);
-	        
 	        	/*
 	        	Double a = new Double(headOfPriorityQueue.lamportClock);
 	        	
@@ -85,7 +82,7 @@ public class ClientQueueExecutionThread implements Runnable {
 	        	
 	        	if(lamportAcks.get(headOfPriorityQueue.lamportClock) != null)	//has some acks
 	        	{
-	        		if((lamportAcks.get(headOfPriorityQueue.lamportClock) == maxClients) 
+	        		if((lamportAcks.get(myPriorityQueue.peek().lamportClock) == maxClients) 
 	        				&& (myPriorityQueue.peek().lamportClock == headOfPriorityQueue.lamportClock))
 	        		{
 	        			System.out.println("QueueExecutionThread: CAN execute! - Head of queue has lamport clock " + 
@@ -96,7 +93,7 @@ public class ClientQueueExecutionThread implements Runnable {
 				        	client = clientTable.get(received.name);
 				        	
 				        	//Debugging
-				        	System.out.println("QueueExecutionThread: client for this event is: " + received.name);
+				        	//System.out.println("QueueExecutionThread: client for this event is: " + received.name);
 				        	
 				           	//Execute client actions. Here the client class refers to the client who actually caused the movement, fire or projectile movement
 				            if(received.event == MPacket.UP){
@@ -121,10 +118,10 @@ public class ClientQueueExecutionThread implements Runnable {
 	        		
 	        		else
 		        	{	//when dont have enough acks
-	        			if(x<10)
+	        			//if(x<10)
 	        			{
-	        				System.out.println("QueueExecutionThread: CANT execute for a reason! - Head of queue has lamport clock " + myPriorityQueue.peek().lamportClock + 
-		        				" and it has " + lamportAcks.get(myPriorityQueue.peek().lamportClock) + " acks!");
+	        				System.out.println("QueueExecutionThread: CANT execute for a reason! Real Head of queue has lamport clock " + myPriorityQueue.peek().lamportClock + 
+		        				" and " + "headOfPriorityQueue " + " has lamport clock number " + headOfPriorityQueue.lamportClock);
 	        			}
 	        			x++;
 		        	}
