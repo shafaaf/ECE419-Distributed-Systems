@@ -37,6 +37,7 @@ public class ClientQueueExecutionThread implements Runnable {
         Client client = null;
         if(Debug.debug) System.out.println("ClientQueueExecutionThread: Starting Instatiating QueueExecutionThread");
         
+        int x = 0;
         while(true){
         	//System.out.println("ClientQueueExecutionThread: Checking if queue is empty or not");
         	if(!myPriorityQueue.isEmpty())
@@ -50,9 +51,10 @@ public class ClientQueueExecutionThread implements Runnable {
 		        	if(headOfPriorityQueue.acks_sent == 0)
 		        	{
 		        		//Send it to all clients
+		        		System.out.println("ClientQueueExecutionThread: Writing ACKS for "
+	                			+ headOfPriorityQueue.lamportClock + " to sockets");
 		        		for(MSocket mSocket: client_mSocket)
 		        		{
-		                	System.out.println("ClientQueueExecutionThread: Writing ACKS to sockets");
 		                	toBroadcast = new MPacket(1, headOfPriorityQueue.lamportClock);
 		                    mSocket.writeObject(toBroadcast);
 		                    headOfPriorityQueue.acks_sent = 1;
@@ -63,24 +65,28 @@ public class ClientQueueExecutionThread implements Runnable {
 	        	System.out.println("QueueExecutionThread: myPriorityQueue peek has "
 	        			+ "lamport clock number " + myPriorityQueue.peek().lamportClock);
 	        
-	        	
+	        	/*
 	        	Double a = new Double(headOfPriorityQueue.lamportClock);
+	        	
 	        	if(lamportAcks.get(a) == null)
 	        	{
-	        		System.out.println("QueueExecutionThread: The head event with lamport clock " + (double)a 
+	        		System.out.println("QueueExecutionThread: headOfPriorityQueue " + (double)a 
 	        				+ " HAS NO entry in the ack map");
 	        			
 	        	}
 	        	else
 	        	{
-	        		System.out.println("QueueExecutionThread: The head event with lamport clock " + (double)a 
+	        		System.out.println("QueueExecutionThread: headOfPriorityQueue " + (double)a 
 	        				+ " HAS " + lamportAcks.get(a) + " acks");
-	        	}
+	        	}*/
 	        	
+	        	System.out.println("headOfPriorityQueue has lamport clock value  " + headOfPriorityQueue.lamportClock + 
+	        			" and actual queue peek has lamport clock value " + myPriorityQueue.peek().lamportClock);
 	        	
-	        	if(lamportAcks.get(a) != null)	//has some acks
+	        	if(lamportAcks.get(headOfPriorityQueue.lamportClock) != null)	//has some acks
 	        	{
-	        		if((lamportAcks.get(a) == maxClients) && (myPriorityQueue.peek().lamportClock == (double)a))
+	        		if((lamportAcks.get(headOfPriorityQueue.lamportClock) == maxClients) 
+	        				&& (myPriorityQueue.peek().lamportClock == headOfPriorityQueue.lamportClock))
 	        		{
 	        			System.out.println("QueueExecutionThread: CAN execute! - Head of queue has lamport clock " + 
 	        					myPriorityQueue.peek().lamportClock +" and it has " + 
@@ -109,13 +115,18 @@ public class ClientQueueExecutionThread implements Runnable {
 				            else{
 				                throw new UnsupportedOperationException();
 				            }
+				            x = 0;
 		        		
 	        		}
 	        		
 	        		else
 		        	{	//when dont have enough acks
-		        		System.out.println("QueueExecutionThread: CANT execute for a reason! - Head of queue has lamport clock " + myPriorityQueue.peek().lamportClock + 
+	        			if(x<10)
+	        			{
+	        				System.out.println("QueueExecutionThread: CANT execute for a reason! - Head of queue has lamport clock " + myPriorityQueue.peek().lamportClock + 
 		        				" and it has " + lamportAcks.get(myPriorityQueue.peek().lamportClock) + " acks!");
+	        			}
+	        			x++;
 		        	}
 	        	}
 	          

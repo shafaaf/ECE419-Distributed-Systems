@@ -60,7 +60,7 @@ public class Server {	//listen and enqueue, dequeue and broadcast.
         }
         
         //Start a new sender thread. Just 1 for all clients
-        //Sender thread dequeues events, attaches a global sequence number and broadcasts events
+        //Sender thread dequees events, attaches a global sequence number and broadcasts events
         new Thread(new ServerSenderThread(mSocketList, eventQueue, clientInfo)).start();
         
         //Handle dynamic joins
