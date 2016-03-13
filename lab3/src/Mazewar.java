@@ -406,7 +406,7 @@ public class Mazewar extends JFrame {
                 //new Thread(new ClientListenerThread(mSocket, clientTable, myPriorityQueue)).start();
                 //Start a new thread for removing from queue and executing
                 new Thread(new ClientQueueExecutionThread(mSocket, clientTable, myPriorityQueue, 
-                		client_mSocket, lamportAcks, MAX_CLIENTS)).start();
+                		client_mSocket, lamportAcks, MAX_CLIENTS, pid)).start();
                 
         }
         

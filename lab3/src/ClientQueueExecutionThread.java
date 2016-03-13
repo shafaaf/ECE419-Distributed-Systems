@@ -13,10 +13,11 @@ public class ClientQueueExecutionThread implements Runnable {
     private MSocket[] client_mSocket;
     private HashMap<Double, Integer> lamportAcks;
     private int maxClients;
+    public int pid;
     
     public ClientQueueExecutionThread( MSocket mSocket, Hashtable<String, Client> clientTable,
     		PriorityBlockingQueue myPriorityQueue, MSocket[] client_mSocket, 
-    			HashMap<Double, Integer> lamportAcks, int maxClients)
+    			HashMap<Double, Integer> lamportAcks, int maxClients, int pid)
     {
         this.mSocket = mSocket;
         this.clientTable = clientTable;
@@ -24,6 +25,7 @@ public class ClientQueueExecutionThread implements Runnable {
         this.client_mSocket = client_mSocket;
         this.lamportAcks = lamportAcks;
         this.maxClients = maxClients;
+        this.pid = pid;
         
         if(Debug.debug) System.out.println("ClientQueueExecutionThread: Instatiating QueueExecutionThread");
     }

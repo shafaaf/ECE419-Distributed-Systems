@@ -52,24 +52,27 @@ public class MyServerSenderThread implements Runnable {
                 System.out.println("MyServerSenderThread: I have pid- " + pid + ". Putting EVENT with incremented lamport clock value " 
                 		+ myLamportClock.value + " in only my queue");
                 
-                MPacket putInMine = toBroadcast;
-                myPriorityQueue.put(putInMine);
+                //MPacket putInMine = toBroadcast;
+                //myPriorityQueue.put(putInMine);
                 
                 
                 //Send it to all clients except yourself
-                z = 0;
+                //z = 0;
                 System.out.println("MyServerSenderThread: Writing EVENT to sockets");
                 for(MSocket mSocket: client_mSocket)
             	{	
-                	if(z != pid)
+                	//if(z != pid)
                 	{
-                		System.out.println("MyServerSenderThread: WRITING event to " + z + " socket in array");
+                		//System.out.println("MyServerSenderThread: WRITING event to " + z + " socket in array");
                 		mSocket.writeObject(toBroadcast);
                 	}
-                	System.out.println("MyServerSenderThread: NOT WRITING to " + z + " socket in array");
-                	z++;
+                	//else
+                	//{
+                	//	System.out.println("MyServerSenderThread: NOT WRITING to " + z + " socket in array");
+                	//}
+                	//z++;
                 }
-                z = 0;
+                //z = 0;
                 
             	
                 	
