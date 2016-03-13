@@ -53,26 +53,30 @@ public class MyServerSenderThread implements Runnable {
                 		+ myLamportClock.value + " in only my queue");
                 
                 //MPacket putInMine = toBroadcast;
+                //Complex c2 = new Complex(c1);   
+                
+                //MPacket putInMine = new MPacket(toBroadcast);
                 //myPriorityQueue.put(putInMine);
                 
                 
                 //Send it to all clients except yourself
-                //z = 0;
+                z = 0;
                 System.out.println("MyServerSenderThread: Writing EVENT to sockets");
                 for(MSocket mSocket: client_mSocket)
             	{	
                 	//if(z != pid)
                 	{
-                		//System.out.println("MyServerSenderThread: WRITING event to " + z + " socket in array");
+                		System.out.println("MyServerSenderThread: WRITING event to " + z + " socket in array");
                 		mSocket.writeObject(toBroadcast);
                 	}
-                	//else
-                	//{
-                	//	System.out.println("MyServerSenderThread: NOT WRITING to " + z + " socket in array");
-                	//}
-                	//z++;
+                	
+                	/*else
+                	{
+                		System.out.println("MyServerSenderThread: NOT WRITING to " + z + " socket in array as THATS ME!");
+                	}
+                	z++;*/
                 }
-                //z = 0;
+                z = 0;
                 
             	
                 	

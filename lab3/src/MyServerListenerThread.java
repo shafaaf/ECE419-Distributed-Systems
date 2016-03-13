@@ -50,6 +50,11 @@ public class MyServerListenerThread implements Runnable{
 	                	Double localLamportClock = new Double(a + "." + myLamportClock.pid).doubleValue();
 	            		myLamportClock.value = (double) localLamportClock;
 	            		
+	            		//added in UNSURE
+	            		//myLamportClock.value = myLamportClock.value + 1;
+	            		
+	            		
+	            		
 	            	}
 	               else
 	               {
