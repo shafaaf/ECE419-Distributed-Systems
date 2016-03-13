@@ -13,14 +13,16 @@ public class MyServerListenerThread implements Runnable{
     private PriorityBlockingQueue myPriorityQueue;
     public LamportClock myLamportClock;
     public HashMap<Double, Integer> lamportAcks;
+    public int pid;
     
     public MyServerListenerThread( MSocket mSocket, PriorityBlockingQueue myPriorityQueue, 
-    		LamportClock myLamportClock,HashMap<Double, Integer> lamportAcks)
+    		LamportClock myLamportClock,HashMap<Double, Integer> lamportAcks, int pid)
     {
         this.mSocket = mSocket;
         this.myPriorityQueue = myPriorityQueue;
         this.myLamportClock = myLamportClock;
         this.lamportAcks = lamportAcks;
+        this.pid = pid;
     }
     
     public void run() {	//read, process and enqueue packet
@@ -65,6 +67,7 @@ public class MyServerListenerThread implements Runnable{
                 {
                 	System.out.println("MyServerListenerThread: Got an Ack!");
                 	
+                	/*
                 	if(received.lamportClock > myLamportClock.value)  //Updating lamport clock for ack
 	                {
 	            	    System.out.println("MyServerListenerThread: Updating lamport clock value as new one FOR ACK is HIGHER");
@@ -80,6 +83,7 @@ public class MyServerListenerThread implements Runnable{
 	               {
 	            	   System.out.println("MyServerListenerThread: NOT updating lamport clock value FOR ACK-  My Lamport clock value is " + myLamportClock.value);
 	               }
+	               */
                 	
                 	
                 	//If not present, make new entry with acks received as 1

@@ -195,7 +195,7 @@ public class Mazewar extends JFrame {
                 //List of clients who I will connect to
                 client_mSocket = new MSocket[MAX_CLIENTS];	// because i starts from 0
                 
-                //Hashmap to acks to lamport clock
+                //Hashmap of lamport clock event to number of acks received
                 lamportAcks = new HashMap<Double, Integer>();
                 
                 //Setup host and port number of this client
@@ -371,7 +371,7 @@ public class Mazewar extends JFrame {
                 
                 //Thread to accept clients connections
                 new Thread(new MyServerThread(mServerSocket, portNumber, MAX_CLIENTS, 0, client_mSocket, 
-                		mSocketList, eventQueue, myPriorityQueue, myLamportClock, lamportAcks)).start();
+                		mSocketList, eventQueue, myPriorityQueue, myLamportClock, lamportAcks, pid)).start();
                 
                 //Print host and port number for all clients, and also connect to all clients
                 int i = 0;

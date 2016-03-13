@@ -60,11 +60,12 @@ public class ClientQueueExecutionThread implements Runnable {
 		                }
 		        	}
 	        	}
-	        		        	
+	        	
+	        	/*
 	        	System.out.println("headOfPriorityQueue has lamport clock value  " + headOfPriorityQueue.lamportClock + 
 	        			" and actual queue peek has lamport clock value " + myPriorityQueue.peek().lamportClock + 
 	        			"and number of acks peek has is" + lamportAcks.get(myPriorityQueue.peek().lamportClock));
-	        	
+	        	*/
 	        	if(lamportAcks.get(myPriorityQueue.peek().lamportClock) != null)	//head has some acks at least
 	        	{
 	        		//Makes sure head  has all acks and has sent out all its acks 
@@ -107,8 +108,10 @@ public class ClientQueueExecutionThread implements Runnable {
 		        	{	//when dont have enough acks or the guy for which we sent acks above was someone else
 	        			//if(x<10)
 	        			{
+	        				///*
 	        				System.out.println("QueueExecutionThread: CANT execute for a reason! Real Head of queue has lamport clock " + myPriorityQueue.peek().lamportClock + 
 		        				" and " + "headOfPriorityQueue " + " has lamport clock number " + headOfPriorityQueue.lamportClock);
+		        				//*/
 	        			}
 	        			//x++;
 		        	}

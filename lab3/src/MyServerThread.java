@@ -15,13 +15,14 @@ public class MyServerThread implements Runnable{
 	private PriorityBlockingQueue myPriorityQueue;
 	public LamportClock myLamportClock;
 	public HashMap<Double, Integer> lamportAcks;
+	public int pid;
     
 	
 	//Constructor
 	MyServerThread(MServerSocket mServerSocket, int portNumber, int maxClients, int clientCount, 
 			MSocket[] client_mSocket, MSocket[] mSocketList, BlockingQueue eventQueue, 
 				PriorityBlockingQueue myPriorityQueue, LamportClock myLamportClock, 
-					HashMap<Double, Integer> lamportAcks) 
+					HashMap<Double, Integer> lamportAcks, int pid) 
 	{
 		this.mServerSocket = mServerSocket;
 		this.portNumber = portNumber;
@@ -33,6 +34,7 @@ public class MyServerThread implements Runnable{
 		this.myPriorityQueue = myPriorityQueue;
 		this.myLamportClock = myLamportClock;
 		this.lamportAcks = lamportAcks;
+		this.pid = pid;
 	}
 	
 	
@@ -45,7 +47,7 @@ public class MyServerThread implements Runnable{
 				System.out.println("MyServerThread: Got a connection here");
 				
 				//Start a new handler thread for each new client connection for each Mazewar client
-				new Thread(new MyServerListenerThread(mSocket, myPriorityQueue, myLamportClock, lamportAcks)).start();
+				new Thread(new MyServerListenerThread(mSocket, myPriorityQueue, myLamportClock, lamportAcks, pid)).start();
 				mSocketList[clientCount] = mSocket;
 				clientCount++;
 				System.out.println("MyServerThread: clientCount after connection is " + clientCount);
@@ -59,7 +61,7 @@ public class MyServerThread implements Runnable{
 		}
             //1 Thread to send to all clients for each Mazewar client
 			System.out.println("MyServerThread: Making MyServerSenderThread since have enough clients");
-            new Thread(new MyServerSenderThread(client_mSocket, eventQueue, myLamportClock)).start();
+            new Thread(new MyServerSenderThread(client_mSocket, eventQueue, myLamportClock, pid, myPriorityQueue)).start();
             
 	}
 
