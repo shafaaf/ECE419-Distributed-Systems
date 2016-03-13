@@ -39,7 +39,6 @@ public class ClientQueueExecutionThread implements Runnable {
         
         int x = 0;
         while(true){
-        	//System.out.println("ClientQueueExecutionThread: Checking if queue is empty or not");
         	if(!myPriorityQueue.isEmpty())
         	{
         		//MyPriorityQueue will only have EVENTS, not acks!
@@ -62,11 +61,13 @@ public class ClientQueueExecutionThread implements Runnable {
 		        	}
 	        	}
 	        		        	
-	        	//System.out.println("headOfPriorityQueue has lamport clock value  " + headOfPriorityQueue.lamportClock + 
-	        		//	" and actual queue peek has lamport clock value " + myPriorityQueue.peek().lamportClock);
+	        	System.out.println("headOfPriorityQueue has lamport clock value  " + headOfPriorityQueue.lamportClock + 
+	        			" and actual queue peek has lamport clock value " + myPriorityQueue.peek().lamportClock + 
+	        			"and number of acks peek has is" + lamportAcks.get(myPriorityQueue.peek().lamportClock));
 	        	
-	        	if(lamportAcks.get(headOfPriorityQueue.lamportClock) != null)	//has some acks
+	        	if(lamportAcks.get(myPriorityQueue.peek().lamportClock) != null)	//head has some acks at least
 	        	{
+	        		//Makes sure head  has all acks and has sent out all its acks 
 	        		if((lamportAcks.get(myPriorityQueue.peek().lamportClock) == maxClients) 
 	        				&& (myPriorityQueue.peek().lamportClock == headOfPriorityQueue.lamportClock))
 	        		{
@@ -97,18 +98,19 @@ public class ClientQueueExecutionThread implements Runnable {
 				            else{
 				                throw new UnsupportedOperationException();
 				            }
-				            x = 0;
+				            
+				            //x = 0;
 		        		
 	        		}
 	        		
 	        		else
-		        	{	//when dont have enough acks
+		        	{	//when dont have enough acks or the guy for which we sent acks above was someone else
 	        			//if(x<10)
 	        			{
-	        				//System.out.println("QueueExecutionThread: CANT execute for a reason! Real Head of queue has lamport clock " + myPriorityQueue.peek().lamportClock + 
-		        				//" and " + "headOfPriorityQueue " + " has lamport clock number " + headOfPriorityQueue.lamportClock);
+	        				System.out.println("QueueExecutionThread: CANT execute for a reason! Real Head of queue has lamport clock " + myPriorityQueue.peek().lamportClock + 
+		        				" and " + "headOfPriorityQueue " + " has lamport clock number " + headOfPriorityQueue.lamportClock);
 	        			}
-	        			x++;
+	        			//x++;
 		        	}
 	        	}
 	          
