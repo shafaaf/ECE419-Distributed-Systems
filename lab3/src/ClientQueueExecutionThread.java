@@ -61,24 +61,9 @@ public class ClientQueueExecutionThread implements Runnable {
 		                }
 		        	}
 	        	}
-	        	
-	        	/*
-	        	Double a = new Double(headOfPriorityQueue.lamportClock);
-	        	
-	        	if(lamportAcks.get(a) == null)
-	        	{
-	        		System.out.println("QueueExecutionThread: headOfPriorityQueue " + (double)a 
-	        				+ " HAS NO entry in the ack map");
-	        			
-	        	}
-	        	else
-	        	{
-	        		System.out.println("QueueExecutionThread: headOfPriorityQueue " + (double)a 
-	        				+ " HAS " + lamportAcks.get(a) + " acks");
-	        	}*/
-	        	
-	        	System.out.println("headOfPriorityQueue has lamport clock value  " + headOfPriorityQueue.lamportClock + 
-	        			" and actual queue peek has lamport clock value " + myPriorityQueue.peek().lamportClock);
+	        		        	
+	        	//System.out.println("headOfPriorityQueue has lamport clock value  " + headOfPriorityQueue.lamportClock + 
+	        		//	" and actual queue peek has lamport clock value " + myPriorityQueue.peek().lamportClock);
 	        	
 	        	if(lamportAcks.get(headOfPriorityQueue.lamportClock) != null)	//has some acks
 	        	{
@@ -120,8 +105,8 @@ public class ClientQueueExecutionThread implements Runnable {
 		        	{	//when dont have enough acks
 	        			//if(x<10)
 	        			{
-	        				System.out.println("QueueExecutionThread: CANT execute for a reason! Real Head of queue has lamport clock " + myPriorityQueue.peek().lamportClock + 
-		        				" and " + "headOfPriorityQueue " + " has lamport clock number " + headOfPriorityQueue.lamportClock);
+	        				//System.out.println("QueueExecutionThread: CANT execute for a reason! Real Head of queue has lamport clock " + myPriorityQueue.peek().lamportClock + 
+		        				//" and " + "headOfPriorityQueue " + " has lamport clock number " + headOfPriorityQueue.lamportClock);
 	        			}
 	        			x++;
 		        	}

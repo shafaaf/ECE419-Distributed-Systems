@@ -71,7 +71,7 @@ public class MyServerListenerThread implements Runnable{
 	            	    System.out.println("MyServerListenerThread: Old one is " + myLamportClock.value + 
 	            	    		" and new one FROM ACK received is " + received.lamportClock);
 	            	    
-	            	    int a = (int) Math.round(received.lamportClock);
+	            	    int a = (int) Math.floor(received.lamportClock);
 	                	Double localLamportClock = new Double(a + "." + myLamportClock.pid).doubleValue();
 	            		myLamportClock.value = (double) localLamportClock;
 	            		
