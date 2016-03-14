@@ -27,18 +27,23 @@ public class MyServerSenderThread implements Runnable {
 
     public void run() {
         MPacket toBroadcast = null;
+        MPacket packetAck = null;
         MPacket toMe = null;
         int i = 0;
+        int j = 0;
+        MPacket headOfPriorityQueue = null;
         
         while(true){
-            try{	//dequeue packet, add global sequence number, and broadcast
-                	//Take packet from queue to broadcast to all clients
+            try{	
+
+            	//Take packet from queue to broadcast to all clients
             	/*if(eventQueue.isEmpty()){
             		System.out.println("MyServerSenderThread: Event queue is empty");
             	}
             	else{
             		System.out.println("MyServerSenderThread: Event queue is not empty");
             	}*/
+            	
             	System.out.println("MyServerSenderThread: Going to take from event queue");
             	toBroadcast = (MPacket)eventQueue.take();
                 // Send only head packet of queue, need vector clock mechanism somewhere around here
@@ -52,7 +57,8 @@ public class MyServerSenderThread implements Runnable {
                 //0 to show that no acks for it have been sent
                 toBroadcast.acks_sent = 0;
                 
-                /*Setup My packet which I will pu in my queue*/
+                
+                /*Setup My packet which I will put in my queue*/
                 //from gui client - eventQueue.put(new MPacket(getName(), MPacket.ACTION, MPacket.DOWN));
                 //MPacket constructor - public MPacket(String name, int type, int event){
                 toMe = new MPacket(toBroadcast.name, toBroadcast.type, toBroadcast.event);
@@ -76,15 +82,15 @@ public class MyServerSenderThread implements Runnable {
                 
                 
                 //Send it to all clients except me
-                System.out.println("BROADCAST event to all clients with Lamport clock: " 
+                System.out.println("BROADCAST event to ALl clients with Lamport clock: " 
                 		+ toBroadcast.lamportClock);
                 i = 0;
                 for(MSocket mSocket: client_mSocket)
                 {
                 	// if(i != pid)
                 	{
-                		System.out.println("MyServerSenderThread: Writing event with lamport clock " + toBroadcast.lamportClock +
-                				" to socket " + i);
+                		System.out.println("MyServerSenderThread: Writing EVENT with lamport clock " + 
+                				toBroadcast.lamportClock + " to socket " + i);
                 		mSocket.writeObject(toBroadcast);
                 	}
                 	
@@ -96,6 +102,7 @@ public class MyServerSenderThread implements Runnable {
                 	
                 }
                 i = 0;
+                
                 
             }catch(InterruptedException e){
                 System.out.println("Throwing Interrupt");
