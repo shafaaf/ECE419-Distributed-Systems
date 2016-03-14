@@ -13,13 +13,15 @@ public class MyServerListenerThread implements Runnable{
     private PriorityBlockingQueue myPriorityQueue;
     public LamportClock myLamportClock;
     public HashMap<Double, Integer> lamportAcks;
+    public int pid;
     
     public MyServerListenerThread( MSocket mSocket, PriorityBlockingQueue myPriorityQueue, LamportClock myLamportClock, 
-    		HashMap<Double, Integer> lamportAcks){
+    		HashMap<Double, Integer> lamportAcks, int pid){
         this.mSocket = mSocket;
         this.myPriorityQueue = myPriorityQueue;
         this.myLamportClock = myLamportClock;
         this.lamportAcks = lamportAcks;
+        this.pid = pid;
     }
     
     public void run() {	//read, process and enqueue packet
@@ -31,8 +33,8 @@ public class MyServerListenerThread implements Runnable{
                 received = (MPacket) mSocket.readObject();
                 if(Debug.debug) System.out.println("MyServerListenerThread: Read: " + received);
                 
-                //have Lamport clock stuff here
-                if(received.category == 0) //if 0, an event
+                
+                if(received.category == 0) //if 0, an event, so put in queue
                 {
                 	System.out.println("MyServerListenerThread: Got an EVENT!");
 	               if(received.lamportClock > myLamportClock.value)  //Updating lamport clock
@@ -42,14 +44,14 @@ public class MyServerListenerThread implements Runnable{
 	            	    		" and new one FROM EVENT received is " + received.lamportClock);
 
 	                	int a = (int) Math.round(received.lamportClock);
-	                	Double localLamportClock = new Double(a + "." + myLamportClock.pid).doubleValue();
+	                	Double localLamportClock = new Double(a + "." + pid).doubleValue();
 	            		myLamportClock.value = (double) localLamportClock;
 	            		
 	            	}
 	               else
 	               {
-	            	   System.out.println("MyServerListenerThread: NOT updating lamport clock value - My Lamport clock value is " + myLamportClock.value);
-	               	
+	            	   System.out.println("MyServerListenerThread: NOT updating lamport clock value - My Lamport clock value is " + 
+	            			   myLamportClock.value + " and one received is " + received.lamportClock);
 	               }
 	               
 	               System.out.println("MyServerListenerThread: My Lamport clock value is right now " + myLamportClock.value);
@@ -59,11 +61,12 @@ public class MyServerListenerThread implements Runnable{
 	               myPriorityQueue.put(received);
                 }
                 
-                else //its an ACK
+                else //its an ACK, dont put in queue and just update hashmap
                 {
-                	System.out.println("MyServerListenerThread: Got an Ack!");
-                	//check who its for and update hash table
-                	//If not present, make new entry with acks received as 1
+                	System.out.println("MyServerListenerThread: Got an Ack! Its lamport clock value is " + 
+                			received.lamportClock);
+                	
+                	//If not present in hashmap, make new entry with acks received as 1
                 	if(lamportAcks.get(received.lamportClock) == null)
                 	{
                 		lamportAcks.put(new Double(received.lamportClock), new Integer(1));
@@ -78,12 +81,9 @@ public class MyServerListenerThread implements Runnable{
                     			+  " so total number for acks is now " + (double)lamportAcks.get(received.lamportClock));
                 		
                 	}
-                	
-                	
+                	                	
                 }
-                
-                
-                
+            
             }
             
             catch(IOException e){

@@ -435,7 +435,7 @@ public class MazeImpl extends Maze implements Serializable, ClientListener, Runn
 	        	}
 	        	
 	            try {
-	                thread.sleep(200);	//bullet speed
+	                thread.sleep(500);	//bullet speed
 	            } catch(Exception e) {
 	                // shouldn't happen
 	            }

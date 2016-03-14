@@ -369,7 +369,7 @@ public class Mazewar extends JFrame {
                 this.requestFocusInWindow();
                 
                 //Thread to accept clients connections
-                new Thread(new MyServerThread(mServerSocket, portNumber, MAX_CLIENTS, 0, client_mSocket, mSocketList, eventQueue, myPriorityQueue, myLamportClock, lamportAcks)).start();
+                new Thread(new MyServerThread(mServerSocket, portNumber, MAX_CLIENTS, 0, client_mSocket, mSocketList, eventQueue, myPriorityQueue, myLamportClock, lamportAcks, pid)).start();
                 
                 //Print host and port number for all clients, and also connect to all clients
                 int i = 0;
@@ -402,7 +402,7 @@ public class Mazewar extends JFrame {
                 //Start a new listener thread, which would only add to myPriorityQueue
                 //new Thread(new ClientListenerThread(mSocket, clientTable, myPriorityQueue)).start();
                 //Start a new thread for removing from queue and executing
-                new Thread(new ClientQueueExecutionThread(mSocket, clientTable, myPriorityQueue, client_mSocket, lamportAcks, MAX_CLIENTS)).start();
+                new Thread(new ClientQueueExecutionThread(mSocket, clientTable, myPriorityQueue, client_mSocket, lamportAcks, MAX_CLIENTS, pid)).start();
                 
         }
         
