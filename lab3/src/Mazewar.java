@@ -373,6 +373,7 @@ public class Mazewar extends JFrame {
                 
                 //Print host and port number for all clients, and also connect to all clients
                 int i = 0;
+                int j;
                 for(Clientinfo info: clientInfo)
                 {
                 	System.out.println("Mazewar: Client with pid " + info.pid + " has hostname " + info.hostName + " and port number " + info.port);

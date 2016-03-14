@@ -23,7 +23,7 @@ public class MServerSocket{
         return mSocket;
     }
     
-    public int getLocalPort(){
+    public int getLocalPort() {
     	return serverSocket.getLocalPort();
     }
 
