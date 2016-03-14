@@ -59,8 +59,6 @@ public class ClientQueueExecutionThread implements Runnable {
 	        	headOfPriorityQueue = (MPacket)myPriorityQueue.peek();
 	        	//System.out.println("ClientQueueExecutionThread: headOfPriorityQueue.acks_sent is " + headOfPriorityQueue.acks_sent);
             	
-	        	             
-	        	
 	        	//headOfPriorityQueue2 = myPriorityQueue.peek();
 	        	if(lamportAcks.get(headOfPriorityQueue.lamportClock) != null)
 	        	{

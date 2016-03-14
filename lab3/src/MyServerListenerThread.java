@@ -70,8 +70,8 @@ public class MyServerListenerThread implements Runnable{
 	              
 	               
 	               //HACK
-	               System.out.println("MyServerListenerThread: HACK if event from someone, he has to have ack");
-
+	               System.out.println("MyServerListenerThread: If event from someone, he has to have ack");
+	               
 	        		synchronized (lamportAcks)
 	        		{
 	                	if(lamportAcks.get(received.lamportClock) == null)
