@@ -97,6 +97,9 @@ public class ClientQueueExecutionThread implements Runnable {
 		        					lamportAcks.get(headOfPriorityQueue2.lamportClock) + " acks!");
 		        			
 				        	received = myPriorityQueue.poll();
+				        	System.out.println("QueueExecutionThread: received.lamportClock is " + received.lamportClock);
+				        	System.out.println("QueueExecutionThread: headOfPriorityQueue2.lamportClock is " + headOfPriorityQueue2.lamportClock);
+				        	
 				        	if(received.lamportClock == headOfPriorityQueue2.lamportClock)	//same guy I was looking at
 				        	{
 					        	client = clientTable.get(received.name);
@@ -137,7 +140,11 @@ public class ClientQueueExecutionThread implements Runnable {
 			        	}
 	        		}
         		}
-        	} 
+        	}
+        	else
+        	{
+        		//System.out.println("QueueExecutionThread: empty queue");
+        	}
                 
         	
         }

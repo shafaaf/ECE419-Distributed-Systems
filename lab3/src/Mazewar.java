@@ -88,6 +88,9 @@ public class Mazewar extends JFrame {
         private MServerSocket mServerSocket = null;	//for others to connect to me
         private MSocket[] client_mSocket = null; //array of sockets I will use to connect to other clients for WRITE
         private MSocket[] mSocketList = null; //array of sockets passed to MyServerThread, which says who I will connect to for READ
+        
+        public ArrayList<MSocket> socketList = null;
+        
         private InetAddress ip = null;
         private String hostName = null;
         private int portNumber;
@@ -95,7 +98,7 @@ public class Mazewar extends JFrame {
         public int pid;	//my pid
         public LamportClock myLamportClock;
         private int clientCount = 0;
-        private static final int MAX_CLIENTS = 2;//also change in naming server
+        private static final int MAX_CLIENTS = 3;//also change in naming server
         
         //Double is the lamport clock, Integer is the number of acks received
         private HashMap<Double, Integer> lamportAcks;
@@ -196,6 +199,7 @@ public class Mazewar extends JFrame {
                 //List of clients who I will connect to
                 client_mSocket = new MSocket[MAX_CLIENTS];	// because i starts from 0
                 
+                socketList = new ArrayList<MSocket>();
                 
                 //Setup host and port number of this client
                 ip = InetAddress.getLocalHost();
@@ -278,6 +282,7 @@ public class Mazewar extends JFrame {
                 		
                 	}
                 }
+                
                 
                 
                 //Create the GUIClient and connect it to the KeyListener queue
@@ -369,18 +374,27 @@ public class Mazewar extends JFrame {
                 this.requestFocusInWindow();
                 
                 //Thread to accept clients connections
-                new Thread(new MyServerThread(mServerSocket, portNumber, MAX_CLIENTS, 0, client_mSocket, mSocketList, eventQueue, myPriorityQueue, myLamportClock, lamportAcks, pid)).start();
+                new Thread(new MyServerThread(mServerSocket, portNumber, MAX_CLIENTS, 0, client_mSocket, 
+                		mSocketList, eventQueue, myPriorityQueue, myLamportClock, 
+                			lamportAcks, pid, socketList)).start();
                 
                 //Print host and port number for all clients, and also connect to all clients
-                int i = 0;
-                int j;
                 for(Clientinfo info: clientInfo)
                 {
                 	System.out.println("Mazewar: Client with pid " + info.pid + " has hostname " + info.hostName + " and port number " + info.port);
                 	System.out.println("Mazewar: Trying to make a socket to to connect with client " + info.pid);
-                	client_mSocket[i] = new MSocket(info.hostName, info.port);
-                	System.out.println("Mazewar: Made a socket conenction to client " + info.pid);
-                	i++;
+                	if(info.pid < pid)
+                	{
+                		MSocket newSocket = new MSocket(info.hostName, info.port);
+                		socketList.add(newSocket);
+                    	System.out.println("Mazewar: Made a socket conenction to client " + info.pid);
+                    	new Thread(new MyServerListenerThread(mSocket, myPriorityQueue, myLamportClock, lamportAcks, pid)).start();
+                    	System.out.println("Mazewar: So made listener for client" + info.pid);
+                    }
+                	else{
+                		System.out.println("Mazewar: Didnt make a socket conenction to client " + info.pid);
+                	}
+                	
                 }
                 
                 if(Debug.debug) System.out.println("Mazewar: My name is " + name + ", pid is " + pid + 
@@ -404,6 +418,11 @@ public class Mazewar extends JFrame {
                 //new Thread(new ClientListenerThread(mSocket, clientTable, myPriorityQueue)).start();
                 //Start a new thread for removing from queue and executing
                 new Thread(new ClientQueueExecutionThread(mSocket, clientTable, myPriorityQueue, client_mSocket, lamportAcks, MAX_CLIENTS, pid)).start();
+
+                //1 Thread to send to all clients for each Mazewar client
+    			System.out.println("Mazewar: Making MyServerSenderThread");
+                new Thread(new MyServerSenderThread(client_mSocket, eventQueue, myLamportClock,myPriorityQueue, pid, socketList)).start();
+                
                 
         }
         
@@ -421,6 +440,7 @@ public class Mazewar extends JFrame {
              /* Create the GUI */
              Mazewar mazewar = new Mazewar(host, port);
              mazewar.startThreads();
+             
         }
 }
 

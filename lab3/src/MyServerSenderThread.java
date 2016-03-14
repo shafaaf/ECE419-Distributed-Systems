@@ -13,16 +13,18 @@ public class MyServerSenderThread implements Runnable {
     public LamportClock myLamportClock = null;
     public PriorityBlockingQueue myPriorityQueue;
     public int pid;
+    public ArrayList<MSocket> socketList;
     
     
     public MyServerSenderThread(MSocket[] client_mSocket, BlockingQueue eventQueue, 
-    		LamportClock myLamportClock, PriorityBlockingQueue myPriorityQueue, int pid)
+    		LamportClock myLamportClock, PriorityBlockingQueue myPriorityQueue, int pid, ArrayList<MSocket> socketList)
     {
 		this.client_mSocket = client_mSocket;
 		this.eventQueue = eventQueue;
 		this.myLamportClock =  myLamportClock;
 		this.myPriorityQueue = myPriorityQueue;		
 		this.pid = pid;
+		this.socketList = socketList;
     }
 
     public void run() {
