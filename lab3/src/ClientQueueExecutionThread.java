@@ -78,37 +78,43 @@ public class ClientQueueExecutionThread implements Runnable {
 	        					lamportAcks.get(headOfPriorityQueue2.lamportClock) + " acks!");
 	        			
 			        	received = myPriorityQueue.poll();
-			        	client = clientTable.get(received.name);
-			        	
-			        	//Debugging
-			        	//System.out.println("QueueExecutionThread: client is: " + received.name);
-			        	
-			           	//execute client actions. Here the client class refers to the client who actually caused the movement, 
-			        	//fire or projectile movement
-			            if(received.event == MPacket.UP){
-			                client.forward();
-			            }else if(received.event == MPacket.DOWN){
-			                client.backup();
-			            }else if(received.event == MPacket.LEFT){
-			                client.turnLeft();
-			            }else if(received.event == MPacket.RIGHT){
-			                client.turnRight();
-			            }else if(received.event == MPacket.FIRE){
-			                client.fire();
-			            }else if(received.event == MPacket.PROJECTILE_MOVEMENT){
-			                client.myMoveProjectile();
-			            }
-			            else{
-			                throw new UnsupportedOperationException();
-			            }
+			        	if(received.lamportClock == headOfPriorityQueue2.lamportClock)	//same guy I was looking at
+			        	{
+				        	client = clientTable.get(received.name);
+				        	
+				        	//Debugging
+				        	//System.out.println("QueueExecutionThread: client is: " + received.name);
+				        	
+				           	//execute client actions. Here the client class refers to the client who actually caused the movement, 
+				        	//fire or projectile movement
+				            if(received.event == MPacket.UP){
+				                client.forward();
+				            }else if(received.event == MPacket.DOWN){
+				                client.backup();
+				            }else if(received.event == MPacket.LEFT){
+				                client.turnLeft();
+				            }else if(received.event == MPacket.RIGHT){
+				                client.turnRight();
+				            }else if(received.event == MPacket.FIRE){
+				                client.fire();
+				            }else if(received.event == MPacket.PROJECTILE_MOVEMENT){
+				                client.myMoveProjectile();
+				            }
+				            else{
+				                throw new UnsupportedOperationException();
+				            }
+	        			}
+			        	else{	//put it back in as its something else now
+			        		myPriorityQueue.put(received);
+			        	}
 	        		}
 	        		
 	        		else
 	        		{
-	        			/*System.out.println("QueueExecutionThread: CANT execute for a reason! Real Head "
+	        			System.out.println("QueueExecutionThread: CANT execute for a reason! Real Head "
 		        				+ "of queue has lamport clock " + myPriorityQueue.peek().lamportClock + 
 		        					" and number of acks peek has is " + lamportAcks.get(myPriorityQueue.peek().lamportClock));
-	        			*/
+	        			
 		        	}
         		}
         	} 
