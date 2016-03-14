@@ -53,7 +53,7 @@ public class ClientQueueExecutionThread implements Runnable {
 	        	{
 		        	if(headOfPriorityQueue.acks_sent == 0)
 		        	{
-		        		//Send it to all clients
+		        		//Send it to all clients except me
 		        		/*try {
 		        		    Thread.sleep(100);              //1000 milliseconds is one second.
 		        		} catch(InterruptedException ex) {
@@ -63,11 +63,19 @@ public class ClientQueueExecutionThread implements Runnable {
 		        		j = 0;
 		        		for(MSocket mSocket: client_mSocket)	//send to all clients
 		        		{
-		                	packetAck = new MPacket(1, headOfPriorityQueue.lamportClock);
-		                	System.out.println("ClientQueueExecutionThread: Writing ACK with lamport clock " +
-		                			headOfPriorityQueue.lamportClock + " to socket " + j);
-		                    mSocket.writeObject(packetAck);
-		                    j++;
+		        			if(j == pid)
+		        			{
+		        				
+		        			}
+		        			else
+		        			{	
+			                	packetAck = new MPacket(1, headOfPriorityQueue.lamportClock);
+			                	System.out.println("ClientQueueExecutionThread: Writing ACK with lamport clock " +
+			                			headOfPriorityQueue.lamportClock + " to socket " + j);
+			                    mSocket.writeObject(packetAck);
+			                    
+		        			}
+		        			j++;
 		                }
 		        		headOfPriorityQueue.acks_sent = 1;
 		        		j = 0;
@@ -81,7 +89,7 @@ public class ClientQueueExecutionThread implements Runnable {
 		        	if((lamportAcks.get(headOfPriorityQueue2.lamportClock) != null))
 		        	{	
 	        			//Makes sure head has all acks AND has sent out all its acks 
-		        		if((lamportAcks.get(headOfPriorityQueue2.lamportClock) == maxClients)
+		        		if((lamportAcks.get(headOfPriorityQueue2.lamportClock) == (maxClients - 1))
 		        				&& (headOfPriorityQueue2.acks_sent == 1))
 		        		{
 				        	System.out.println("QueueExecutionThread: CAN execute! -  headOfPriorityQueue2 has "
