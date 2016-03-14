@@ -50,9 +50,8 @@ public class MyServerThread implements Runnable{
 				System.out.println("MyServerThread: Got a connection here");
 				
 				//Start a new handler thread for each new client connection for each Mazewar client
-				new Thread(new MyServerListenerThread(mSocket, myPriorityQueue, myLamportClock, lamportAcks, pid)).start();
-				System.out.println("MyServerThread: So made listener for client");
-				
+				new Thread(new MyServerListenerThread(mSocket, myPriorityQueue, myLamportClock, lamportAcks, pid, eventQueue)).start();
+				System.out.println("MyServerThread: Made listener for  a client");
 				
 			} catch (IOException e) {
 				// TODO Auto-generated catch block

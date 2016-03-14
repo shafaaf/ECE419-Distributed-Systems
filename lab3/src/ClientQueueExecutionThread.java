@@ -1,8 +1,10 @@
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.PriorityQueue;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 
 public class ClientQueueExecutionThread implements Runnable {
@@ -15,10 +17,13 @@ public class ClientQueueExecutionThread implements Runnable {
     private HashMap<Double, Integer> lamportAcks;
     private int maxClients;
     private int pid;
+    public ArrayList<MSocket> socketList;
+    public BlockingQueue eventQueue;
     
     public ClientQueueExecutionThread( MSocket mSocket,
         Hashtable<String, Client> clientTable,PriorityBlockingQueue myPriorityQueue, 
-        	MSocket[] client_mSocket, HashMap<Double, Integer> lamportAcks, int maxClients, int pid)
+        	MSocket[] client_mSocket, HashMap<Double, Integer> lamportAcks, int maxClients, int pid, 
+        		ArrayList<MSocket> socketList, BlockingQueue eventQueue)
     {
         this.mSocket = mSocket;
         this.clientTable = clientTable;
@@ -28,6 +33,8 @@ public class ClientQueueExecutionThread implements Runnable {
         this.lamportAcks = lamportAcks;
         this.maxClients = maxClients;
         this.pid = pid;
+        this.socketList = socketList;
+        this.eventQueue = eventQueue;
         
         if(Debug.debug) System.out.println("ClientQueueExecutionThread: Instatiating QueueExecutionThread");
     }
@@ -39,106 +46,79 @@ public class ClientQueueExecutionThread implements Runnable {
         MPacket toBroadcast = null;
         MPacket packetAck = null;
         Client client = null;
-        int i = 0;
-        int j = 0;
+        
         if(Debug.debug) System.out.println("ClientQueueExecutionThread: Starting While loop");
         
         while(true){
-        	//MyPriorityQueue will only have EVENTS, not acks!
+        	
         	if(!myPriorityQueue.isEmpty())
         	{
+        		//System.out.println("ClientQueueExecutionThread: Its NOT EMPTY");
+            	
         		//Send acks for only head of queue, which MAY BE CHANGING
 	        	headOfPriorityQueue = (MPacket)myPriorityQueue.peek();
-	        	if(headOfPriorityQueue!= null)
-	        	{
-		        	if(headOfPriorityQueue.acks_sent == 0)
-		        	{
-		        		//Send it to all clients except me
-		        		/*try {
-		        		    Thread.sleep(100);              //1000 milliseconds is one second.
-		        		} catch(InterruptedException ex) {
-		        		    Thread.currentThread().interrupt();
-		        		}*/
-		        		
-		        		j = 0;
-		        		for(MSocket mSocket: client_mSocket)	//send to all clients
-		        		{
-		        			if(j == pid)
-		        			{
-		        				
-		        			}
-		        			else
-		        			{	
-			                	packetAck = new MPacket(1, headOfPriorityQueue.lamportClock);
-			                	System.out.println("ClientQueueExecutionThread: Writing ACK with lamport clock " +
-			                			headOfPriorityQueue.lamportClock + " to socket " + j);
-			                    mSocket.writeObject(packetAck);
-			                    
-		        			}
-		        			j++;
-		                }
-		        		headOfPriorityQueue.acks_sent = 1;
-		        		j = 0;
-		        	}
-	        	}
-             
+	        	//System.out.println("ClientQueueExecutionThread: headOfPriorityQueue.acks_sent is " + headOfPriorityQueue.acks_sent);
+            	
+	        	             
 	        	
-	        	headOfPriorityQueue2 = myPriorityQueue.peek();
-	        	if(lamportAcks.get(headOfPriorityQueue2.lamportClock) != null)
+	        	//headOfPriorityQueue2 = myPriorityQueue.peek();
+	        	if(lamportAcks.get(headOfPriorityQueue.lamportClock) != null)
 	        	{
-		        	if((lamportAcks.get(headOfPriorityQueue2.lamportClock) != null))
-		        	{	
-	        			//Makes sure head has all acks AND has sent out all its acks 
-		        		if((lamportAcks.get(headOfPriorityQueue2.lamportClock) == (maxClients - 1))
-		        				&& (headOfPriorityQueue2.acks_sent == 1))
-		        		{
-				        	System.out.println("QueueExecutionThread: CAN execute! -  headOfPriorityQueue2 has "
-				        			+ "lamport clock " + headOfPriorityQueue2.lamportClock +" and it has " + 
-		        					lamportAcks.get(headOfPriorityQueue2.lamportClock) + " acks!");
-		        			
-				        	received = myPriorityQueue.poll();
-				        	System.out.println("QueueExecutionThread: received.lamportClock is " + received.lamportClock);
-				        	System.out.println("QueueExecutionThread: headOfPriorityQueue2.lamportClock is " + headOfPriorityQueue2.lamportClock);
+		        	//Makes sure head has all acks AND has sent out all its acks
+	        		//System.out.println("QueueExecutionThread: Acks sent for headOfPriorityQueue2 is " + headOfPriorityQueue2.acks_sent);
+				    
+	        		if((lamportAcks.get(headOfPriorityQueue.lamportClock).intValue() >= (maxClients - 1)))
+	        				//&& (headOfPriorityQueue.acks_sent == 1))
+	        		{
+			        	System.out.println("QueueExecutionThread: CAN execute! -  headOfPriorityQueue has "
+			        			+ "lamport clock " + headOfPriorityQueue.lamportClock +" and it has " + 
+	        					lamportAcks.get(headOfPriorityQueue.lamportClock) + " acks!");
+	        			
+			        	received = myPriorityQueue.poll();
+			        	System.out.println("QueueExecutionThread: received.lamportClock is " + received.lamportClock);
+			        	System.out.println("QueueExecutionThread: headOfPriorityQueue.lamportClock is " + headOfPriorityQueue.lamportClock);
+			        	
+			        	if(received.lamportClock == headOfPriorityQueue.lamportClock) //check if same guy I was looking at
+			        	{
+				        	client = clientTable.get(received.name);
 				        	
-				        	if(received.lamportClock == headOfPriorityQueue2.lamportClock)	//same guy I was looking at
-				        	{
-					        	client = clientTable.get(received.name);
-					        	
-					        	//Debugging
-					        	//System.out.println("QueueExecutionThread: client is: " + received.name);
-					        	
-					           	//execute client actions. Here the client class refers to the client who actually caused the movement, 
-					        	//fire or projectile movement
-					            if(received.event == MPacket.UP){
-					                client.forward();
-					            }else if(received.event == MPacket.DOWN){
-					                client.backup();
-					            }else if(received.event == MPacket.LEFT){
-					                client.turnLeft();
-					            }else if(received.event == MPacket.RIGHT){
-					                client.turnRight();
-					            }else if(received.event == MPacket.FIRE){
-					                client.fire();
-					            }else if(received.event == MPacket.PROJECTILE_MOVEMENT){
-					                client.myMoveProjectile();
-					            }
-					            else{
-					                throw new UnsupportedOperationException();
-					            }
-		        			}
-				        	else{	//put it back in as its something else now
-				        		myPriorityQueue.put(received);
-				        	}
-		        		}
-		        		
-		        		else
-		        		{
-		        			System.out.println("QueueExecutionThread: CANT execute for a reason! Real Head "
-			        				+ "of queue has lamport clock " + myPriorityQueue.peek().lamportClock + 
-			        					" and number of acks peek has is " + lamportAcks.get(myPriorityQueue.peek().lamportClock));
-		        			
+				        	//Debugging
+				        	//System.out.println("QueueExecutionThread: client is: " + received.name);
+				        	
+				           	//execute client actions. Here the client class refers to the client who actually caused the movement, 
+				        	//fire or projectile movement
+				            if(received.event == MPacket.UP){
+				                client.forward();
+				            }else if(received.event == MPacket.DOWN){
+				                client.backup();
+				            }else if(received.event == MPacket.LEFT){
+				                client.turnLeft();
+				            }else if(received.event == MPacket.RIGHT){
+				                client.turnRight();
+				            }else if(received.event == MPacket.FIRE){
+				                client.fire();
+				            }else if(received.event == MPacket.PROJECTILE_MOVEMENT){
+				                client.myMoveProjectile();
+				            }
+				            else{
+				                throw new UnsupportedOperationException();
+				            }
+	        			}
+			        	else{	//put it back in as its something else now
+			        		System.out.println("QueueExecutionThread: Putting it back as its something else");
+			        		myPriorityQueue.put(received);
 			        	}
 	        		}
+	        		
+	        		else
+	        		{
+	        			/*System.out.println("QueueExecutionThread: CANT execute for a reason! Real Head "
+		        				+ "of queue has lamport clock " + myPriorityQueue.peek().lamportClock + 
+		        					" and number of acks peek has is " + lamportAcks.get(myPriorityQueue.peek().lamportClock));
+		        					*/
+	        			
+		        	}
+	        		
         		}
         	}
         	else

@@ -388,7 +388,7 @@ public class Mazewar extends JFrame {
                 		MSocket newSocket = new MSocket(info.hostName, info.port);
                 		socketList.add(newSocket);
                     	System.out.println("Mazewar: Made a socket conenction to client " + info.pid);
-                    	new Thread(new MyServerListenerThread(mSocket, myPriorityQueue, myLamportClock, lamportAcks, pid)).start();
+                    	new Thread(new MyServerListenerThread(newSocket, myPriorityQueue, myLamportClock, lamportAcks, pid, eventQueue)).start();
                     	System.out.println("Mazewar: So made listener for client" + info.pid);
                     }
                 	else{
@@ -417,12 +417,11 @@ public class Mazewar extends JFrame {
                 //Start a new listener thread, which would only add to myPriorityQueue
                 //new Thread(new ClientListenerThread(mSocket, clientTable, myPriorityQueue)).start();
                 //Start a new thread for removing from queue and executing
-                new Thread(new ClientQueueExecutionThread(mSocket, clientTable, myPriorityQueue, client_mSocket, lamportAcks, MAX_CLIENTS, pid)).start();
-
+                new Thread(new ClientQueueExecutionThread(mSocket, clientTable, myPriorityQueue, client_mSocket, lamportAcks, MAX_CLIENTS, pid, socketList, eventQueue)).start();
+                
                 //1 Thread to send to all clients for each Mazewar client
     			System.out.println("Mazewar: Making MyServerSenderThread");
                 new Thread(new MyServerSenderThread(client_mSocket, eventQueue, myLamportClock,myPriorityQueue, pid, socketList)).start();
-                
                 
         }
         

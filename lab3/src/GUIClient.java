@@ -34,7 +34,9 @@ public class GUIClient extends LocalClient implements KeyListener {
          * Create a GUI controlled {@link LocalClient}.  
          */
         private BlockingQueue eventQueue;
-        public LamportClock myLamportClock;;
+        public LamportClock myLamportClock;
+        
+
         
         public GUIClient(String name, BlockingQueue eventQueue,  LamportClock myLamportClock) {
                 super(name);
@@ -55,7 +57,11 @@ public class GUIClient extends LocalClient implements KeyListener {
                         } else if(e.getKeyCode() == KeyEvent.VK_UP) {
                                 //forward();
                         		//System.out.println("GUIClient: You pressed up! So putting in event queue");
-                        		eventQueue.put(new MPacket(getName(), MPacket.ACTION, MPacket.UP));
+                        		MPacket newEvent = null;
+                        		newEvent = new MPacket(getName(), MPacket.ACTION, MPacket.UP);
+                        		newEvent.category = 0;
+                        		eventQueue.put(newEvent);
+                        		
                                 //System.out.println("GUIClient: Finished putting in event queue!");
                                 
                         		/*
@@ -70,20 +76,36 @@ public class GUIClient extends LocalClient implements KeyListener {
                         // Down-arrow moves backward.
                         } else if(e.getKeyCode() == KeyEvent.VK_DOWN) {
                                 //backup();
-                                eventQueue.put(new MPacket(getName(), MPacket.ACTION, MPacket.DOWN));
+	                        	MPacket newEvent = null;
+	                    		newEvent = new MPacket(getName(), MPacket.ACTION, MPacket.DOWN);
+	                    		newEvent.category = 0;
+                        		eventQueue.put(newEvent);
+                        		
                         // Left-arrow turns left.
                         } else if(e.getKeyCode() == KeyEvent.VK_LEFT) {
                                 //turnLeft();
-                                eventQueue.put(new MPacket(getName(), MPacket.ACTION, MPacket.LEFT));
+	                        	MPacket newEvent = null;
+	                    		newEvent = new MPacket(getName(), MPacket.ACTION, MPacket.LEFT);
+	                    		newEvent.category = 0;
+                                eventQueue.put(newEvent);
+                                
                         // Right-arrow turns right.
                         } else if(e.getKeyCode() == KeyEvent.VK_RIGHT) {
                                 //turnRight();
-                                eventQueue.put(new MPacket(getName(), MPacket.ACTION, MPacket.RIGHT));
+	                        	MPacket newEvent = null;
+	                    		newEvent = new MPacket(getName(), MPacket.ACTION, MPacket.RIGHT);
+	                    		newEvent.category = 0;
+                                eventQueue.put(newEvent);
+                                
                         // Spacebar fires.
                         } else if(e.getKeyCode() == KeyEvent.VK_SPACE) {
                                 //fire();
-                                eventQueue.put(new MPacket(getName(), MPacket.ACTION, MPacket.FIRE));
+	                        	MPacket newEvent = null;
+	                    		newEvent = new MPacket(getName(), MPacket.ACTION, MPacket.FIRE);
+	                    		newEvent.category = 0;
+                                eventQueue.put(newEvent);
                         }
+                        
                 }catch(InterruptedException ie){
                         //An exception is caught, do something
                         Thread.currentThread().interrupt();
