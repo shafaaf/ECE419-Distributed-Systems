@@ -60,7 +60,6 @@ public class MyServerSenderThread implements Runnable {
                 toMe.category = toBroadcast.category;
                 toMe.acks_sent = toBroadcast.acks_sent;
                 
-                
                 /*I add to my queue first and broadcast to everyone except for me*/
                 //System.out.println("Putting event in MY QUEUE with Lamport clock: " + toMe.lamportClock);
                 //myPriorityQueue.put(toMe);
