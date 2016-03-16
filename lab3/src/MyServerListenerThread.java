@@ -42,6 +42,7 @@ public class MyServerListenerThread implements Runnable{
                 {
                 	System.out.println("MyServerListenerThread: Got an EVENT from the socket!");
 	                
+                	//As guy who sent event has ack
                 	synchronized (myLamportClock)
                 	{
 		                if(received.lamportClock > myLamportClock.value)  //Updating Lamport clock

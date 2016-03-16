@@ -60,7 +60,7 @@ public class ClientQueueExecutionThread implements Runnable {
 	        		//System.out.println("QueueExecutionThread: Acks sent for headOfPriorityQueue2 is " + headOfPriorityQueue2.acks_sent);
 	        		
 	        		//Makes sure head has all acks AND has sent out all its acks
-	        		if((lamportAcks.get(headOfPriorityQueue.lamportClock).intValue() == maxClients)
+	        		if((lamportAcks.get(headOfPriorityQueue.lamportClock).intValue() == maxClients-1)
 	        				&& (headOfPriorityQueue.acks_sent == 1))
 	        		{
 			        	System.out.println("QueueExecutionThread: CAN execute! -  headOfPriorityQueue has "

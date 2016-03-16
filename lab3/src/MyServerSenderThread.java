@@ -87,7 +87,7 @@ public class MyServerSenderThread implements Runnable {
 		                System.out.println("MyServerSenderThread: Broadcasting EVENT to all clients except me with Lamport clock: " 
 	                    		+ toBroadcast.lamportClock + " AFTER putting in my queue");
 		                
-		                //should ACK MYSELF I think
+		                /*
 		                synchronized (lamportAcks)
 		        		{
 		                	if(lamportAcks.get(toBroadcast.lamportClock) == null)
@@ -104,6 +104,7 @@ public class MyServerSenderThread implements Runnable {
 		                    			+  " so total number for acks is now " + (double)lamportAcks.get(toBroadcast.lamportClock));
 		                	}
 			        	}
+		                */
 		                
 	            	}
 	            	
