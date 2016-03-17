@@ -50,6 +50,9 @@ public class MPacket implements Serializable, Comparable<MPacket> {
    
    //Flag to know whether acks sent or not
     public int acks_sent;
+   
+   //Flag to know owner of the event
+    public int owner;
     
     //These are used to initialize the board
     public int mazeSeed;

@@ -48,9 +48,7 @@ public class ClientQueueExecutionThread implements Runnable {
         	
         	if(!myPriorityQueue.isEmpty())
         	{
-        		
-            	//Send acks for only head of queue, which MAY BE CHANGING
-	        	headOfPriorityQueue = (MPacket)myPriorityQueue.peek();
+        		headOfPriorityQueue = (MPacket)myPriorityQueue.peek();
 	        	//System.out.println("ClientQueueExecutionThread: headOfPriorityQueue.acks_sent is " + headOfPriorityQueue.acks_sent);
             	
 	        	//headOfPriorityQueue2 = myPriorityQueue.peek();

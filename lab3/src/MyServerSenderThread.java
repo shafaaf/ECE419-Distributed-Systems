@@ -42,12 +42,11 @@ public class MyServerSenderThread implements Runnable {
             		System.out.println("MyServerSenderThread: Going to take from event queue");
 	            	toBroadcast = (MPacket)eventQueue.take();
 	            	
-	            	if (toBroadcast.category == 0)	//its an event
+	            	if (toBroadcast.category == 0)	//Its an event
 		            {
 		                System.out.println("MyServerSenderThread: Taken an EVENT from eventqueue.");
-		                
-		                System.out.println("MyServerSenderThread: Now incrementing lamport clock on send. "
-		                		+ "Current Lamport clock is " + myLamportClock.value);
+		                System.out.println("MyServerSenderThread: Will now increment lamport clock on send."
+		                		+ " Current Lamport clock before is " + myLamportClock.value);
 		                
 		                //Increment on send
 		                synchronized(myLamportClock) 
@@ -56,38 +55,33 @@ public class MyServerSenderThread implements Runnable {
 		                	toBroadcast.lamportClock = myLamportClock.value;
 		                }
 		                
-		                System.out.println("MyServerSenderThread: New lamport clock is" + 
-		                		myLamportClock.value + " and event has Lamport clock value " 
+		                System.out.println("MyServerSenderThread: New lamport clock is " + 
+		                		myLamportClock.value + " and event has Lamport clock " 
 		                			+ toBroadcast.lamportClock);
 		                
-		                
-		                //0 to show its an event and NOT an ack
-		                //toBroadcast.category = 0;
-		                //0 to show that no acks for it have been sent
+		                toBroadcast.owner = pid;
 		                toBroadcast.acks_sent = 0;
-		                
 		                
 		                /*Setup My packet which I will put in my queue*/
 		                //from gui client - eventQueue.put(new MPacket(getName(), MPacket.ACTION, MPacket.DOWN));
 		                //MPacket constructor - public MPacket(String name, int type, int event){
-		                
 		                /*toMe = new MPacket(toBroadcast.name, toBroadcast.type, toBroadcast.event);
 		                toMe.lamportClock = toBroadcast.lamportClock;
 		                toMe.category = toBroadcast.category;
 		                toMe.acks_sent = toBroadcast.acks_sent;
 		                */
 		                
-		                /*I add to my queue first and broadcast to everyone except for me*/
-		                System.out.println("MyServerSenderThread: Putting EVENT in MY QUEUE with Lamport clock: " + toBroadcast.lamportClock);
+		               System.out.println("MyServerSenderThread: Putting EVENT in MY QUEUE with Lamport clock: " + 
+		                		toBroadcast.lamportClock + " with owner me as client" + toBroadcast.owner);
 		                
-		                //Putting in my execution queue
+		                //Putting in MY execution queue first before broadcasting to others
 		                //Unsure here whether need to make a new type of packet
 		                myPriorityQueue.put(toBroadcast);
 		                
-		                System.out.println("MyServerSenderThread: Broadcasting EVENT to all clients except me with Lamport clock: " 
+		                System.out.println("MyServerSenderThread: Broadcasting that EVENT to all clients except me with Lamport clock: " 
 	                    		+ toBroadcast.lamportClock + " AFTER putting in my queue");
 		                
-		                /*
+		                /* Dont act myself as waiting for n-1 acks
 		                synchronized (lamportAcks)
 		        		{
 		                	if(lamportAcks.get(toBroadcast.lamportClock) == null)
@@ -108,38 +102,26 @@ public class MyServerSenderThread implements Runnable {
 		                
 	            	}
 	            	
-	            	else if(toBroadcast.category == 1)	//its a ack, acks are put in event queue
+	            	/*	Its a ack.These are put in event queue by me when I try to send acks for events when
+	            	 	when Im not the owner and acks sent is 0.
+	            	*/	
+	            	else if(toBroadcast.category == 1)
 	            	{
-	            		//Dont need as its an ack for me to come here
-	            		//toBroadcast.category = 1;
-	            		
-	            		//unsure here
-	            		toBroadcast.acks_sent = 0;
-	            		
-	            
+	            		//Unsure here. REMEMBER to include this if needed
+	            		//toBroadcast.acks_sent = 0;
 	            		
 	            		System.out.println("MyServerSenderThread: Broadcasting ACK to all clients except me with Lamport clock: " 
 	                    		+ toBroadcast.lamportClock);
 	            		
 	            		//the ack should have a lamport clock value from before
 	            		//toBroadcast.lamportClock = myLamportClock.value;
-	            		
-	                }
+	            	}
 	            	
 	            	else
 	            	{
 	            		System.out.println("MyServerSenderThread: WEIRD!! Should not come here!");
 	            	}
 	                
-	                //Delay
-	                /*
-	                try {
-	                    Thread.sleep(400);                 //1000 milliseconds is one second.
-	                } catch(InterruptedException ex) {
-	                    Thread.currentThread().interrupt();
-	                }*/
-	                
-	            	
 	                //Send to all clients except me
 	            	i = 0;
 	            	for(MSocket mSocket: socketList)
