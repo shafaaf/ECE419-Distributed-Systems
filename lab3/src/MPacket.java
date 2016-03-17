@@ -50,9 +50,6 @@ public class MPacket implements Serializable, Comparable<MPacket> {
    
    //Flag to know whether acks sent or not
     public int acks_sent;
-   
-   //Flag to know owner of the event
-    public int owner;
     
     //These are used to initialize the board
     public int mazeSeed;
@@ -158,10 +155,11 @@ public class MPacket implements Serializable, Comparable<MPacket> {
     }
     
     public int compareTo(MPacket o){	//if positive this bigger, else other guy
-    	
+    	/* old code: return (int)(this.lamportClock - o.lamportClock);*/
     	if (this.lamportClock - o.lamportClock < 0){return -1;}
     	if (this.lamportClock - o.lamportClock > 0){return 1;}
     	return 0;
+    	
     }
 
 }

@@ -9,6 +9,9 @@ public class MyServerThread implements Runnable{
 	private MServerSocket mServerSocket;
 	private int portNumber;
 	private int maxClients;
+	private int clientCount;
+	private MSocket[] client_mSocket;
+	private MSocket[] mSocketList;
 	private BlockingQueue eventQueue;
 	private PriorityBlockingQueue myPriorityQueue;
 	public LamportClock myLamportClock;
@@ -18,14 +21,17 @@ public class MyServerThread implements Runnable{
     
 	
 	//Constructor
-	MyServerThread(MServerSocket mServerSocket, int portNumber, int maxClients,
-			 BlockingQueue eventQueue, 
+	MyServerThread(MServerSocket mServerSocket, int portNumber, int maxClients, int clientCount, 
+			MSocket[] client_mSocket, MSocket[] mSocketList, BlockingQueue eventQueue, 
 				PriorityBlockingQueue myPriorityQueue, LamportClock myLamportClock, 
 					HashMap<Double, Integer> lamportAcks, int pid, ArrayList<MSocket> socketList) 
 	{
 		this.mServerSocket = mServerSocket;
 		this.portNumber = portNumber;
 		this.maxClients = maxClients;
+		this.clientCount = clientCount;
+		this.client_mSocket = client_mSocket;
+		this.mSocketList = mSocketList;
 		this.eventQueue = eventQueue;
 		this.myPriorityQueue = myPriorityQueue;
 		this.myLamportClock = myLamportClock;

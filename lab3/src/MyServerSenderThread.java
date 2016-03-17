@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 
@@ -9,24 +8,23 @@ import java.util.concurrent.PriorityBlockingQueue;
 public class MyServerSenderThread implements Runnable {
 
     //private ObjectOutputStream[] outputStreamList = null;
+    private MSocket[] client_mSocket = null;
     private BlockingQueue eventQueue = null;
     public LamportClock myLamportClock = null;
     public PriorityBlockingQueue myPriorityQueue;
     public int pid;
     public ArrayList<MSocket> socketList;
-    public HashMap<Double, Integer> lamportAcks;
     
     
-    public MyServerSenderThread(BlockingQueue eventQueue, 
-    		LamportClock myLamportClock, PriorityBlockingQueue myPriorityQueue, 
-    		int pid, ArrayList<MSocket> socketList, HashMap<Double, Integer> lamportAcks)
+    public MyServerSenderThread(MSocket[] client_mSocket, BlockingQueue eventQueue, 
+    		LamportClock myLamportClock, PriorityBlockingQueue myPriorityQueue, int pid, ArrayList<MSocket> socketList)
     {
+		this.client_mSocket = client_mSocket;
 		this.eventQueue = eventQueue;
 		this.myLamportClock =  myLamportClock;
 		this.myPriorityQueue = myPriorityQueue;		
 		this.pid = pid;
 		this.socketList = socketList;
-		this.lamportAcks = lamportAcks;
     }
 
     public void run() {
@@ -38,103 +36,73 @@ public class MyServerSenderThread implements Runnable {
         MPacket headOfPriorityQueue = null;
         
         while(true){
-            try{
-            		System.out.println("MyServerSenderThread: Going to take from event queue");
-	            	toBroadcast = (MPacket)eventQueue.take();
-	            	
-	            	if (toBroadcast.category == 0)	//Its an event
-		            {
-		                System.out.println("MyServerSenderThread: Taken an EVENT from eventqueue.");
-		                System.out.println("MyServerSenderThread: Will now increment lamport clock on send."
-		                		+ " Current Lamport clock before is " + myLamportClock.value);
-		                
-		                //Increment on send
-		                synchronized(myLamportClock)
-		                {
-		                	myLamportClock.value = myLamportClock.value + 1;
-		                	toBroadcast.lamportClock = myLamportClock.value;
-		                }
-		                
-		                System.out.println("MyServerSenderThread: New lamport clock is " + 
-		                		myLamportClock.value + " and event has Lamport clock " 
-		                			+ toBroadcast.lamportClock);
-		                
-		                toBroadcast.owner = pid;
-		                toBroadcast.acks_sent = 0;
-		                
-		                /*Setup My packet which I will put in my queue*/
-		                //from gui client - eventQueue.put(new MPacket(getName(), MPacket.ACTION, MPacket.DOWN));
-		                //MPacket constructor - public MPacket(String name, int type, int event){
-		                /*toMe = new MPacket(toBroadcast.name, toBroadcast.type, toBroadcast.event);
-		                toMe.lamportClock = toBroadcast.lamportClock;
-		                toMe.category = toBroadcast.category;
-		                toMe.acks_sent = toBroadcast.acks_sent;
-		                */
-		                
-		               System.out.println("MyServerSenderThread: Putting EVENT in MY QUEUE with Lamport clock: " + 
-		                		toBroadcast.lamportClock + " with owner me as client pid " + toBroadcast.owner);
-		                
-		                //Putting in MY execution queue first before broadcasting to others
-		                //Unsure here whether need to make a new type of packet
-		                myPriorityQueue.put(toBroadcast);
-		                
-		                System.out.println("MyServerSenderThread: Broadcasting that EVENT to all clients except me with Lamport clock: " 
-	                    		+ toBroadcast.lamportClock + " AFTER putting in my queue");
-		                
-		                /* Dont act myself as waiting for n-1 acks
-		                synchronized (lamportAcks)
-		        		{
-		                	if(lamportAcks.get(toBroadcast.lamportClock) == null)
-		                	{
-		                		lamportAcks.put(new Double(toBroadcast.lamportClock), new Integer(1));
-		                		System.out.println("ClientQueueExecutionThread: FIRST Ack for " + toBroadcast.lamportClock 
-		                			+  " so total number of acks is " + (double)lamportAcks.get(toBroadcast.lamportClock));
-		                	}
-		                	
-		                	else
-		                	{	//else increment acks for that entry by 1
-		                		lamportAcks.put(toBroadcast.lamportClock, (lamportAcks.get(toBroadcast.lamportClock)) + 1);
-		                		System.out.println("ClientQueueExecutionThread: ANOTHER Ack for " + toBroadcast.lamportClock 
-		                    			+  " so total number for acks is now " + (double)lamportAcks.get(toBroadcast.lamportClock));
-		                	}
-			        	}
-		                */
-		                
-	            	}
-	            	
-	            	/*	Its a ack.These are put in event queue by me when I try to send acks for events when
-	            	 	when Im not the owner and acks sent is 0.
-	            	*/	
-	            	else if(toBroadcast.category == 1)
-	            	{
-	            		//Unsure here. REMEMBER to include this if needed
-	            		//toBroadcast.acks_sent = 0;
-	            		
-	            		System.out.println("MyServerSenderThread: Broadcasting ACK to all clients except me with Lamport clock: " 
-	                    		+ toBroadcast.lamportClock);
-	            		
-	            		//the ack should have a lamport clock value from before
-	            		//toBroadcast.lamportClock = myLamportClock.value;
-	            	}
-	            	
-	            	else
-	            	{
-	            		System.out.println("MyServerSenderThread: WEIRD!! Should not come here!");
-	            	}
+            try{	
+            	System.out.println("MyServerSenderThread: Going to take from event queue");
+            	toBroadcast = (MPacket)eventQueue.take();
+            	
+            	if (toBroadcast.category == 0)
+	            {
+	                //Send only head packet of queue, need vector clock mechanism somewhere around here
+	                System.out.println("MyServerSenderThread: Taken EVENT from eventqueue.");
 	                
-	                //Send to all clients except me
-	            	i = 0;
-	            	for(MSocket mSocket: socketList)
-	                {
-	            		System.out.println("MyServerSenderThread: Actual writing the event or ack with category " + 
-	                			toBroadcast.category + " with lamport clock " + toBroadcast.lamportClock + 
-	                				" to socket " + i);
-	                	mSocket.writeObject(toBroadcast);
-	                	i++;
+	                synchronized(myLamportClock) {
+	                	myLamportClock.value = myLamportClock.value + 1;
+	                	toBroadcast.lamportClock = myLamportClock.value;
 	                }
+	                
+	                toBroadcast.acks_sent = 0;
+	                
+	                
+	                /*Setup My packet which I will put in my queue*/
+	                //from gui client - eventQueue.put(new MPacket(getName(), MPacket.ACTION, MPacket.DOWN));
+	                //MPacket constructor - public MPacket(String name, int type, int event){
+	                /*toMe = new MPacket(toBroadcast.name, toBroadcast.type, toBroadcast.event);
+	                toMe.lamportClock = toBroadcast.lamportClock;
+	                toMe.category = toBroadcast.category;
+	                toMe.acks_sent = toBroadcast.acks_sent;
+	                */
+	                
+	                //First add to my queue, where i will ack myself
+	                System.out.println("MyServerSenderThread: Putting event in MY QUEUE with Lamport clock: " + toBroadcast.lamportClock);
+	                myPriorityQueue.put(toBroadcast);
+	                
+	                System.out.println("MyServerSenderThread: Broadcasting EVENT to all clients except me with Lamport clock: " 
+                    		+ toBroadcast.lamportClock + " after putting in MY own queue");
+            	}
+            	
+            	else if(toBroadcast.category == 1)	//its an ack, which I had put in my event queue to broadcast to others
+            	{
+            		//lamport clock value I think already set before
+            		//toBroadcast.acks_sent = 0;	//not needed I think
+            		System.out.println("MyServerSenderThread: Broadcasting ACK to all clients except me with Lamport clock: " 
+                    		+ toBroadcast.lamportClock);
+            		
+            		//toBroadcast.lamportClock = myLamportClock.value;
+            		
+                }
+            	else{
+            		System.out.println("MyServerSenderThread: Shouldnt come here! Weird!!");
+            	}
+                
+                /* delay
+                try {
+                    Thread.sleep(400);                 //1000 milliseconds is one second.
+                } catch(InterruptedException ex) {
+                    Thread.currentThread().interrupt();
+                }*/
+                
+                //Send to all clients except me
+            	i = 0; 
+            	for(MSocket mSocket: socketList)
+                {
+                	System.out.println("MyServerSenderThread: Writing the THING with category " + toBroadcast.category + " with lamport clock " + 
+                				toBroadcast.lamportClock + " to socket " + i);
+                		mSocket.writeObject(toBroadcast);
+                		i++;
+                }
                 
             }catch(InterruptedException e){
-                System.out.println("MyServerSenderThread: Throwing Interrupt");
+                System.out.println("Throwing Interrupt");
                 Thread.currentThread().interrupt();    
             }
             

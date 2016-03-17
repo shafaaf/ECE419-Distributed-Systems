@@ -421,7 +421,7 @@ public class MazeImpl extends Maze implements Serializable, ClientListener, Runn
 	                    {
 	        				try {
 								MPacket send = (new MPacket(localClientName, MPacket.ACTION, MPacket.PROJECTILE_MOVEMENT));
-								send.category = 0;
+								send.category = 0;	//newly added in
 								eventQueue.put(send);
 	
 				                if(Debug.debug) System.out.println("----->CLIENT: : " + send);
