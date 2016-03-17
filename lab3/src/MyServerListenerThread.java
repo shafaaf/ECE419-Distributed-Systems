@@ -43,7 +43,7 @@ public class MyServerListenerThread implements Runnable{
             	for others will be sent, and i will ack MYSELF*/
                 if(received.category == 0) 
                 {
-                	System.out.println("MyServerListenerThread: Got an EVENT! with lamport clock " + received.category);
+                	System.out.println("MyServerListenerThread: Got an EVENT! with lamport clock " + received.lamportClock);
 	                
                 	synchronized (myLamportClock)
                 	{
@@ -95,6 +95,7 @@ public class MyServerListenerThread implements Runnable{
 	        		 //Put only events in priority queue
 		             System.out.println("MyServerListenerThread: Putting EVENT from someone else with lamport clock " + 
 		            		 received.lamportClock + " in myPriorityQueue");
+		             received.acks_sent = 0;
 	        		 myPriorityQueue.put(received);
 	           
                 }	//end bracket of if for received.category = 0
@@ -113,77 +114,22 @@ public class MyServerListenerThread implements Runnable{
 	                	{
 	                		lamportAcks.put(new Double(received.lamportClock), new Integer(1));
 	                		System.out.println("MyServerListenerThread: FIRST Ack for " + received.lamportClock 
-	                			+  " so total number of acks is " + (double)lamportAcks.get(received.lamportClock));
+	                			+  " so total number of acks is " + lamportAcks.get(received.lamportClock));
 	                	}
 	                	
 	                	else
 	                	{	
 	                		lamportAcks.put((Double)received.lamportClock, (lamportAcks.get(received.lamportClock)) + 1);
 	                		System.out.println("MyServerListenerThread: ANOTHER Ack for " + received.lamportClock 
-	                    			+  " so total number for acks is now " + (double)lamportAcks.get(received.lamportClock));
+	                    			+  " so total number for acks is now " + lamportAcks.get(received.lamportClock));
 	                	}
                 	}         	
                 }
+                else{
+                	System.out.println("MyServerListenerThread: weird! shouldnt come here");
+                }
                 
-                
- //------------------------------------------Ack sending-------------------------------------------------------------
-                
-               headOfPriorityQueue = myPriorityQueue.peek();
-               if(headOfPriorityQueue!= null)
-               {
-            	   if(headOfPriorityQueue.acks_sent == 0)
-            	   {
-		        		packetAck = new MPacket(1, headOfPriorityQueue.lamportClock);
-		        		System.out.println("MyServerListenerThread: Now send out acks also to myself "
-		        			+ "for headOfPriorityQueue which has lamport clock " + headOfPriorityQueue.lamportClock);
-		        		
-		        		//Ack myself
-		        		System.out.println("MyServerListenerThread: Acking myself for headOfPriorityQueue with lamport clock " +
-		        				headOfPriorityQueue.lamportClock);
-		        		
-		        		synchronized (lamportAcks)
-		        		{
-		                	if(lamportAcks.get(packetAck.lamportClock) == null)
-		                	{
-		                		lamportAcks.put(new Double(packetAck.lamportClock), new Integer(1));
-		                		System.out.println("MyServerListenerThread: FIRST Ack for " + packetAck.lamportClock 
-		                			+  " so total number of acks is " + (double)lamportAcks.get(packetAck.lamportClock));
-		                	}
-		                	
-		                	else
-		                	{	//else increment acks for that entry by 1
-		                		lamportAcks.put(packetAck.lamportClock, (lamportAcks.get(packetAck.lamportClock)) + 1);
-		                		System.out.println("MyServerListenerThread: ANOTHER Ack for " + packetAck.lamportClock 
-		                    			+  " so total number for acks is now " + (double)lamportAcks.get(packetAck.lamportClock));
-		                	}
-			        	}
-		        		
-		        		System.out.println("MyServerListenerThread: Finished acking myself. Now put ACK packet with lamport clock " +
-		        				packetAck.lamportClock + " in event queue to be sent to everyone");
-		        		
-	                	try {
-							eventQueue.put(packetAck);
-							System.out.println("MyServerListenerThread: Finished putting it in event queue");
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-
-	                	headOfPriorityQueue.acks_sent = 1;
-	               }
-            	   
-            	   else if(headOfPriorityQueue.acks_sent == 1)
-            	   {
-            		   System.out.println("MyServerListenerThread: Acks sent already for event with lamport clock " + 
-            				   headOfPriorityQueue.lamportClock);
-            	   }
-            	   else
-            	   {
-            		   System.out.println("MyServerListenerThread: Weird shouldnt come here!");
-            	   }
-	        	}
- //--------------------------------------------------------------------------------------------------------------
-               
+                  
             } //end backet for try
             
             catch(IOException e){

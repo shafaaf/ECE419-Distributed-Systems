@@ -98,7 +98,7 @@ public class Mazewar extends JFrame {
         public int pid;	//my pid
         public LamportClock myLamportClock;
         private int clientCount = 0;
-        private static final int MAX_CLIENTS = 3;//also change in naming server
+        private static final int MAX_CLIENTS = 2;//also change in naming server
         
         //Double is the lamport clock, Integer is the number of acks received
         private HashMap<Double, Integer> lamportAcks;

@@ -53,30 +53,95 @@ public class ClientQueueExecutionThread implements Runnable {
         	
         	if(!myPriorityQueue.isEmpty())
         	{
-        		//System.out.println("ClientQueueExecutionThread: Its NOT EMPTY");
-            	
-        		//Send acks for only head of queue, which MAY BE CHANGING
-	        	headOfPriorityQueue = (MPacket)myPriorityQueue.peek();
-	        	//System.out.println("ClientQueueExecutionThread: headOfPriorityQueue.acks_sent is " + headOfPriorityQueue.acks_sent);
-            	
-	        	             
-	        	
-	        	//headOfPriorityQueue2 = myPriorityQueue.peek();
-	        	if(lamportAcks.get(headOfPriorityQueue.lamportClock) != null)
+//-----------------------------------------------------Ack sending-------------------------------------------------------------
+        		
+	           headOfPriorityQueue = myPriorityQueue.peek();
+	           /*
+	           System.out.println("ClientQueueExecutionThread: client with pid " + pid + ", has headOfPriorityQueue as lamport clock " + 
+	        		   headOfPriorityQueue.lamportClock + " and number of acks it received is "+
+	        		   	lamportAcks.get(headOfPriorityQueue.lamportClock) + " and acks sent is "+
+	        		   	headOfPriorityQueue.acks_sent);
+	        	*/	   	
+	           
+	           if(headOfPriorityQueue!= null)
+	           {
+	        	   
+	        	   if(headOfPriorityQueue.acks_sent == 0)
+	        	   { 
+		        		
+	        		   	packetAck = new MPacket(1, headOfPriorityQueue.lamportClock);
+		        		System.out.println("ClientQueueExecutionThread: Made ack packet with category " +
+		        				packetAck.category + " and lamportClock " + packetAck.lamportClock);
+		        		
+		        		System.out.println("ClientQueueExecutionThread: Now send out acks also to myself "
+		        			+ "for headOfPriorityQueue which has lamport clock " + headOfPriorityQueue.lamportClock);
+		        		
+		        		//Ack myself
+		        		System.out.println("ClientQueueExecutionThread: Acking myself for headOfPriorityQueue with lamport clock " +
+		        				headOfPriorityQueue.lamportClock);
+		        		
+		        		synchronized (lamportAcks)
+		        		{
+		                	if(lamportAcks.get(packetAck.lamportClock) == null)
+		                	{
+		                		lamportAcks.put(new Double(packetAck.lamportClock), new Integer(1));
+		                		System.out.println("ClientQueueExecutionThread: FIRST Ack from myself for " + packetAck.lamportClock 
+		                			+  " so total number of acks is " + (double)lamportAcks.get(packetAck.lamportClock));
+		                	}
+		                	
+		                	else
+		                	{	//else increment acks for that entry by 1
+		                		lamportAcks.put(packetAck.lamportClock, (lamportAcks.get(packetAck.lamportClock)) + 1);
+		                		System.out.println("ClientQueueExecutionThread: ANOTHER Ack for " + packetAck.lamportClock 
+		                    			+  " so total number for acks is now " + (double)lamportAcks.get(packetAck.lamportClock));
+		                	}
+			        	}
+		        		
+		        		headOfPriorityQueue.acks_sent = 1;
+		        		System.out.println("ClientQueueExecutionThread: Finished acking myself. Now put ACK packet with lamport clock " +
+		        				packetAck.lamportClock + " in event queue to be sent to everyone else");
+		        		
+		        		try {
+							eventQueue.put(packetAck);
+							System.out.println("ClientQueueExecutionThread: Finished putting it in event queue");
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+	
+	                	
+	               }
+	        	   
+	        	   else if(headOfPriorityQueue.acks_sent == 1)
+	        	   {
+	        		    
+	        		   System.out.println("MyServerListenerThread: Acks sent already is 1 for event with lamport clock " + 
+	        				   headOfPriorityQueue.lamportClock);
+	        	   }
+	        	   else
+	        	   {
+	        		   System.out.println("ClientQueueExecutionThread: Weird shouldnt come here!");
+	        	   }
+	        	}
+	           
+ //--------------------------------------------------------------------------------------------------------------
+
+	           //Now do actual execution. Peek queue again for head
+	           headOfPriorityQueue = myPriorityQueue.peek();
+	           
+	           //have at least 1 event
+	           if(lamportAcks.get(headOfPriorityQueue.lamportClock) != null)
 	        	{
-		        	//Makes sure head has all acks AND has sent out all its acks
-	        		//System.out.println("QueueExecutionThread: Acks sent for headOfPriorityQueue2 is " + headOfPriorityQueue2.acks_sent);
-				    
-	        		if((lamportAcks.get(headOfPriorityQueue.lamportClock).intValue() >= (maxClients - 1)))
-	        				//&& (headOfPriorityQueue.acks_sent == 1))
+		        	if((lamportAcks.get(headOfPriorityQueue.lamportClock).intValue() == maxClients)	//unsure of intvalue()
+	        				&& (headOfPriorityQueue.acks_sent == 1))
 	        		{
-			        	System.out.println("QueueExecutionThread: CAN execute! -  headOfPriorityQueue has "
-			        			+ "lamport clock " + headOfPriorityQueue.lamportClock +" and it has " + 
-	        					lamportAcks.get(headOfPriorityQueue.lamportClock) + " acks!");
+			        	System.out.println("ClientQueueExecutionThread: CAN execute! -  headOfPriorityQueue has " +
+			        			"lamport clock " + headOfPriorityQueue.lamportClock +" and it has " + 
+	        						lamportAcks.get(headOfPriorityQueue.lamportClock) + " acks!");
 	        			
 			        	received = myPriorityQueue.poll();
-			        	System.out.println("QueueExecutionThread: received.lamportClock is " + received.lamportClock);
-			        	System.out.println("QueueExecutionThread: headOfPriorityQueue.lamportClock is " + headOfPriorityQueue.lamportClock);
+			        	System.out.println("ClientQueueExecutionThread: received.lamportClock is " + received.lamportClock);
+			        	System.out.println("ClientQueueExecutionThread: headOfPriorityQueue.lamportClock is " + headOfPriorityQueue.lamportClock);
 			        	
 			        	if(received.lamportClock == headOfPriorityQueue.lamportClock) //check if same guy I was looking at
 			        	{
@@ -104,8 +169,9 @@ public class ClientQueueExecutionThread implements Runnable {
 				                throw new UnsupportedOperationException();
 				            }
 	        			}
-			        	else{	//put it back in as its something else now
-			        		System.out.println("QueueExecutionThread: Putting it back as its something else");
+			        	else
+			        	{	//put it back in as its something else now
+			        		System.out.println("ClientQueueExecutionThread: Putting it back as its something else");
 			        		myPriorityQueue.put(received);
 			        	}
 	        		}

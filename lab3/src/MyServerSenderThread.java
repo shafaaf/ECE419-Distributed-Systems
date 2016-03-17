@@ -73,14 +73,16 @@ public class MyServerSenderThread implements Runnable {
             	else if(toBroadcast.category == 1)	//its an ack, which I had put in my event queue to broadcast to others
             	{
             		//lamport clock value I think already set before
-            		//toBroadcast.acks_sent = 0;	//not needed I think
+            		//toBroadcast.acks_sent = 1;
+            		
             		System.out.println("MyServerSenderThread: Broadcasting ACK to all clients except me with Lamport clock: " 
                     		+ toBroadcast.lamportClock);
             		
             		//toBroadcast.lamportClock = myLamportClock.value;
-            		
-                }
-            	else{
+            	}
+            	
+            	else
+            	{
             		System.out.println("MyServerSenderThread: Shouldnt come here! Weird!!");
             	}
                 
