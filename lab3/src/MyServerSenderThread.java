@@ -49,7 +49,7 @@ public class MyServerSenderThread implements Runnable {
 		                		+ " Current Lamport clock before is " + myLamportClock.value);
 		                
 		                //Increment on send
-		                synchronized(myLamportClock) 
+		                synchronized(myLamportClock)
 		                {
 		                	myLamportClock.value = myLamportClock.value + 1;
 		                	toBroadcast.lamportClock = myLamportClock.value;
@@ -72,7 +72,7 @@ public class MyServerSenderThread implements Runnable {
 		                */
 		                
 		               System.out.println("MyServerSenderThread: Putting EVENT in MY QUEUE with Lamport clock: " + 
-		                		toBroadcast.lamportClock + " with owner me as client" + toBroadcast.owner);
+		                		toBroadcast.lamportClock + " with owner me as client pid " + toBroadcast.owner);
 		                
 		                //Putting in MY execution queue first before broadcasting to others
 		                //Unsure here whether need to make a new type of packet

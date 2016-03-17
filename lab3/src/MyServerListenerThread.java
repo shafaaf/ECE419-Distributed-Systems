@@ -42,11 +42,7 @@ public class MyServerListenerThread implements Runnable{
                 {
                 	System.out.println("MyServerListenerThread: Got an EVENT from the socket! Its from " + received.owner);
 	                
-                	//As guy who sent event has it, so ack him as he WONT send the ack if hes owner
-                	System.out.println("MyServerListenerThread: Event from client " + received.owner +
-                			" , so he has to have ack, so increment acks received");
-                	
- 	               	synchronized (myLamportClock)
+                	synchronized (myLamportClock)
                 	{
 		                if(received.lamportClock > myLamportClock.value)  //Updating Lamport clock
 		                {
@@ -54,8 +50,9 @@ public class MyServerListenerThread implements Runnable{
 		            	    System.out.println("MyServerListenerThread: Current lamport clock is " + myLamportClock.value + 
 		            	    		" and new one FROM EVENT received is " + received.lamportClock);
 	
-		                	int a = (int) Math.round(received.lamportClock);
+		                	int a = (int) Math.floor(received.lamportClock);
 		                	Double localLamportClock = new Double(a + "." + pid).doubleValue();
+		                	//changed this
 		            		myLamportClock.value = (double) localLamportClock;
 		            	}
 		                
@@ -67,9 +64,12 @@ public class MyServerListenerThread implements Runnable{
                 	}
                 	
 	               System.out.println("MyServerListenerThread: My latest Lamport clock value is now " + myLamportClock.value);
-
-	               //HACK - ack myself - DONT as waiting for n-1 acks
-	               /*
+	               
+	               
+	               //As guy who sent event has it, so ack him as he WONT send the ack if hes owner
+               		System.out.println("MyServerListenerThread: Event from client with pid " + received.owner +
+               			" , so he has to have ack, so increment acks received");
+	               
 	               synchronized (lamportAcks)
 	        		{
 	                	if(lamportAcks.get(received.lamportClock) == null)
@@ -86,7 +86,7 @@ public class MyServerListenerThread implements Runnable{
 	                    			+  " so total number for acks is now " + (double)lamportAcks.get(received.lamportClock));
 	                	}
 		        	}
-	               */
+	               
 	        		
 	        		
 	        		//Put ONLY events in priority queue
@@ -143,7 +143,7 @@ public class MyServerListenerThread implements Runnable{
 	        			System.out.println("MyServerListenerThread: Im owner of peeked event so DONT send acks!");
 	        		}
 	        		
-		        	if((headOfPriorityQueue.acks_sent == 0) && (headOfPriorityQueue.owner!= pid))
+	        		else if((headOfPriorityQueue.acks_sent == 0) && (headOfPriorityQueue.owner!= pid))
 		        	{
 		        		System.out.println("MyServerListenerThread: Acks NOT sent for this this and Im NOT the owner "
 		        				+ "of this event, so MAKE new ACK packet to send to everyone else");
@@ -200,7 +200,6 @@ public class MyServerListenerThread implements Runnable{
 		        		System.out.println("MyServerListenerThread: Weird! Shouldnt happen with acks.");
 		        	}
 	        	}
-                
                 
             }
             

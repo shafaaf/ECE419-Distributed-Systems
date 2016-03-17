@@ -158,7 +158,10 @@ public class MPacket implements Serializable, Comparable<MPacket> {
     }
     
     public int compareTo(MPacket o){	//if positive this bigger, else other guy
-    	return (int)(this.lamportClock - o.lamportClock);
+    	
+    	if (this.lamportClock - o.lamportClock < 0){return -1;}
+    	if (this.lamportClock - o.lamportClock > 0){return 1;}
+    	return 0;
     }
 
 }
