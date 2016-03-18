@@ -36,7 +36,7 @@ public class ClientQueueExecutionThread implements Runnable {
         this.socketList = socketList;
         this.eventQueue = eventQueue;
         
-        if(Debug.debug) System.out.println("ClientQueueExecutionThread: Instatiating QueueExecutionThread");
+        //if(Debug.debug) System.out.println("ClientQueueExecutionThread: Instatiating QueueExecutionThread");
     }
 
     public void run() {
@@ -47,7 +47,7 @@ public class ClientQueueExecutionThread implements Runnable {
         MPacket packetAck = null;
         Client client = null;
         
-        if(Debug.debug) System.out.println("ClientQueueExecutionThread: Starting While loop");
+        //if(Debug.debug) System.out.println("ClientQueueExecutionThread: Starting While loop");
         
         while(true){
         	
@@ -56,7 +56,8 @@ public class ClientQueueExecutionThread implements Runnable {
 //-----------------------------------------------------Ack sending-------------------------------------------------------------
         		
 	           headOfPriorityQueue = myPriorityQueue.peek();
-	           /*
+	           
+	           /* Can use for debugging, but ONLY if necessary as causes infinite loop
 	           System.out.println("ClientQueueExecutionThread: client with pid " + pid + ", has headOfPriorityQueue as lamport clock " + 
 	        		   headOfPriorityQueue.lamportClock + " and number of acks it received is "+
 	        		   	lamportAcks.get(headOfPriorityQueue.lamportClock) + " and acks sent is "+
@@ -70,40 +71,46 @@ public class ClientQueueExecutionThread implements Runnable {
 	        	   { 
 		        		
 	        		   	packetAck = new MPacket(1, headOfPriorityQueue.lamportClock);
-		        		System.out.println("ClientQueueExecutionThread: Made ack packet with category " +
+		        		/*System.out.println("ClientQueueExecutionThread: Made ack packet with category " +
 		        				packetAck.category + " and lamportClock " + packetAck.lamportClock);
-		        		
-		        		System.out.println("ClientQueueExecutionThread: Now send out acks also to myself "
+		        		*/
+	        		   	
+		        		/*System.out.println("ClientQueueExecutionThread: Now send out acks also to myself "
 		        			+ "for headOfPriorityQueue which has lamport clock " + headOfPriorityQueue.lamportClock);
-		        		
+		        		*/
+	        		   	
 		        		//Ack myself
-		        		System.out.println("ClientQueueExecutionThread: Acking myself for headOfPriorityQueue with lamport clock " +
+		        		/*System.out.println("ClientQueueExecutionThread: Acking myself for headOfPriorityQueue with lamport clock " +
 		        				headOfPriorityQueue.lamportClock);
-		        		
+		        		*/
+	        		   	
 		        		synchronized (lamportAcks)
 		        		{
 		                	if(lamportAcks.get(packetAck.lamportClock) == null)
 		                	{
 		                		lamportAcks.put(new Double(packetAck.lamportClock), new Integer(1));
-		                		System.out.println("ClientQueueExecutionThread: FIRST Ack from myself for " + packetAck.lamportClock 
+		                		/*System.out.println("ClientQueueExecutionThread: FIRST Ack from myself for " + packetAck.lamportClock 
 		                			+  " so total number of acks is " + (double)lamportAcks.get(packetAck.lamportClock));
+		                		*/
 		                	}
 		                	
 		                	else
 		                	{	//else increment acks for that entry by 1
 		                		lamportAcks.put(packetAck.lamportClock, (lamportAcks.get(packetAck.lamportClock)) + 1);
-		                		System.out.println("ClientQueueExecutionThread: ANOTHER Ack for " + packetAck.lamportClock 
+		                		/*System.out.println("ClientQueueExecutionThread: ANOTHER Ack for " + packetAck.lamportClock 
 		                    			+  " so total number for acks is now " + (double)lamportAcks.get(packetAck.lamportClock));
+		                		*/
 		                	}
 			        	}
 		        		
 		        		headOfPriorityQueue.acks_sent = 1;
-		        		System.out.println("ClientQueueExecutionThread: Finished acking myself. Now put ACK packet with lamport clock " +
+		        		/*System.out.println("ClientQueueExecutionThread: Finished acking myself. Now put ACK packet with lamport clock " +
 		        				packetAck.lamportClock + " in event queue to be sent to everyone else");
+		        		*/
 		        		
 		        		try {
 							eventQueue.put(packetAck);
-							System.out.println("ClientQueueExecutionThread: Finished putting it in event queue");
+							//System.out.println("ClientQueueExecutionThread: Finished putting it in event queue");
 						} catch (InterruptedException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -115,12 +122,13 @@ public class ClientQueueExecutionThread implements Runnable {
 	        	   else if(headOfPriorityQueue.acks_sent == 1)
 	        	   {
 	        		    
-	        		   System.out.println("MyServerListenerThread: Acks sent already is 1 for event with lamport clock " + 
+	        		   /*System.out.println("MyServerListenerThread: Acks sent already is 1 for event with lamport clock " + 
 	        				   headOfPriorityQueue.lamportClock);
+	        				   */
 	        	   }
 	        	   else
 	        	   {
-	        		   System.out.println("ClientQueueExecutionThread: Weird shouldnt come here!");
+	        		   //System.out.println("ClientQueueExecutionThread: Weird shouldnt come here!");
 	        	   }
 	        	}
 	           
@@ -135,13 +143,14 @@ public class ClientQueueExecutionThread implements Runnable {
 		        	if((lamportAcks.get(headOfPriorityQueue.lamportClock).intValue() == maxClients)	//unsure of intvalue()
 	        				&& (headOfPriorityQueue.acks_sent == 1))
 	        		{
-			        	System.out.println("ClientQueueExecutionThread: CAN execute! -  headOfPriorityQueue has " +
+			        	/*System.out.println("ClientQueueExecutionThread: CAN execute! -  headOfPriorityQueue has " +
 			        			"lamport clock " + headOfPriorityQueue.lamportClock +" and it has " + 
 	        						lamportAcks.get(headOfPriorityQueue.lamportClock) + " acks!");
+	        			*/
 	        			
 			        	received = myPriorityQueue.poll();
-			        	System.out.println("ClientQueueExecutionThread: received.lamportClock is " + received.lamportClock);
-			        	System.out.println("ClientQueueExecutionThread: headOfPriorityQueue.lamportClock is " + headOfPriorityQueue.lamportClock);
+			        	//System.out.println("ClientQueueExecutionThread: received.lamportClock is " + received.lamportClock);
+			        	//System.out.println("ClientQueueExecutionThread: headOfPriorityQueue.lamportClock is " + headOfPriorityQueue.lamportClock);
 			        	
 			        	if(received.lamportClock == headOfPriorityQueue.lamportClock) //check if same guy I was looking at
 			        	{
@@ -171,25 +180,27 @@ public class ClientQueueExecutionThread implements Runnable {
 	        			}
 			        	else
 			        	{	//put it back in as its something else now
-			        		System.out.println("ClientQueueExecutionThread: Putting it back as its something else");
+			        		//System.out.println("ClientQueueExecutionThread: Putting it back as its something else");
 			        		myPriorityQueue.put(received);
 			        	}
 	        		}
 	        		
 	        		else
 	        		{
-	        			/*System.out.println("QueueExecutionThread: CANT execute for a reason! Real Head "
+	        			//Can use for debugging but causes infinite loop
+	        			/* System.out.println("QueueExecutionThread: CANT execute for a reason! Real Head "
 		        				+ "of queue has lamport clock " + myPriorityQueue.peek().lamportClock + 
 		        					" and number of acks peek has is " + lamportAcks.get(myPriorityQueue.peek().lamportClock));
-		        					*/
+		        		*/
 	        			
 		        	}
 	        		
         		}
         	}
         	else
-        	{
-        		//System.out.println("QueueExecutionThread: empty queue");
+        	{	
+        		//Can use for debugging but causes infinite loop
+        		/*System.out.println("QueueExecutionThread: empty queue");*/
         	}
                 
         	
