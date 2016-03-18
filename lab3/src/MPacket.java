@@ -10,7 +10,7 @@ public class MPacket implements Serializable, Comparable<MPacket> {
     /*The following are the type of events*/
     public static final int HELLO = 100;
     public static final int ACTION = 200;
-    //public static final int REGISTER = 300;
+   
 
     /*The following are the specific action 
     for each type*/
@@ -29,8 +29,6 @@ public class MPacket implements Serializable, Comparable<MPacket> {
     //my code to include projectile movement
     public static final int PROJECTILE_MOVEMENT = 207;
     
-    /*Register*/
-    //public static final int REGISTERHOSTPORT = 301;
     
     //These fields characterize the event  
     public int type;
@@ -62,8 +60,6 @@ public class MPacket implements Serializable, Comparable<MPacket> {
     public int portNumber;
     
     public ArrayList<Clientinfo> clientInfo;
-    //public HashMap<String, List<Integer>> clientInfoMap;
-    
     
     public MPacket(int type, int event){
         this.type = type;
@@ -107,9 +103,6 @@ public class MPacket implements Serializable, Comparable<MPacket> {
             case 200:
                 typeStr = "ACTION";
                 break;
-            /*case 300:
-                typeStr = "REGISTER";
-                break;*/
             default:
                 typeStr = "ERROR";
                 break;        
@@ -136,9 +129,6 @@ public class MPacket implements Serializable, Comparable<MPacket> {
             case 205:
                 eventStr = "FIRE";
                 break;
-            /*case 301:
-                eventStr = "REGISTERHOSTPORT";
-                break;*/
             case 207:
             	eventStr = "PROJECTILE_MOVEMENT";
             	break;
@@ -155,7 +145,7 @@ public class MPacket implements Serializable, Comparable<MPacket> {
     }
     
     public int compareTo(MPacket o){	//if positive this bigger, else other guy
-    	/* old code: return (int)(this.lamportClock - o.lamportClock);*/
+    	/* Our old code which was WRONG: return (int)(this.lamportClock - o.lamportClock);*/
     	if (this.lamportClock - o.lamportClock < 0){return -1;}
     	if (this.lamportClock - o.lamportClock > 0){return 1;}
     	return 0;
