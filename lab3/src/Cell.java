@@ -31,7 +31,7 @@ public abstract class Cell {
      * @return <code>true</code> if there is a wall, <code>false</code> otherwise.
      */
     public abstract boolean isWall(Direction direction);
-    //Hahahaha this is Shafaaf here
+   
     /** 
      * Obtain the contents of the cell.  
      * @return <code>null</code> if the cell is empty, otherwise some object

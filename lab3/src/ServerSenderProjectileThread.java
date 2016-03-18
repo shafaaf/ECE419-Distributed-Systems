@@ -21,7 +21,6 @@ public class ServerSenderProjectileThread implements Runnable {
     public void run() {
         MPacket toBroadcast = null;
         
-        //handleHello();
         try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e2) {

@@ -182,7 +182,7 @@ public abstract class Client {
         }
         
         public void myMoveProjectile(){
-        	System.out.println("This is " + this.name + "\n");
+        	if(Debug.debug) System.out.println("Client: This is " + this.name + "\n");
             maze.clientmyMoveProjectile(this.name);
         }
         

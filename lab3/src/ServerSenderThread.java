@@ -53,7 +53,7 @@ public class ServerSenderThread implements Runnable {
                 Player player = new Player(hello.name, point, Player.North);
                 players[i] = player;
                 
-                //now say you have host name and port
+                //Now say you have host name and port
                 System.out.println("Hostname for player " + i + " is " + hello.hostName + " and port number is " + hello.portNumber);
                 Clientinfo c = new Clientinfo(hello.hostName, hello.portNumber);
                 
@@ -67,9 +67,8 @@ public class ServerSenderThread implements Runnable {
                 
             }
             
-            //printing all host and port Numbers on server side and putting in MPacket which will be sent back
-            //List<Integer> intValues = new ArrayList<Integer>();
-        	System.out.println("Printing all client info: ");
+            //Printing all host and port Numbers on server side and putting in MPacket which will be sent back
+            System.out.println("Printing all client info: ");
             for(Clientinfo info: clientInfo){
             	System.out.println("ServerSenderThread: Client with pid " + info.pid + " has hostname " + info.hostName + " and port number " + info.port);
             	hello.clientInfo.add(info);
@@ -94,39 +93,18 @@ public class ServerSenderThread implements Runnable {
         }
     }
     
-    /*
-    public void handleRegister(){
-    	if(Debug.debug) System.out.println("In handleRegister function");
-        MPacket register_resp = null;
-        
-        register_resp.event = MPacket.REGISTER;
-        //Now broadcast the HELLO
-        if(Debug.debug) System.out.println("Sending " + hello);
-        for(MSocket mSocket: mSocketList){
-            mSocket.writeObject(hello);   
-        }
-        
-        
-    }*/
-    
-    
-    
-    
     public void run() {
         MPacket toBroadcast = null;
         
         handleHello();
-        
-        //change tomorrow
-        //handleRegister();	//handle registration of clients
-        
         while(true){
-            try{	//dequeue packet, add global sequence number, and broadcast
-                	//Take packet from queue to broadcast to all clients
+            try{	
+            	//dequeue packet, add global sequence number, and broadcast
+                //Take packet from queue to broadcast to all clients
             	
                 toBroadcast = (MPacket)eventQueue.take();
                 //Tag packet with sequence number and increment sequence number
-                toBroadcast.sequenceNumber = this.globalSequenceNumber++;
+                //toBroadcast.sequenceNumber = this.globalSequenceNumber++;
                 if(Debug.debug) System.out.println("Sending " + toBroadcast);
                 //Send it to all clients
                 for(MSocket mSocket: mSocketList){

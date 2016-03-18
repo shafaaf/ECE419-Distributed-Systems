@@ -115,6 +115,7 @@ public class Mazewar extends JFrame {
          */
         private Hashtable<String, Client> clientTable = null;
 
+        
         /**
          * A queue of events.
          */

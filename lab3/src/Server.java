@@ -5,19 +5,18 @@ import java.util.*;
 
 
 public class Server {	//listen and enqueue, dequeue and broadcast.
-						//Attachment of global sequence no. in server sender thread
     
-	//The maximum of clients that will join
 	//Server waits until the max number of clients to join
-    private static final int MAX_CLIENTS = 2;	//Initially 2
+	
+	//The maximum of clients that will join before gane starts
+	private static final int MAX_CLIENTS = 2;	//change this also in Mazewar if want to change number of users before game starts
     private MServerSocket mServerSocket = null;
-    private int clientCount; //The number of clients before game starts
+    private int clientCount;
     private MSocket[] mSocketList = null; //A list of MSockets
     private BlockingQueue eventQueue = null; //A list of events
     
-    //private Map <List<String>, Integer> clientConnected = null;
     
-    //my arraylist having Clientinfo objects which give host, port and pid
+    //My arraylist having Clientinfo objects which give host, port and pid of each client
     private ArrayList<Clientinfo> clientInfo = null;
     
     /*
@@ -60,10 +59,9 @@ public class Server {	//listen and enqueue, dequeue and broadcast.
         }
         
         //Start a new sender thread. Just 1 for all clients
-        //Sender thread dequeues events, attaches a global sequence number and broadcasts events
         new Thread(new ServerSenderThread(mSocketList, eventQueue, clientInfo)).start();
         
-        //Handle dynamic joins
+        //Handle dynamic joins- not yet done though
         while(true){
         	MSocket mSocket_dynamic_join = mServerSocket.accept();
             new Thread(new ServerListenerThread(mSocket_dynamic_join, eventQueue)).start();
@@ -83,7 +81,8 @@ public class Server {	//listen and enqueue, dequeue and broadcast.
         int port = Integer.parseInt(args[0]);
         Server server = new Server(port);	//calls the server constructor
         
-        //need this for naming server since ServerSenderThread will write hello packet and  ServerListenerThread will take it
+        /*Need this for naming server since ServerSenderThread will write hello packet 
+        	and ServerListenerThread takes in the hello request from each client*/
         server.startThreads();    
 
     }
