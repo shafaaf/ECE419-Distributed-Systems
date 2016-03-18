@@ -394,7 +394,7 @@ public class Mazewar extends JFrame {
                 	}
                 }
                 
-                if(Debug.debug) System.out.println("Mazewar: My name is " + name + ", pid is " + pid + 
+                System.out.println("Mazewar: My name is " + name + ", pid is " + pid + 
                 		", local lamport clock is "+ myLamportClock.value +  " and im listening on port: " + portNumber);
                 		
                 
