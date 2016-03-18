@@ -10,8 +10,6 @@ public class MyServerThread implements Runnable{
 	private int portNumber;
 	private int maxClients;
 	private int clientCount;
-	private MSocket[] client_mSocket;
-	private MSocket[] mSocketList;
 	private BlockingQueue eventQueue;
 	private PriorityBlockingQueue myPriorityQueue;
 	public LamportClock myLamportClock;
@@ -22,16 +20,13 @@ public class MyServerThread implements Runnable{
 	
 	//Constructor
 	MyServerThread(MServerSocket mServerSocket, int portNumber, int maxClients, int clientCount, 
-			MSocket[] client_mSocket, MSocket[] mSocketList, BlockingQueue eventQueue, 
-				PriorityBlockingQueue myPriorityQueue, LamportClock myLamportClock, 
+			 	BlockingQueue eventQueue, PriorityBlockingQueue myPriorityQueue, LamportClock myLamportClock, 
 					HashMap<Double, Integer> lamportAcks, int pid, ArrayList<MSocket> socketList) 
 	{
 		this.mServerSocket = mServerSocket;
 		this.portNumber = portNumber;
 		this.maxClients = maxClients;
 		this.clientCount = clientCount;
-		this.client_mSocket = client_mSocket;
-		this.mSocketList = mSocketList;
 		this.eventQueue = eventQueue;
 		this.myPriorityQueue = myPriorityQueue;
 		this.myLamportClock = myLamportClock;
@@ -44,14 +39,14 @@ public class MyServerThread implements Runnable{
 	public void run() {
 		while(true){
            try {
-            	//System.out.println("MyServerThread: Waiting for connection.");
+        	   if(Debug.debug) System.out.println("MyServerThread: Waiting for connection.");
 				MSocket mSocket = mServerSocket.accept();
 				socketList.add(mSocket);
-				//System.out.println("MyServerThread: Got a connection here");
+				if(Debug.debug) System.out.println("MyServerThread: Got a connection here");
 				
-				//Start a new handler thread for each new client connection for each Mazewar client
+				//Start a new handler thread for each new Mazewar client connection
 				new Thread(new MyServerListenerThread(mSocket, myPriorityQueue, myLamportClock, lamportAcks, pid, eventQueue)).start();
-				//System.out.println("MyServerThread: Made listener for  a client");
+				if(Debug.debug) System.out.println("MyServerThread: Made listener for  a client");
 				
 			} catch (IOException e) {
 				// TODO Auto-generated catch block

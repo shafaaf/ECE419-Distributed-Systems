@@ -86,9 +86,6 @@ public class Mazewar extends JFrame {
         
         //P2P Stuff
         private MServerSocket mServerSocket = null;	//for others to connect to me
-        private MSocket[] client_mSocket = null; //array of sockets I will use to connect to other clients for WRITE
-        private MSocket[] mSocketList = null; //array of sockets passed to MyServerThread, which says who I will connect to for READ
-        
         public ArrayList<MSocket> socketList = null;
         
         private InetAddress ip = null;
@@ -194,12 +191,7 @@ public class Mazewar extends JFrame {
                 //my serverSocket to accept incoming requests. Now just get a free port
                 mServerSocket = new MServerSocket(0);
                 
-                //List of sockets who will connect to me
-                mSocketList = new MSocket[MAX_CLIENTS];
-                
-                //List of clients who I will connect to
-                client_mSocket = new MSocket[MAX_CLIENTS];	// because i starts from 0
-                
+                //List of all sockets to connect to
                 socketList = new ArrayList<MSocket>();
                 
                 //Setup host and port number of this client
@@ -209,17 +201,19 @@ public class Mazewar extends JFrame {
                 
                 System.out.println("Your current Hostname : " + hostName + " and port number is " + portNumber);
                 
-                //Initialize queue of events
+                //Initialize queue of events which would have events and Acks by local client
                 eventQueue = new LinkedBlockingQueue<MPacket>();
                 
                 //Initialize hash table of clients to client name
-                	//Done when setting up GUI and remote client
+                //Done when setting up GUI and remote client
                 clientTable = new Hashtable<String, Client>();
                 
                 //Initialize my Priority Queue
                 //Comparator<MPacket> comparator = new MPacketComparator();
                 myPriorityQueue = new PriorityBlockingQueue<MPacket>();
                 
+                /*Lamport clock is the identifier of every event. This data struture used to
+                	know how many acks received for every event*/
                 lamportAcks = new HashMap<Double, Integer>();
                 
                 // Create the maze
@@ -263,32 +257,29 @@ public class Mazewar extends JFrame {
                 //Receive response from server which has info for hello and client info in clientinfo
                 MPacket resp = (MPacket)mSocket.readObject();
                 if(Debug.debug) System.out.println("Received response for hello from server");
-                System.out.println("Debugging: Received hello from server");
+                if(Debug.debug) System.out.println("Mazewar: Received hello from server");
                 
-                
+                //All client info put in
                 clientInfo = new ArrayList<Clientinfo>(resp.clientInfo);
                 
-                //Get my pid
+                //Get my own pid
                 for(Clientinfo info: clientInfo)
                 {
                 	if((info.hostName.equals(hostName)) && (info.port == portNumber))
                 	{
                 		//Setting my pid
                 		pid = info.pid;
-                		//Set my local lamport clock
-                		//localLamportClock = new Double("0" + "." + pid).doubleValue();
                 		
+                		//Set my local lamport clock
                 		Double localLamportClock = new Double("0" + "." + pid).doubleValue();
                 		myLamportClock = new LamportClock(pid, localLamportClock);
                 		
                 	}
                 }
                 
-                
-                
                 //Create the GUIClient and connect it to the KeyListener queue
                 //RemoteClient remoteClient = null;
-                //Shafaaf - local player is guiClient, other players are RemoteClients
+                //Local player is guiClient, other players are RemoteClients
                 for(Player player: resp.players){  
                         if(player.name.equals(name)){
                         	if(Debug.debug)System.out.println("Mazewar: Adding guiClient: " + player);
@@ -374,31 +365,34 @@ public class Mazewar extends JFrame {
                 overheadPanel.repaint();
                 this.requestFocusInWindow();
                 
-                //Thread to accept clients connections
-                new Thread(new MyServerThread(mServerSocket, portNumber, MAX_CLIENTS, 0, client_mSocket, 
-                		mSocketList, eventQueue, myPriorityQueue, myLamportClock, 
-                			lamportAcks, pid, socketList)).start();
+                
+                /*Thread to accept clients connections. Clients with higher pid 
+                	will connect to me*/
+                new Thread(new MyServerThread(mServerSocket, portNumber, MAX_CLIENTS, 0, 
+                		eventQueue, myPriorityQueue, myLamportClock, lamportAcks, pid, 
+                			socketList)).start();
                 
                 
-                //Print host and port number for all clients, and also connect to all clients
+                /*Connect to clients with pid less than me and print host and port number 
+                	for all clients*/
                 for(Clientinfo info: clientInfo)
                 {
-                	//System.out.println("Mazewar: Client with pid " + info.pid + " has hostname " + info.hostName + " and port number " + info.port);
-                	//System.out.println("Mazewar: Trying to make a socket to to connect with client " + info.pid);
+                	if(Debug.debug) System.out.println("Mazewar: Client with pid " + info.pid + " has hostname " + info.hostName + " and port number " + info.port);
+                	if(Debug.debug) System.out.println("Mazewar: Trying to make a socket to to connect with client " + info.pid);
+                	
                 	if(info.pid < pid)
                 	{
                 		MSocket newSocket = new MSocket(info.hostName, info.port);
                 		socketList.add(newSocket);
-                    	//System.out.println("Mazewar: Made a socket conenction to client " + info.pid);
+                		if(Debug.debug) System.out.println("Mazewar: Made a socket conenction to client " + info.pid);
                     	new Thread(new MyServerListenerThread(newSocket, myPriorityQueue, myLamportClock, lamportAcks, pid, eventQueue)).start();
-                    	//System.out.println("Mazewar: So made listener for client" + info.pid);
+                    	if(Debug.debug) System.out.println("Mazewar: So made listener for client" + info.pid);
                     }
-                	else{
-                		//System.out.println("Mazewar: Didnt make a socket conenction to client " + info.pid);
+                	else
+                	{
+                		if(Debug.debug) System.out.println("Mazewar: Didnt make a socket conenction to client " + info.pid);
                 	}
-                	
                 }
-                
                 
                 if(Debug.debug) System.out.println("Mazewar: My name is " + name + ", pid is " + pid + 
                 		", local lamport clock is "+ myLamportClock.value +  " and im listening on port: " + portNumber);
@@ -408,19 +402,13 @@ public class Mazewar extends JFrame {
                 
 //---------------------------------------------------------------------------------------------------------------------------------------------
 
-        /*
-        *Starts the ClientSenderThread, which is 
-         responsible for sending events
-         and the ClientListenerThread which is responsible for 
-         listening for events
-        */
         
         private void startThreads(){
-                new Thread(new ClientQueueExecutionThread(mSocket, clientTable, myPriorityQueue, client_mSocket, lamportAcks, MAX_CLIENTS, pid, socketList, eventQueue)).start();
+                new Thread(new ClientQueueExecutionThread(mSocket, clientTable, myPriorityQueue, lamportAcks, MAX_CLIENTS, pid, socketList, eventQueue)).start();
                 
                 //1 Thread to send to all clients for each Mazewar client
-    			//System.out.println("Mazewar: Making MyServerSenderThread");
-                new Thread(new MyServerSenderThread(client_mSocket, eventQueue, myLamportClock,myPriorityQueue, pid, socketList)).start();
+                if(Debug.debug) System.out.println("Mazewar: Making MyServerSenderThread");
+                new Thread(new MyServerSenderThread(eventQueue, myLamportClock,myPriorityQueue, pid, socketList)).start();
                 
         }
         
@@ -435,6 +423,7 @@ public class Mazewar extends JFrame {
 
              String host = args[0];
              int port = Integer.parseInt(args[1]);
+             
              /* Create the GUI */
              Mazewar mazewar = new Mazewar(host, port);
              mazewar.startThreads();

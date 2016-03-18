@@ -8,7 +8,6 @@ import java.util.concurrent.PriorityBlockingQueue;
 public class MyServerSenderThread implements Runnable {
 
     //private ObjectOutputStream[] outputStreamList = null;
-    private MSocket[] client_mSocket = null;
     private BlockingQueue eventQueue = null;
     public LamportClock myLamportClock = null;
     public PriorityBlockingQueue myPriorityQueue;
@@ -16,10 +15,9 @@ public class MyServerSenderThread implements Runnable {
     public ArrayList<MSocket> socketList;
     
     
-    public MyServerSenderThread(MSocket[] client_mSocket, BlockingQueue eventQueue, 
+    public MyServerSenderThread(BlockingQueue eventQueue, 
     		LamportClock myLamportClock, PriorityBlockingQueue myPriorityQueue, int pid, ArrayList<MSocket> socketList)
     {
-		this.client_mSocket = client_mSocket;
 		this.eventQueue = eventQueue;
 		this.myLamportClock =  myLamportClock;
 		this.myPriorityQueue = myPriorityQueue;		

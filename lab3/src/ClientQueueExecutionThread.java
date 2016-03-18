@@ -13,7 +13,6 @@ public class ClientQueueExecutionThread implements Runnable {
     private Hashtable<String, Client> clientTable;
     private PriorityBlockingQueue<MPacket> myPriorityQueue;
     private int clientEventNumber;
-    private MSocket[] client_mSocket;
     private HashMap<Double, Integer> lamportAcks;
     private int maxClients;
     private int pid;
@@ -22,21 +21,20 @@ public class ClientQueueExecutionThread implements Runnable {
     
     public ClientQueueExecutionThread( MSocket mSocket,
         Hashtable<String, Client> clientTable,PriorityBlockingQueue myPriorityQueue, 
-        	MSocket[] client_mSocket, HashMap<Double, Integer> lamportAcks, int maxClients, int pid, 
+        	HashMap<Double, Integer> lamportAcks, int maxClients, int pid, 
         		ArrayList<MSocket> socketList, BlockingQueue eventQueue)
     {
         this.mSocket = mSocket;
         this.clientTable = clientTable;
         this.myPriorityQueue = myPriorityQueue;
         this.clientEventNumber = 0;
-        this.client_mSocket = client_mSocket;
         this.lamportAcks = lamportAcks;
         this.maxClients = maxClients;
         this.pid = pid;
         this.socketList = socketList;
         this.eventQueue = eventQueue;
         
-        //if(Debug.debug) System.out.println("ClientQueueExecutionThread: Instatiating QueueExecutionThread");
+        if(Debug.debug) System.out.println("ClientQueueExecutionThread: Instatiating QueueExecutionThread");
     }
 
     public void run() {
@@ -47,7 +45,7 @@ public class ClientQueueExecutionThread implements Runnable {
         MPacket packetAck = null;
         Client client = null;
         
-        //if(Debug.debug) System.out.println("ClientQueueExecutionThread: Starting While loop");
+        if(Debug.debug) System.out.println("ClientQueueExecutionThread: Starting While loop");
         
         while(true){
         	
