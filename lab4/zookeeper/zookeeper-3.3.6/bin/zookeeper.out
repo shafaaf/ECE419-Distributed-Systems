@@ -1,0 +1,31 @@
+2016-03-28 19:05:54,968 - INFO  [main:QuorumPeerConfig@90] - Reading configuration from: ./../conf/zoo.cfg
+2016-03-28 19:05:54,970 - WARN  [main:QuorumPeerMain@105] - Either no config or no quorum defined in config, running  in standalone mode
+2016-03-28 19:05:54,979 - INFO  [main:QuorumPeerConfig@90] - Reading configuration from: ./../conf/zoo.cfg
+2016-03-28 19:05:54,979 - INFO  [main:ZooKeeperServerMain@94] - Starting server
+2016-03-28 19:05:54,983 - INFO  [main:Environment@97] - Server environment:zookeeper.version=3.3.6-1366786, built on 07/29/2012 06:22 GMT
+2016-03-28 19:05:54,984 - INFO  [main:Environment@97] - Server environment:host.name=inside-173-24.wireless.utoronto.ca
+2016-03-28 19:05:54,984 - INFO  [main:Environment@97] - Server environment:java.version=1.8.0_60
+2016-03-28 19:05:54,984 - INFO  [main:Environment@97] - Server environment:java.vendor=Oracle Corporation
+2016-03-28 19:05:54,984 - INFO  [main:Environment@97] - Server environment:java.home=/Library/Java/JavaVirtualMachines/jdk1.8.0_60.jdk/Contents/Home/jre
+2016-03-28 19:05:54,984 - INFO  [main:Environment@97] - Server environment:java.class.path=./../build/classes:./../build/lib/*.jar:./../zookeeper-3.3.6.jar:./../lib/log4j-1.2.15.jar:./../lib/jline-0.9.94.jar:./../src/java/lib/*.jar:./../conf:
+2016-03-28 19:05:54,984 - INFO  [main:Environment@97] - Server environment:java.library.path=/Users/shafaafhossain/Library/Java/Extensions:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java:.
+2016-03-28 19:05:54,985 - INFO  [main:Environment@97] - Server environment:java.io.tmpdir=/var/folders/zz/zyxvpxvq6csfxvn_n0000000000000/T/
+2016-03-28 19:05:54,985 - INFO  [main:Environment@97] - Server environment:java.compiler=<NA>
+2016-03-28 19:05:54,985 - INFO  [main:Environment@97] - Server environment:os.name=Mac OS X
+2016-03-28 19:05:54,985 - INFO  [main:Environment@97] - Server environment:os.arch=x86_64
+2016-03-28 19:05:54,985 - INFO  [main:Environment@97] - Server environment:os.version=10.10.5
+2016-03-28 19:05:54,985 - INFO  [main:Environment@97] - Server environment:user.name=root
+2016-03-28 19:05:54,985 - INFO  [main:Environment@97] - Server environment:user.home=/var/root
+2016-03-28 19:05:54,986 - INFO  [main:Environment@97] - Server environment:user.dir=/Users/shafaafhossain/Desktop/ECE419_synched/lab4/zookeeper/zookeeper-3.3.6/bin
+2016-03-28 19:05:54,990 - INFO  [main:ZooKeeperServer@673] - tickTime set to 2000
+2016-03-28 19:05:54,991 - INFO  [main:ZooKeeperServer@682] - minSessionTimeout set to -1
+2016-03-28 19:05:54,991 - INFO  [main:ZooKeeperServer@691] - maxSessionTimeout set to -1
+2016-03-28 19:05:55,007 - INFO  [main:NIOServerCnxn$Factory@143] - binding to port 0.0.0.0/0.0.0.0:2181
+2016-03-28 19:05:55,008 - FATAL [main:ZooKeeperServerMain@62] - Unexpected exception, exiting abno2016-03-28 19:06:04,544 - INFO  [NIOServerCxn.Factory:0.0.0.0/0.0.0.0:2181:NIOServerCnxn$Factory@251] - Accepted socket connection from /0:0:0:0:0:0:0:1:50432
+2016-03-28 19:06:04,589 - INFO  [NIOServerCxn.Factory:0.0.0.0/0.0.0.0:2181:NIOServerCnxn@777] - Client attempting to establish new session at /0:0:0:0:0:0:0:1:50432
+2016-03-28 19:06:04,591 - INFO  [SyncThread:0:FileTxnLog@199] - Creating new log file: log.1
+2016-03-28 19:06:04,609 - INFO  [SyncThread:0:NIOServerCnxn@1580] - Established session 0x153bf79e2240000 with negotiated timeout 30000 for client /0:0:0:0:0:0:0:1:50432
+eper.server.ZooKeeperServerMain.initializeAndRun(ZooKeeperServerMain.java:85)
+	at org.apache.zookeeper.server.ZooKeeperServerMain.main(ZooKeeperServerMain.java:51)
+	at org.apache.zookeeper.server.quorum.QuorumPeerMain.initializeAndRun(QuorumPeerMain.java:108)
+	at org.apache.zookeeper.server.quorum.QuorumPeerMain.main(QuorumPeerMain.java:76)
