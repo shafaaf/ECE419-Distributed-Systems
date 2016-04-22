@@ -33,7 +33,7 @@ public class Server {	//listen and enqueue, dequeue and broadcast.
         clientCount = 0;
         
         mServerSocket = new MServerSocket(port);
-        if(Debug.debug) System.out.println("Listening on port: " + port);
+        System.out.println("Listening on port: " + port);
         mSocketList = new MSocket[MAX_CLIENTS];
         eventQueue = new LinkedBlockingQueue<MPacket>();
         clientInfo = new ArrayList<Clientinfo>();
