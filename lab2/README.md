@@ -1,3 +1,7 @@
+#Distributed Systems Lab 2
+
+A centralized version of the multipler game, Mazewar. A central server is used to assign sequence numbers to events and broadcasted to clients who wait for the event with the next sequence number.
+
 The completed lab code is in src and bin. The other folders are for references and not needed.
 
 Introduction
